@@ -1,0 +1,47 @@
+ul,
+li {
+  padding: 0;
+  margin: 0;
+  list-style: none;
+}
+
+.new-list-container {
+  position: relative;
+}
+.new-list-container .welcome {
+  position: absolute;
+  top: 15px;
+  left: 50%;
+  transform: translateX(-50%);
+  font-size: 13px;
+  border-radius: 5px;
+  padding: 5px;
+  display: none;
+}
+
+.login-container {
+  width: 450px;
+  justify-content: space-between;
+}
+.room-list {
+  border-bottom: 1px solid #ccc;
+}
+.news-content {
+  height: 70vh;
+}
+.time {
+  font-size: 12px;
+}
+
+@media (max-width: 575px) {
+  .login-container {
+    width: 90%;
+  }
+}
+
+@media (min-width: 992px) {
+  .room-list {
+    border-right: 1px solid #ccc;
+    border-bottom: none;
+  }
+}
