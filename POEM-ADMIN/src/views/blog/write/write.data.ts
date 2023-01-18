@@ -1,11 +1,12 @@
-import { BasicColumn } from '/@/components/Table';
-import { FormSchema } from '/@/components/Table';
-import { h } from 'vue';
-import { Switch } from 'ant-design-vue';
-import { setBannerStatus } from '/@/api/banner';
-import { useMessage } from '/@/hooks/web/useMessage';
-import { uploadApi } from '/@/api/sys/upload';
-import { Tinymce } from '/@/components/Tinymce/index';
+import {BasicColumn} from '/@/components/Table';
+import {FormSchema} from '/@/components/Table';
+import {h} from 'vue';
+import {Switch} from 'ant-design-vue';
+import {setBannerStatus} from '/@/api/banner';
+import {useMessage} from '/@/hooks/web/useMessage';
+import {uploadApi} from '/@/api/sys/upload';
+import {Tinymce} from '/@/components/Tinymce/index';
+
 export const columns: BasicColumn[] = [
   // {
   //   title: '轮播图名称',
@@ -31,7 +32,7 @@ export const columns: BasicColumn[] = [
     title: '状态',
     dataIndex: 'status',
     width: 120,
-    customRender: ({ record }) => {
+    customRender: ({record}) => {
       if (!Reflect.has(record, 'pendingStatus')) {
         record.pendingStatus = false;
       }
@@ -43,7 +44,7 @@ export const columns: BasicColumn[] = [
         onChange(checked: boolean) {
           record.pendingStatus = true;
           const newStatus = checked ? '1' : '0';
-          const { createMessage } = useMessage();
+          const {createMessage} = useMessage();
           setBannerStatus(record.id, newStatus)
             .then(() => {
               record.status = newStatus;
@@ -80,7 +81,7 @@ export const searchFormSchema: FormSchema[] = [
     field: 'remark',
     label: '备注',
     component: 'Input',
-    colProps: { span: 6 },
+    colProps: {span: 6},
   },
   {
     field: 'type',
@@ -88,16 +89,16 @@ export const searchFormSchema: FormSchema[] = [
     component: 'Select',
     componentProps: {
       options: [
-        { label: '首页顶部', value: '1' },
-        { label: '快捷入口', value: '2' },
-        { label: '工具', value: '3' },
-        { label: '壁纸', value: '5' },
-        { label: '博客', value: '6' },
-        { label: '我的', value: '7' },
-        { label: '日历轮播', value: '8' },
+        {label: '首页顶部', value: '1'},
+        {label: '快捷入口', value: '2'},
+        {label: '工具', value: '3'},
+        {label: '壁纸', value: '5'},
+        {label: '博客', value: '6'},
+        {label: '我的', value: '7'},
+        {label: '日历轮播', value: '8'},
       ],
     },
-    colProps: { span: 6 },
+    colProps: {span: 6},
   },
   {
     field: 'status',
@@ -105,11 +106,11 @@ export const searchFormSchema: FormSchema[] = [
     component: 'Select',
     componentProps: {
       options: [
-        { label: '启用', value: '1' },
-        { label: '停用', value: '0' },
+        {label: '启用', value: '1'},
+        {label: '停用', value: '0'},
       ],
     },
-    colProps: { span: 6 },
+    colProps: {span: 6},
   },
 ];
 
@@ -119,15 +120,15 @@ export const formSchema: FormSchema[] = [
     component: 'Input',
     label: '标题',
     defaultValue: 'defaultValue',
-    rules: [{ required: true }],
+    rules: [{required: true}],
   },
   {
     field: 'tinymce',
     component: 'Input',
     label: '内容',
     defaultValue: 'defaultValue',
-    rules: [{ required: true }],
-    render: ({ model, field }) => {
+    rules: [{required: true}],
+    render: ({model, field}) => {
       return h(Tinymce, {
         value: model[field],
         onChange: (value: string) => {
@@ -140,45 +141,46 @@ export const formSchema: FormSchema[] = [
     field: 'image_url',
     component: 'Upload',
     label: '上传图片',
-    rules: [{ required: true, message: '请选择上传图片' }],
+    rules: [{required: true, message: '请选择上传图片'}],
     componentProps: {
       api: uploadApi,
       maxSize: 20,
       maxNumber: 1,
     },
   },
-  {
-    field: 'type',
-    label: '分类',
-    component: 'Select',
-    required: true,
-    componentProps: {
-      options: [
-        { label: '首页顶部', value: '1' },
-        { label: '快捷入口', value: '2' },
-        { label: '工具', value: '3' },
-        { label: '壁纸', value: '5' },
-        { label: '博客', value: '6' },
-        { label: '我的', value: '7' },
-        { label: '日历轮播', value: '8' },
-      ],
-    },
-  },
-  {
-    field: 'link_url',
-    label: '跳转链接',
-    required: true,
-    component: 'InputTextArea',
-  },
+  // {
+  //   field: 'type',
+  //   label: '分类',
+  //   component: 'Select',
+  //   required: true,
+  //   componentProps: {
+  //     options: [
+  //       {label: '首页顶部', value: '1'},
+  //       {label: '快捷入口', value: '2'},
+  //       {label: '工具', value: '3'},
+  //       {label: '壁纸', value: '5'},
+  //       {label: '博客', value: '6'},
+  //       {label: '我的', value: '7'},
+  //       {label: '日历轮播', value: '8'},
+  //     ],
+  //   },
+  // },
+  // {
+  //   field: 'link_url',
+  //   label: '跳转链接',
+  //   required: true,
+  //   component: 'InputTextArea',
+  // },
   {
     field: 'status',
     label: '状态',
     component: 'RadioButtonGroup',
-    defaultValue: '0',
+    defaultValue: '1',
     componentProps: {
       options: [
-        { label: '停用', value: '0' },
-        { label: '启用', value: '1' },
+        {label: '启用', value: '1'},
+        {label: '停用', value: '0'},
+
       ],
     },
   },

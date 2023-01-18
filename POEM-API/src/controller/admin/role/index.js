@@ -1,4 +1,4 @@
-const {rTime, timestamp} = require("../../../utils/timeformat")
+const {rTime, timestamp, listToTree, unique} = require("../../../utils/timeformat")
 const DB = require("../../../db")
 const jwt = require("jsonwebtoken");
 const config = require("../../../config");
@@ -88,7 +88,7 @@ exports.updateRole = async (req, res) => {
         let data = menuList.filter(item => permissionMenuIds.includes(item.id))
 
         data.forEach((ele) => {
-            if(ele.permission!==''){
+            if (ele.permission !== '') {
                 permission.push(ele.permission)
             }
 
@@ -182,8 +182,8 @@ exports.delRole = async (req, res) => {
     /** 查询当前roleValue 是否有绑定的用户*/
     const userIsExitRole = await DB(res, 'sy_users', 'find', '服务器错误', `roleValue='${roleInfo[0].roleValue}'`)
     let user = []
-    userIsExitRole.filter((ele)=>{
-        user.push( ele.username)
+    userIsExitRole.filter((ele) => {
+        user.push(ele.username)
     })
     if (userIsExitRole[0]) {
         res.json({
@@ -284,7 +284,11 @@ exports.getRoleListByPage = async (req, res) => {
     let roleLen = await DB(res, 'sy_roles', 'find', '服务器出错', `status like '%${params.status}%' and roleName like '%${params.roleName}%'  `);
     let result = await DB(res, 'sy_roles', 'find', '服务器出错', `status like '%${params.status}%' and roleName like '%${params.roleName}%'  limit ${(params.page - 1) * params.pageSize},${params.pageSize}`);
     const permissionMenu = await DB(res, 'sy_permission_menu', 'find', '服务器错误')
-    result.forEach((v) => {
+    const menuList = await DB(res, 'sy_menus', 'find', '服务器错误', `status=1`)
+    let treeMenuList = listToTree(menuList, 'parentMenu')
+    let list = [result[2]]
+    let datas = [permissionMenu[2]]
+    list.forEach((v) => {
 
         if (v.createTime) {
             v.createTime = rTime(timestamp(v.createTime))
@@ -294,8 +298,9 @@ exports.getRoleListByPage = async (req, res) => {
         } else {
             delete v.updateTime
         }
-        permissionMenu.forEach((ele) => {
+        datas.forEach((ele) => {
             if (v.roleValue == ele.roleValue) {
+
 
                 v.menu = ele.menu.split(',')
             } else {

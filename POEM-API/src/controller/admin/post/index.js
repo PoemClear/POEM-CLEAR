@@ -21,14 +21,15 @@ exports.postList = async (req, res) => {
         status: req.query.status || "",
         isRecycle:req.query.isRecycle || "1",
         title: req.query.title || "",
+        checkStatus:  req.query.checkStatus || "",
         page: req.query.page || 1,
         pageSize: req.query.pageSize || 10
     }
 
-    let result_num = await DB(res, 'xcx_blog_post', 'find', '服务器错误', `title like '%${params.title}%' and isRecycle like '%${params.isRecycle}%' and status like '%${params.status}%'`);
+    let result_num = await DB(res, 'xcx_blog_post', 'find', '服务器错误', `title like '%${params.title}%' and isRecycle like '%${params.isRecycle}%' and status like '%${params.status}%' and checkStatus like '%${params.checkStatus}%'`);
 
 
-    let result = await DB(res, 'xcx_blog_post', 'find', '服务器错误', `title like '%${params.title}%' and isRecycle like '%${params.isRecycle}%' and status like '%${params.status}%'   order by orderNo desc  limit ${(params.page - 1) * params.pageSize},${params.pageSize}`);
+    let result = await DB(res, 'xcx_blog_post', 'find', '服务器错误', `title like '%${params.title}%' and isRecycle like '%${params.isRecycle}%' and status like '%${params.status}%' and  checkStatus like '%${params.checkStatus}%'  order by orderNo desc  limit ${(params.page - 1) * params.pageSize},${params.pageSize}`);
     result.forEach((v, i) => {
         if (v.createTime) {
             v.createTime = rTime(timestamp(v.createTime))
@@ -62,7 +63,12 @@ exports.postList = async (req, res) => {
 }
 
 
-
+/**
+ * 文章详情
+ * @param req
+ * @param res
+ * @returns {Promise<*>}
+ */
 exports.postItem = async (req, res) => {
     let payload = null;
     try {
@@ -114,7 +120,7 @@ exports.postItem = async (req, res) => {
 
 
 /**
- * 删除分类
+ * 文章放入回收站
  * @param req
  * @param res
  */
@@ -148,6 +154,36 @@ exports.upDatePostRecycle = async (req, res) => {
     }
 }
 
+/**
+ * 审核文章 0 审核中 1 审核失败 2 审核成功
+ * @param req
+ * @param res
+ * @returns {Promise<void>}
+ */
+exports.updateCheckPost = async (req,res)=>{
+    const {id,checkStatus} = req.body
+    const ret = await DB(res, 'xcx_blog_post', 'update', '服务器错误', `id='${id}'`, {
+        checkStatus
+    })
+    if (ret.affectedRows == 1) {
+        res.json({
+            code: 200,
+            message: "审核成功"
+        })
+    } else {
+        res.json({
+            code: 200,
+            message: "审核失败"
+        })
+    }
+}
+
+/**
+ * 删除文章
+ * @param req
+ * @param res
+ * @returns {Promise<*>}
+ */
 exports.delPost = async (req, res) => {
     let payload = null;
     try {

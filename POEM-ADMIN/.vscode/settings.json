@@ -156,5 +156,10 @@
       "command": "extension.execute",
       "priority": 4
     }
-  ]
+  ],
+  "editor.quickSuggestions": {
+    "other": "on",
+    "comments": true,
+    "strings": "off"
+  }
 }

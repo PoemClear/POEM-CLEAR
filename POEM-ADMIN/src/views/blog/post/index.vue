@@ -11,6 +11,18 @@
         <template v-if="column.key === 'action'">
           <TableAction
             :actions="[
+               {
+                icon: 'ant-design:clock-circle-outlined',
+                tooltip: '审核',
+                  popConfirm: {
+                  title: '是否审核改文章',
+                  placement: 'left',
+                  cancelText:'不通过',
+                  okText:'通过',
+                  confirm: handleCheckSuccess.bind(null, record),
+                  cancel:handleCheckFail.bind(null,record)
+                },
+              },
               {
                 icon: 'clarity:info-standard-line',
                 tooltip: '查看详情',
@@ -41,7 +53,7 @@
 import {defineComponent} from 'vue';
 
 import {BasicTable, useTable, TableAction} from '/@/components/Table';
-import {getPostList, upDatePostRecycle} from '/@/api/blog';
+import {getPostList, upDatePostRecycle, updateCheckPost} from '/@/api/blog';
 
 import {usePermissionStore} from '/@/store/modules/permission';
 import {usePermission} from '/@/hooks/web/usePermission';
@@ -104,6 +116,18 @@ export default defineComponent({
       handleSuccess();
     }
 
+    async function handleCheckSuccess(record: Recordable) {
+      let checkStatus = '2'
+      await updateCheckPost(record.id, checkStatus)
+      handleSuccess();
+    }
+
+    async function handleCheckFail(record: Recordable) {
+      let checkStatus = '1'
+      await updateCheckPost(record.id, checkStatus)
+      handleSuccess();
+    }
+
     function handleSuccess() {
       reload();
     }
@@ -124,6 +148,8 @@ export default defineComponent({
       handleView,
       openModal2,
       register2,
+      handleCheckSuccess,
+      handleCheckFail,
     };
   },
 });

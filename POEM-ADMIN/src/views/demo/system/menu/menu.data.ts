@@ -150,7 +150,7 @@ export const formSchema: FormSchema[] = [
     field: 'status',
     label: '状态',
     component: 'RadioButtonGroup',
-    defaultValue: '0',
+    defaultValue: '1',
     componentProps: {
       options: [
         { label: '启用', value: '1' },
@@ -165,8 +165,9 @@ export const formSchema: FormSchema[] = [
     defaultValue: '0',
     componentProps: {
       options: [
-        { label: '否', value: '0' },
+
         { label: '是', value: '1' },
+        { label: '否', value: '0' },
       ],
     },
     ifShow: ({ values }) => !isButton(values.type),
@@ -179,8 +180,8 @@ export const formSchema: FormSchema[] = [
     defaultValue: '0',
     componentProps: {
       options: [
-        { label: '否', value: '0' },
         { label: '是', value: '1' },
+        { label: '否', value: '0' },
       ],
     },
     ifShow: ({ values }) => isMenu(values.type),
@@ -190,11 +191,11 @@ export const formSchema: FormSchema[] = [
     field: 'isShow',
     label: '是否显示',
     component: 'RadioButtonGroup',
-    defaultValue: '0',
+    defaultValue: '1',
     componentProps: {
       options: [
-        { label: '否', value: '0' },
         { label: '是', value: '1' },
+        { label: '否', value: '0' },
       ],
     },
     ifShow: ({ values }) => !isButton(values.type),

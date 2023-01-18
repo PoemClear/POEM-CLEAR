@@ -1,9 +1,9 @@
-import { BasicColumn } from '/@/components/Table';
-import { FormSchema } from '/@/components/Table';
-import { h } from 'vue';
-import { Switch } from 'ant-design-vue';
-import { setRoleStatus } from '/@/api/demo/system';
-import { useMessage } from '/@/hooks/web/useMessage';
+import {BasicColumn} from '/@/components/Table';
+import {FormSchema} from '/@/components/Table';
+import {h} from 'vue';
+import {Switch, Tag} from 'ant-design-vue';
+import {setRoleStatus} from '/@/api/demo/system';
+import {useMessage} from '/@/hooks/web/useMessage';
 
 export const columns: BasicColumn[] = [
   {
@@ -46,7 +46,7 @@ export const columns: BasicColumn[] = [
     title: '状态',
     dataIndex: 'status',
     width: 120,
-    customRender: ({ record }) => {
+    customRender: ({record}) => {
       if (!Reflect.has(record, 'pendingStatus')) {
         record.pendingStatus = false;
       }
@@ -58,7 +58,7 @@ export const columns: BasicColumn[] = [
         onChange(checked: boolean) {
           record.pendingStatus = true;
           const newStatus = checked ? '1' : '0';
-          const { createMessage } = useMessage();
+          const {createMessage} = useMessage();
           setRoleStatus(record.id, newStatus)
             .then(() => {
               record.status = newStatus;
@@ -72,6 +72,20 @@ export const columns: BasicColumn[] = [
             });
         },
       });
+    },
+  },
+  {
+    title: '审核状态',
+    dataIndex: 'checkStatus',
+    width: 80,
+    customRender: ({record}) => {
+      const status = record.checkStatus;
+      const toDoEnable = ~~status === 0;
+      const FailEnable = ~~status === 1;
+      const SuccessEnable = ~~status === 2;
+      const color = toDoEnable ? 'orange' : SuccessEnable ? 'green' : 'red';
+      const text = toDoEnable ? '审核中' : FailEnable ? '未通过' : '审核通过';
+      return h(Tag, {color: color}, () => text);
     },
   },
   {
@@ -91,7 +105,7 @@ export const searchFormSchema: FormSchema[] = [
     field: 'title',
     label: '文章标题',
     component: 'Input',
-    colProps: { span: 8 },
+    colProps: {span: 8},
   },
   {
     field: 'status',
@@ -99,11 +113,11 @@ export const searchFormSchema: FormSchema[] = [
     component: 'Select',
     componentProps: {
       options: [
-        { label: '启用', value: '1' },
-        { label: '停用', value: '0' },
+        {label: '启用', value: '1'},
+        {label: '停用', value: '0'},
       ],
     },
-    colProps: { span: 8 },
+    colProps: {span: 8},
   },
 ];
 
@@ -127,8 +141,8 @@ export const formSchema: FormSchema[] = [
     defaultValue: '0',
     componentProps: {
       options: [
-        { label: '启用', value: '1' },
-        { label: '停用', value: '0' },
+        {label: '启用', value: '1'},
+        {label: '停用', value: '0'},
       ],
     },
   },

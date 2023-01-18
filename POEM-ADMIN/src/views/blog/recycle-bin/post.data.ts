@@ -1,7 +1,7 @@
 import { BasicColumn } from '/@/components/Table';
 import { FormSchema } from '/@/components/Table';
 import { h } from 'vue';
-import { Switch } from 'ant-design-vue';
+import {Switch, Tag} from 'ant-design-vue';
 
 export const columns: BasicColumn[] = [
   {
@@ -55,6 +55,19 @@ export const columns: BasicColumn[] = [
         unCheckedChildren: '已删除',
         loading: record.pendingStatus,
       });
+    },
+  },  {
+    title: '审核状态',
+    dataIndex: 'checkStatus',
+    width: 80,
+    customRender: ({record}) => {
+      const status = record.checkStatus;
+      const toDoEnable = ~~status === 0;
+      const FailEnable = ~~status === 1;
+      const SuccessEnable = ~~status === 2;
+      const color = toDoEnable ? 'orange' : SuccessEnable ? 'green' : 'red';
+      const text = toDoEnable ? '审核中' : FailEnable ? '未通过' : '审核通过';
+      return h(Tag, {color: color}, () => text);
     },
   },
   {

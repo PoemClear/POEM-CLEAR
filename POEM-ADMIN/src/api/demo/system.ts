@@ -33,6 +33,7 @@ enum Api {
   UpdateUser = '/system/updateUser',
   DelUser = '/system/delUser',
   DelDept = '/system/delDept',
+  DelMenu = '/system/delMenu',
 }
 
 export const getAccountList = (params: AccountParams) =>
@@ -87,3 +88,5 @@ export const updateUser = (params?: any) =>
   defHttp.post({ url: Api.UpdateUser, params }, { errorMessageMode: 'message' });
 export const delUser = (id: number) =>
   defHttp.post({ url: Api.DelUser, params: { id } }, { errorMessageMode: 'message' });
+export const delMenu = (id: number) =>
+  defHttp.post({ url: Api.DelMenu, params: { id } }, { errorMessageMode: 'message' });

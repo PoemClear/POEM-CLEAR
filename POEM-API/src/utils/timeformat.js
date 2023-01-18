@@ -114,7 +114,7 @@ function listToTree(data,pid) {
 function unique(arr) {
     let obj = {};
     arr = arr.reduce((newArr, next) => {
-        obj[next.openid] ? "" : (obj[next.openid] = true && newArr.push(next));
+        obj[next] ? "" : (obj[next] = true && newArr.push(next));
         return newArr;
     }, []);
     return arr;

@@ -118,7 +118,7 @@ exports.updateMenu = async (req, res) => {
  * @param req
  * @param res
  */
-exports.delDept = async (req, res) => {
+exports.delMenu = async (req, res) => {
     let payload = null;
     try {
         const authorizationHeader = req.get("Authorization");
@@ -130,7 +130,20 @@ exports.delDept = async (req, res) => {
         });
     }
     const {id} = req.body
-    const ret = await DB(res, 'sy_menus', 'delete', '服务器错误', `ID='${id}'`)
+    const menuList = await DB(res, 'sy_menus', 'find', '服务器错误', `parentMenu='${id}'`)
+    let menu = []
+    menuList.filter((ele) => {
+        menu.push(ele.menuName)
+    })
+    if (menuList[0]) {
+        res.json({
+            code: 403,
+            message: `当前目录|菜单下已绑定【${menu}】，不能删除`,
+            type: "success"
+        })
+        return
+    }
+    const ret = await DB(res, 'sy_menus', 'delete', '服务器错误', `id='${id}'`)
     if (ret.affectedRows == 1) {
         res.json({
             code: 200,
@@ -138,7 +151,6 @@ exports.delDept = async (req, res) => {
         })
     }
 }
-
 
 
 /**
