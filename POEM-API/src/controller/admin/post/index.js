@@ -31,6 +31,7 @@ exports.postList = async (req, res) => {
 
     let result = await DB(res, 'xcx_blog_post', 'find', '服务器错误', `title like '%${params.title}%' and isRecycle like '%${params.isRecycle}%' and status like '%${params.status}%' and  checkStatus like '%${params.checkStatus}%'  order by orderNo desc  limit ${(params.page - 1) * params.pageSize},${params.pageSize}`);
     result.forEach((v, i) => {
+        v.cover = [v.cover]
         if (v.createTime) {
             v.createTime = rTime(timestamp(v.createTime))
         }

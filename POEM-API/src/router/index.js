@@ -17,6 +17,8 @@ router.use(require('./admin/user'))
 // router.use(require('./admin/cate'))
 /** 评论管理*/
 router.use(require('./admin/comment'))
+/** 专题管理*/
+router.use(require('./admin/subject'))
 /** 文章管理*/
 router.use(require('./admin/post'))
 /** 圈子 | 专栏*/

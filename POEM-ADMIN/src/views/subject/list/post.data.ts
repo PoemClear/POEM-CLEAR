@@ -4,39 +4,22 @@ import { h } from 'vue';
 import { Switch, Tag } from 'ant-design-vue';
 import { setRoleStatus } from '/@/api/demo/system';
 import { useMessage } from '/@/hooks/web/useMessage';
-
+import { uploadApi } from '/@/api/sys/upload';
+import { getPostList } from '/@/api/blog';
 export const columns: BasicColumn[] = [
   {
-    title: '封面',
+    title: '专题封面',
     dataIndex: 'cover',
-    width: 100,
+    width: 80,
   },
   {
-    title: '文章标题',
+    title: '专题标题',
     dataIndex: 'title',
     width: 300,
+    align: 'left',
   },
 
-  {
-    title: '浏览量',
-    dataIndex: 'views_count',
-    width: 80,
-  },
-  {
-    title: '点赞量',
-    dataIndex: 'like_count',
-    width: 80,
-  },
-  {
-    title: '评论量',
-    dataIndex: 'comment_count',
-    width: 80,
-  },
-  {
-    title: '收藏量',
-    dataIndex: 'collect_count',
-    width: 80,
-  },
+  { title: '更新 / 完结', dataIndex: 'num', width: 100 },
   {
     title: '排序',
     dataIndex: 'orderNo',
@@ -62,10 +45,10 @@ export const columns: BasicColumn[] = [
           setRoleStatus(record.id, newStatus)
             .then(() => {
               record.status = newStatus;
-              createMessage.success(`已成功修改文章状态`);
+              createMessage.success(`已成功修改专题状态`);
             })
             .catch(() => {
-              // createMessage.error('修改文章状态失败');
+              // createMessage.error('修改专题状态失败');
             })
             .finally(() => {
               record.pendingStatus = false;
@@ -103,7 +86,7 @@ export const columns: BasicColumn[] = [
 export const searchFormSchema: FormSchema[] = [
   {
     field: 'title',
-    label: '文章标题',
+    label: '专题标题',
     component: 'Input',
     colProps: { span: 6 },
   },
@@ -132,21 +115,59 @@ export const searchFormSchema: FormSchema[] = [
     },
     colProps: { span: 6 },
   },
-  // checkStatus
 ];
 
 export const formSchema: FormSchema[] = [
   {
+    field: 'cover',
+    component: 'Upload',
+    label: '上传封面',
+    rules: [{ required: true, message: '请选择上传封面' }],
+    componentProps: {
+      api: uploadApi,
+      maxSize: 20,
+      maxNumber: 1,
+    },
+  },
+  {
     field: 'title',
-    label: '文章名称',
+    label: '专题标题',
     required: true,
     component: 'Input',
   },
   {
-    field: 'roleValue',
-    label: '文章值',
+    field: 'orderNo',
+    label: '排序',
+    component: 'InputNumber',
     required: true,
+  },
+  {
+    label: '简介',
+    field: 'description',
+    component: 'InputTextArea',
+  },
+  {
+    field: 'postIds',
     component: 'Input',
+    label: '选择文章',
+    helpMessage: ['ApiSelect组件', '将关键词发送到接口进行远程搜索'],
+    required: true,
+    slot: 'remoteSearch',
+    componentProps: {
+      api: getPostList,
+    },
+  },
+  {
+    field: 'isEnd',
+    label: '是否完结',
+    component: 'RadioGroup',
+    defaultValue: '0',
+    componentProps: {
+      options: [
+        { label: '未完结', value: '0' },
+        { label: '已完结', value: '1' },
+      ],
+    },
   },
   {
     field: 'status',
@@ -155,20 +176,9 @@ export const formSchema: FormSchema[] = [
     defaultValue: '0',
     componentProps: {
       options: [
-        { label: '启用', value: '1' },
         { label: '停用', value: '0' },
+        { label: '启用', value: '1' },
       ],
     },
-  },
-  {
-    label: '备注',
-    field: 'remark',
-    component: 'InputTextArea',
-  },
-  {
-    label: ' ',
-    field: 'menu',
-    slot: 'menu',
-    component: 'Input',
   },
 ];
