@@ -14,10 +14,10 @@
       const [register] = useModalInner();
       const go = useGo();
       function tinymce() {
-        go('/blog/write/tinymce');
+        go('/blog/write/tinymce/tinymce');
       }
       function markdown() {
-        go('/blog/write/markdown');
+        go('/blog/write/markdown/markdown');
       }
       return {
         register,

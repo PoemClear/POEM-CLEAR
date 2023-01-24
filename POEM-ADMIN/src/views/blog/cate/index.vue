@@ -52,14 +52,14 @@
     setup() {
       const [registerModal, { openModal }] = useModal();
       const [registerTable, { reload }] = useTable({
-        title: '部门列表',
+        title: '分类列表',
         api: getPosTreeTCateList,
         columns,
         formConfig: {
           labelWidth: 120,
           schemas: searchFormSchema,
         },
-        pagination: { pageSize: 8 },
+        pagination: { pageSize: 10 },
         striped: false,
         useSearchForm: true,
         showTableSetting: true,

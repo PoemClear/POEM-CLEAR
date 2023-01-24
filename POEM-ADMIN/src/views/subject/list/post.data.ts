@@ -6,6 +6,53 @@ import { setRoleStatus } from '/@/api/demo/system';
 import { useMessage } from '/@/hooks/web/useMessage';
 import { uploadApi } from '/@/api/sys/upload';
 import { getPostList } from '/@/api/blog';
+export interface TabItem {
+  key: string;
+  name: string;
+  component: string;
+}
+
+export const articleList = (() => {
+  const result: any[] = [];
+  for (let i = 0; i < 4; i++) {
+    result.push({
+      title: 'Vben Admin',
+      description: ['Vben', '设计语言', 'Typescript'],
+      content: '基于Vue Next, TypeScript, Ant Design实现的一套完整的企业级后台管理系统。',
+      time: '2020-11-14 11:20',
+    });
+  }
+  return result;
+})();
+
+export const achieveList: TabItem[] = [
+  {
+    key: '1',
+    name: '文章',
+    component: 'Article',
+  },
+  {
+    key: '2',
+    name: '应用',
+    component: 'Application',
+  },
+  {
+    key: '3',
+    name: '项目',
+    component: 'Project',
+  },
+];
+export const projectList = (() => {
+  const result: any[] = [];
+  for (let i = 0; i < 8; i++) {
+    result.push({
+      title: 'Vben Admin',
+      content: '基于Vue Next, TypeScript, Ant Design实现的一套完整的企业级后台管理系统。',
+    });
+  }
+  return result;
+})();
+
 export const columns: BasicColumn[] = [
   {
     title: '专题封面',

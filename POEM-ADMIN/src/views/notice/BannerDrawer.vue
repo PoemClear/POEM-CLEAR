@@ -4,32 +4,44 @@
     @register="registerDrawer"
     showFooter
     :title="getTitle"
-    width="50%"
+    width="500px"
     @ok="handleSubmit"
   >
-    <BasicForm @register="registerForm" />
+    <!-- <div style="display: flex; align-items: center">
+      <div style="width: 90px; text-align: center">上传公告</div>
+      <BasicUpload
+        :maxSize="20"
+        :maxNumber="1"
+        
+        :api="api"
+        name="file"
+        class="my-5"
+        :accept="['image/*']"
+    /></div> -->
+    <BasicForm @register="registerForm" @submit="handleSubmit" />
   </BasicDrawer>
 </template>
 <script lang="ts">
   import { defineComponent, ref, computed, unref, reactive } from 'vue';
   import { BasicForm, useForm } from '/@/components/Form/index';
-  import { formSchema } from './menu.data';
+  import { formSchema } from './banner.data';
   import { BasicDrawer, useDrawerInner } from '/@/components/Drawer';
+  // createBanner
+  import { createNotice, updateNotice } from '/@/api/notice';
 
-  import { createMenu, updateMenu } from '/@/api/demo/system';
-  import { getPostCateList } from '/@/api/blog';
   export default defineComponent({
-    name: 'MenuDrawer',
+    name: 'RoleDrawer',
     components: { BasicDrawer, BasicForm },
     emits: ['success', 'register'],
     setup(_, { emit }) {
       const isUpdate = ref(true);
       let record = reactive({ id: '' });
-      const [registerForm, { resetFields, setFieldsValue, updateSchema, validate }] = useForm({
-        labelWidth: 100,
+      const imageList = ref<string[]>([]);
+      const [registerForm, { resetFields, setFieldsValue, validate }] = useForm({
+        labelWidth: 90,
+        baseColProps: { span: 24 },
         schemas: formSchema,
         showActionButtonGroup: false,
-        baseColProps: { lg: 12, md: 24 },
       });
 
       const [registerDrawer, { setDrawerProps, closeDrawer }] = useDrawerInner(async (data) => {
@@ -37,41 +49,39 @@
         setDrawerProps({ confirmLoading: false });
         isUpdate.value = !!data?.isUpdate;
         record = data.record;
+
         if (unref(isUpdate)) {
           setFieldsValue({
             ...data.record,
           });
         }
-        const treeData = await getPostCateList();
-        console.log(treeData);
-        updateSchema({
-          field: 'parentId',
-          componentProps: { treeData },
-        });
       });
-
-      const getTitle = computed(() => (!unref(isUpdate) ? '新增菜单' : '编辑菜单'));
-
+      const getTitle = computed(() => (!unref(isUpdate) ? '新增公告' : '编辑公告'));
       async function handleSubmit() {
         try {
           const values = await validate();
           setDrawerProps({ confirmLoading: true });
           // TODO custom api
+
           if (isUpdate.value) {
-            await updateMenu({ ...values, id: record.id });
-            console.log('修改');
+            console.log(values);
+            await updateNotice({ ...values, id: record.id });
           } else {
-            await createMenu({ ...values });
+            await createNotice({ ...values });
           }
-          console.log(values);
+          imageList.value = [];
           closeDrawer();
           emit('success');
         } finally {
           setDrawerProps({ confirmLoading: false });
         }
       }
-
-      return { registerDrawer, registerForm, getTitle, handleSubmit };
+      return {
+        registerDrawer,
+        registerForm,
+        getTitle,
+        handleSubmit,
+      };
     },
   });
 </script>

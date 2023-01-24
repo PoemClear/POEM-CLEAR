@@ -34,6 +34,10 @@ enum Api {
   DelUser = '/system/delUser',
   DelDept = '/system/delDept',
   DelMenu = '/system/delMenu',
+  DictTreeList = '/system/dictTreeList',
+  UpdateDict = '/system/updateDict',
+  CreateDict = '/system/createDict',
+  DictList ='/system/dictList',
 }
 
 export const getAccountList = (params: AccountParams) =>
@@ -52,11 +56,11 @@ export const updateDept = (params?: DeptListItem) =>
 
 export const getMenuList = (params?: MenuParams) =>
   defHttp.get<MenuListGetResultModel>({ url: Api.MenuList, params });
-
+export const getDictTreeList = (params?: MenuParams) =>
+  defHttp.get({ url: Api.DictTreeList, params });
 export const createMenu = (params?: MenuParams) =>
   defHttp.post<MenuListGetResultModel>({ url: Api.CreateMenu, params });
-export const delDept = (id: number) =>
-  defHttp.post({ url: Api.DelDept, params:{id} });
+export const delDept = (id: number) => defHttp.post({ url: Api.DelDept, params: { id } });
 
 export const updateMenu = (params?: MenuParams) =>
   defHttp.post<MenuListGetResultModel>({ url: Api.UpdateMenu, params });
@@ -90,3 +94,13 @@ export const delUser = (id: number) =>
   defHttp.post({ url: Api.DelUser, params: { id } }, { errorMessageMode: 'message' });
 export const delMenu = (id: number) =>
   defHttp.post({ url: Api.DelMenu, params: { id } }, { errorMessageMode: 'message' });
+
+export const createDict = (params?: any) =>
+  defHttp.post({ url: Api.CreateDict, params }, { errorMessageMode: 'message' });
+export const updateDict = (params?: any) =>
+  defHttp.post({ url: Api.UpdateDict, params }, { errorMessageMode: 'message' });
+
+
+
+  export const getDictList = (params?: any) =>
+  defHttp.post({ url: Api.DictList, params }, { errorMessageMode: 'message' });

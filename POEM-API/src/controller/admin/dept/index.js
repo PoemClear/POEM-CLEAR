@@ -19,7 +19,7 @@ exports.createDept = async (req, res) => {
             code: 401, message: "TOKEN 已过期"
         });
     }
-    const {deptName, parentDept, orderNo, status, remark=''} = req.body
+    const {deptName, parentDept=0, orderNo, status, remark=''} = req.body
     const deptInfo = await DB(res, 'sy_depts', 'find', '服务器错误', `deptName='${deptName}'`)
     if (!deptInfo[0]) {
         const ret = await DB(res, 'sy_depts', 'insert', '服务器错误', {
@@ -58,7 +58,7 @@ exports.updateDept = async (req, res) => {
             code: 401, message: "TOKEN 已过期"
         });
     }
-    const {id,deptName, parentDept, orderNo, status,  remark} = req.body
+    const {id,deptName, parentDept=0, orderNo, status,  remark} = req.body
     const userList = await DB(res, 'sy_users', 'find', '服务器错误', `deptId='${id}'`)
     if(userList[0]&&status==0){
         res.json({

@@ -25,4 +25,12 @@ router.use(require('./admin/post'))
 router.use(require('./admin/column'))
 /** 文章分类管理*/
 router.use(require('./admin/cate'))
+/** 文章标签管理*/
+router.use(require('./admin/label'))
+/** 字典管理*/
+router.use(require('./admin/dict'))
+/** 金刚区管理*/
+router.use(require('./admin/appCate'))
+/** 公告管理*/
+router.use(require('./admin/notice'))
 module.exports = router

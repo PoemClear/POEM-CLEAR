@@ -5,17 +5,26 @@ import { Switch } from 'ant-design-vue';
 import { setBannerStatus } from '/@/api/banner';
 import { useMessage } from '/@/hooks/web/useMessage';
 import { uploadApi } from '/@/api/sys/upload';
-
+import { getDictList } from '/@/api/demo/system';
+import { Tag } from 'ant-design-vue';
 export const columns: BasicColumn[] = [
-  // {
-  //   title: '轮播图名称',
-  //   dataIndex: 'title',
-  //   width: 200,
-  // },
   {
-    title: '轮播图',
+    title: '标题名称',
+    dataIndex: 'title',
+    width: 120,
+  },
+  {
+    title: '标题图标',
     dataIndex: 'image_url',
     width: 100,
+  },
+  {
+    title: '位置',
+    dataIndex: 'typeName',
+    customRender: ({ record }) => {
+      const color = 'green';
+      return h(Tag, { color: color }, () => record.typeName);
+    },
   },
   {
     title: '跳转链接',
@@ -47,10 +56,10 @@ export const columns: BasicColumn[] = [
           setBannerStatus(record.id, newStatus)
             .then(() => {
               record.status = newStatus;
-              createMessage.success(`已成功修改轮播图状态`);
+              createMessage.success(`已成功修改分类状态`);
             })
             .catch(() => {
-              // createMessage.error('修改轮播图状态失败');
+              // createMessage.error('修改分类状态失败');
             })
             .finally(() => {
               record.pendingStatus = false;
@@ -69,34 +78,13 @@ export const columns: BasicColumn[] = [
     dataIndex: 'updateTime',
     width: 180,
   },
-  {
-    title: '备注',
-    dataIndex: 'remark',
-  },
 ];
 
 export const searchFormSchema: FormSchema[] = [
   {
-    field: 'remark',
-    label: '备注',
+    field: 'title',
+    label: '标题',
     component: 'Input',
-    colProps: { span: 6 },
-  },
-  {
-    field: 'type',
-    label: '分类',
-    component: 'Select',
-    componentProps: {
-      options: [
-        { label: '首页顶部', value: '1' },
-        { label: '快捷入口', value: '2' },
-        { label: '工具', value: '3' },
-        { label: '壁纸', value: '5' },
-        { label: '博客', value: '6' },
-        { label: '我的', value: '7' },
-        { label: '日历轮播', value: '8' },
-      ],
-    },
     colProps: { span: 6 },
   },
   {
@@ -127,19 +115,22 @@ export const formSchema: FormSchema[] = [
   },
   {
     field: 'type',
-    label: '分类',
-    component: 'Select',
-    required: true,
+    component: 'ApiCascader',
+    helpMessage: ['标注位置'],
+    label: '金刚区位置',
     componentProps: {
-      options: [
-        { label: '首页顶部', value: '1' },
-        { label: '快捷入口', value: '2' },
-        { label: '工具', value: '3' },
-        { label: '壁纸', value: '5' },
-        { label: '博客', value: '6' },
-        { label: '我的', value: '7' },
-        { label: '日历轮播', value: '8' },
-      ],
+      api: getDictList,
+      apiParamKey: 'parentId',
+      dataField: 'data',
+      labelField: 'label',
+      valueField: 'id',
+      initFetchParams: {
+        parentId: '',
+        value: 'cate',
+      },
+      isLeaf: (record) => {
+        return !(record.type < 2);
+      },
     },
   },
   {
@@ -165,10 +156,5 @@ export const formSchema: FormSchema[] = [
     label: '排序',
     component: 'InputNumber',
     required: true,
-  },
-  {
-    label: '备注',
-    field: 'remark',
-    component: 'InputTextArea',
   },
 ];

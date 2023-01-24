@@ -79,7 +79,7 @@ export const formSchema: FormSchema[] = [
       },
       getPopupContainer: () => document.body,
     },
-    required: true,
+    required: false,
   },
   {
     field: 'orderNo',
@@ -91,11 +91,11 @@ export const formSchema: FormSchema[] = [
     field: 'status',
     label: '状态',
     component: 'RadioButtonGroup',
-    defaultValue: '0',
+    defaultValue: '1',
     componentProps: {
       options: [
-        { label: '停用', value: '0' },
         { label: '启用', value: '1' },
+        { label: '停用', value: '0' },
       ],
     },
     required: true,

@@ -57,6 +57,7 @@ enum Api {
   PostList = '/postList',
   PostItem = '/postItem',
   PostCateList = '/post/cateList',
+  CreatePost = '/createPost',
   PostCateTreeList = '/post/cateTreeList',
   UpdateCate = '/post/updateCate',
   CreateCate = '/post/createCate',
@@ -64,16 +65,30 @@ enum Api {
   DelPost = '/delPost',
   UpDatePostRecycle = '/upDatePostRecycle',
   UpdateCheckPost = '/updateCheckPost',
+  LabelTreeList = '/post/labelTreeList',
+  CreateLabel = '/post/createLabel',
+  UpdateLabel = '/post/updateLabel',
 }
 
 export function getPostList(params?: any) {
   return defHttp.get({ url: Api.PostList, params });
 }
-
+export function getLabelTreeList(params?: any) {
+  return defHttp.get({ url: Api.LabelTreeList, params });
+}
 export function createCate(params?: BannerListItem) {
   return defHttp.post<GetPostInfoModel>({ url: Api.CreateCate, params });
 }
-export function getPostItem(id: number) {
+export function createPost(params?: BannerListItem) {
+  return defHttp.post<GetPostInfoModel>(
+    { url: Api.CreatePost, params },
+    { errorMessageMode: 'message' },
+  );
+}
+export function createLabel(params?: BannerListItem) {
+  return defHttp.post<GetPostInfoModel>({ url: Api.CreateLabel, params });
+}
+export function getPostItem(id: string | number) {
   return defHttp.get({ url: Api.PostItem, params: { id } });
 }
 export function updateCheckPost(id: number, checkStatus: string) {
@@ -93,7 +108,7 @@ export function delCate(id: number) {
 }
 
 export const updateCate = (data: any) => defHttp.post({ url: Api.UpdateCate, data });
-
+export const updateLabel = (data: any) => defHttp.post({ url: Api.UpdateLabel, data });
 export function getPosTreeTCateList(params?: BannerListItem) {
   return defHttp.get<GetPostInfoModel>({ url: Api.PostCateTreeList, params });
 }

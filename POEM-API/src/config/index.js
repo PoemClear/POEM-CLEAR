@@ -21,7 +21,7 @@ module.exports = {
         charset: "utf8mb4_general_ci",
         user: "root",
         port: "3306",
-        database: "vben-test"
+        database: "poem_clear_pro"
     },
     api: {
         prefix: "/api",

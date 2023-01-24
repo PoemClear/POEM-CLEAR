@@ -6,7 +6,12 @@
       </template>
       <template #bodyCell="{ column, record }">
         <template v-if="column.key === 'cover'">
-          <Image :width="80" :height="40" :src="record.cover" />
+          <Image
+            :width="80"
+            :height="40"
+            :src="record.cover"
+            fallback="https://sy0415-1300507222.cos.ap-beijing.myqcloud.com/.gif"
+          />
         </template>
         <template v-if="column.key === 'action'">
           <TableAction
@@ -96,7 +101,7 @@
       });
 
       function handleCreate() {
-        go('/blog/write');
+        go('/blog/write/markdown');
         // openDrawer(true, {
         //   isUpdate: false,
         // });
@@ -108,6 +113,7 @@
         //   record,
         //   isUpdate: true,
         // });
+        go('/blog/write/markdown/' + record.id);
       }
 
       async function handleDelete(record: Recordable) {

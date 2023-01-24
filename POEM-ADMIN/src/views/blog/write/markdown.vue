@@ -9,36 +9,37 @@
           :baseColProps="{ span: 24 }"
           @submit="handleSubmit"
         >
-          <template #selectA="{ model, field }">
-            <a-select
-              :options="options"
-              mode="multiple"
+          <template #label="{ model, field }">
+            <BasicTree
               v-model:value="model[field]"
-              @change="subjectList = model[field]"
-              allowClear
+              toolbar
+              :treeData="treeData"
+              :fieldNames="{ title: 'title', key: 'id' }"
+              checkable
+              search
+              title=" "
             />
           </template>
         </BasicForm>
       </CollapseContainer>
     </PageWrapper>
-    <WriteDrawer @register="registerDrawer" @success="handleSuccess" />
+    <!-- <WriteDrawer @register="registerDrawer" @success="handleSuccess" /> -->
   </div>
 </template>
 <script lang="ts">
-  import { defineComponent, h, ref } from 'vue';
+  import { defineComponent, h, ref, onMounted } from 'vue';
   import { useRoute } from 'vue-router';
   import { PageWrapper } from '/@/components/Page';
   import { MarkDown } from '/@/components/Markdown';
   import { CollapseContainer } from '/@/components/Container/index';
   import { BasicForm, FormSchema } from '/@/components/Form/index';
-  import WriteDrawer from './WriteDrawer.vue';
+  // import WriteDrawer from './WriteDrawer.vue';
   import { uploadApi } from '/@/api/sys/upload';
   import { useMessage } from '/@/hooks/web/useMessage';
-  import { useDrawer } from '/@/components/Drawer';
+  // import { useDrawer } from '/@/components/Drawer';
   import { useGo } from '/@/hooks/web/usePage';
-  import { getPostCateList } from '/@/api/blog';
-  import { Select } from 'ant-design-vue';
-
+  import { getPostCateList, getLabelTreeList, createPost, getPostItem } from '/@/api/blog';
+  import { BasicTree, TreeItem } from '/@/components/Tree/index';
   const schemas: FormSchema[] = [
     {
       field: 'title',
@@ -61,9 +62,17 @@
           },
         });
       },
+      colProps: { span: 18 },
     },
     {
-      field: 'image_url',
+      label: '标签',
+      field: 'labelIds',
+      slot: 'label',
+      component: 'Input',
+      colProps: { span: 6 },
+    },
+    {
+      field: 'cover',
       component: 'Upload',
       label: '上传封面',
       rules: [{ required: false, message: '请选择上传封面' }],
@@ -72,14 +81,15 @@
         maxSize: 20,
         maxNumber: 1,
       },
-      colProps: { span: 4 },
+      colProps: { span: 3 },
     },
     {
       field: 'cateId',
       component: 'ApiCascader',
+      rules: [{ required: true, message: '请选择文章分类' }],
       label: '分类',
       colProps: {
-        span: 6,
+        span: 5,
       },
       componentProps: {
         api: getPostCateList,
@@ -96,15 +106,6 @@
       },
     },
     {
-      field: 'subjectIds',
-      label: '文章专栏',
-      component: 'Select',
-      slot: 'selectA',
-      required: false,
-      defaultValue: [],
-      colProps: { span: 8 },
-    },
-    {
       field: 'status',
       label: '状态',
       component: 'RadioButtonGroup',
@@ -115,7 +116,7 @@
           { label: '停用', value: '0' },
         ],
       },
-      colProps: { span: 6 },
+      colProps: { span: 4 },
     },
     {
       field: 'postType',
@@ -123,7 +124,7 @@
       label: '文章类型',
       defaultValue: '1',
       colProps: {
-        span: 8,
+        span: 5,
       },
       componentProps: {
         options: [
@@ -148,7 +149,7 @@
       label: '发布形式',
       defaultValue: '1',
       colProps: {
-        span: 8,
+        span: 7,
       },
       componentProps: {
         options: [
@@ -171,43 +172,28 @@
         ],
       },
     },
-    {
-      field: 'timedRelease',
-      label: '定时发布',
-      component: 'Input',
-      slot: 'RadioTimedRelease',
-      colProps: { span: 8 },
-    },
   ];
   export default defineComponent({
     components: {
       BasicForm,
       CollapseContainer,
       PageWrapper,
-      WriteDrawer,
-      ASelect: Select,
+      // WriteDrawer,
+      BasicTree,
     },
     setup() {
       const { createMessage } = useMessage();
       const route = useRoute();
       const go = useGo();
+      const id = ref(route.params?.id);
+      console.log(id);
       const editorType = ref(route.params?.editorType);
-      const [registerDrawer] = useDrawer();
+      // const [registerDrawer, { setFieldsValue }] = useDrawer();
       const value1 = ref<string>('a');
       const subjectList = ref<string[]>([]);
       const timedReleasetValue = ref<string>('0');
-      const options = ref<Recordable[]>([]);
       const timedReleaseOptions = ref<Recordable[]>([]);
-
-      options.value = [
-        { label: '首页顶部', value: '1' },
-        { label: '快捷入口', value: '2' },
-        { label: '工具', value: '3' },
-        { label: '壁纸', value: '5' },
-        { label: '博客', value: '6' },
-        { label: '我的', value: '7' },
-        { label: '日历轮播', value: '8' },
-      ];
+      const treeData = ref<TreeItem[]>([]);
       timedReleaseOptions.value = [
         { label: '停用', value: '0' },
         { label: '启用', value: '1' },
@@ -216,11 +202,13 @@
       function handleSuccess() {
         // reload();
       }
-
-      function handleSubmit(values: any) {
+      async function handleSubmit(values: any) {
         // console.log(date,time)
         // let timedRelease = {date +' ' + time}
         // values.timedRelease = timedRelease
+        console.log(values);
+        let res = await createPost(values);
+        console.log(res);
         createMessage.success('click search,values:' + JSON.stringify(values));
       }
 
@@ -228,18 +216,32 @@
         // 本例的效果时点击返回始终跳转到账号列表页，实际应用时可返回上一页
         go('/blog/post');
       }
-
+      async function treeDateList() {
+        let res = await getLabelTreeList();
+        treeData.value = res;
+      }
+      async function getPostItemData() {
+        let res = await getPostItem(id.value);
+        console.log(res);
+        schemas.value = res.items;
+        // setFieldsValue(...res.items);
+      }
+      onMounted(() => {
+        treeDateList();
+        getPostItemData();
+      });
       return {
         schemas,
-        registerDrawer,
+        // registerDrawer,
         handleSuccess,
         handleSubmit,
         value1,
         editorType,
         goBack,
         subjectList,
-        options,
         timedReleasetValue,
+        treeData,
+        id,
       };
     },
   });

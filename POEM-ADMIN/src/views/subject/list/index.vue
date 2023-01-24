@@ -1,8 +1,13 @@
 <template>
   <div>
+    <p>
+      当前拥有的code列表: <a> {{ permissionStore.getPermCodeList }} </a>
+    </p>
     <BasicTable @register="registerTable">
       <template #toolbar>
-        <a-button type="primary" @click="handleCreate"> 添加专题</a-button>
+        <a-button type="primary" @click="handleCreate" v-if="hasPermission('subject_list:view')">
+          添加专题</a-button
+        >
       </template>
       <template #bodyCell="{ column, record }">
         <template v-if="column.key === 'cover'">
@@ -53,10 +58,11 @@
       </template>
     </BasicTable>
     <BannerDrawer @register="registerDrawer" @success="handleSuccess" />
+   
   </div>
 </template>
 <script lang="ts">
-  import { defineComponent } from 'vue';
+  import { defineComponent, computed } from 'vue';
 
   import { BasicTable, useTable, TableAction } from '/@/components/Table';
   import { getSubjectList, updateCheckSubject, upDateSubjectRecycle } from '/@/api/subject';
@@ -66,15 +72,19 @@
   import { columns, searchFormSchema } from './post.data';
   import { Image } from 'ant-design-vue';
   import { useGo } from '/@/hooks/web/usePage';
+  import { useAppStore } from '/@/store/modules/app';
   import BannerDrawer from './BannerDrawer.vue';
+  import { PermissionModeEnum } from '/@/enums/appEnum';
   export default defineComponent({
     name: 'RoleManagement',
     components: { BasicTable, TableAction, Image, BannerDrawer },
     setup() {
+      const appStore = useAppStore();
       const go = useGo();
       const [registerDrawer, { openDrawer }] = useDrawer();
       const { hasPermission } = usePermission();
       const permissionStore = usePermissionStore();
+
       const [registerTable, { reload }] = useTable({
         title: '专题列表',
         api: getSubjectList,
@@ -96,6 +106,9 @@
           fixed: undefined,
         },
       });
+      const isBackPermissionMode = computed(
+        () => appStore.getProjectConfig.permissionMode === PermissionModeEnum.BACK,
+      );
 
       function handleCreate() {
         openDrawer(true, {
@@ -152,6 +165,7 @@
         handleView,
         handleCheckSuccess,
         handleCheckFail,
+        isBackPermissionMode,
       };
     },
   });

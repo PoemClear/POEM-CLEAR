@@ -15,6 +15,7 @@ export const columns: BasicColumn[] = [
     title: '文章标题',
     dataIndex: 'title',
     width: 300,
+    align: 'left',
   },
 
   {
@@ -36,11 +37,6 @@ export const columns: BasicColumn[] = [
     title: '收藏量',
     dataIndex: 'collect_count',
     width: 80,
-  },
-  {
-    title: '排序',
-    dataIndex: 'orderNo',
-    width: 50,
   },
   {
     title: '状态',

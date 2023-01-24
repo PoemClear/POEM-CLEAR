@@ -160,7 +160,7 @@ exports.subjectList = async (req, res) => {
       params.isRecycle
     }%' and status like '%${params.status}%' and  checkStatus like '%${
       params.checkStatus
-    }%'  order by orderNo desc  limit ${(params.page - 1) * params.pageSize},${
+    }%'  order by id desc  limit ${(params.page - 1) * params.pageSize},${
       params.pageSize
     }`
   );

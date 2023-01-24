@@ -5,35 +5,10 @@ import { Tag } from 'ant-design-vue';
 
 export const columns: BasicColumn[] = [
   {
-    title: '分类名称',
+    title: '标签名称',
     dataIndex: 'title',
     width: 300,
     align: 'left',
-  },
-  {
-    title: '封面',
-    dataIndex: 'image_url',
-    width: 150,
-  },
-  {
-    title: '主图',
-    dataIndex: 'cover',
-    width: 80,
-  },
-  {
-    title: '浏览量',
-    dataIndex: 'views_count',
-    width: 80,
-  },
-  {
-    title: '点赞量',
-    dataIndex: 'like_count',
-    width: 80,
-  },
-  {
-    title: '评论量',
-    dataIndex: 'comment_count',
-    width: 80,
   },
   {
     title: '排序',
@@ -46,7 +21,7 @@ export const columns: BasicColumn[] = [
     width: 80,
     customRender: ({ record }) => {
       const status = record.status;
-      const enable = ~~status === 0;
+      const enable = ~~status === 1;
       const color = enable ? 'green' : 'red';
       const text = enable ? '启用' : '停用';
       return h(Tag, { color: color }, () => text);
@@ -62,9 +37,9 @@ export const columns: BasicColumn[] = [
 export const searchFormSchema: FormSchema[] = [
   {
     field: 'title',
-    label: '分类名称',
+    label: '标签名称',
     component: 'Input',
-    colProps: { span: 8 },
+    colProps: { span: 6 },
   },
   {
     field: 'status',
@@ -72,25 +47,38 @@ export const searchFormSchema: FormSchema[] = [
     component: 'Select',
     componentProps: {
       options: [
-        { label: '启用', value: '0' },
-        { label: '停用', value: '1' },
+        { label: '启用', value: '1' },
+        { label: '停用', value: '0' },
       ],
     },
-    colProps: { span: 8 },
+    colProps: { span: 6 },
   },
 ];
 
 export const formSchema: FormSchema[] = [
   {
+    field: 'type',
+    label: '标签类型',
+    component: 'RadioButtonGroup',
+    defaultValue: '1',
+    componentProps: {
+      options: [
+        { label: '一级', value: '1' },
+        { label: '二级', value: '2' },
+      ],
+    },
+    colProps: { lg: 24, md: 24 },
+    required: true,
+  },
+  {
     field: 'title',
-    label: '分类名称',
+    label: '标签名称',
     component: 'Input',
     required: true,
   },
-
   {
     field: 'parentId',
-    label: '上级分类',
+    label: '上级标签',
     component: 'TreeSelect',
     componentProps: {
       fieldNames: {
@@ -100,25 +88,25 @@ export const formSchema: FormSchema[] = [
       },
       getPopupContainer: () => document.body,
     },
+    required: false,
   },
-
   {
     field: 'orderNo',
     label: '排序',
     component: 'InputNumber',
     required: true,
   },
-
   {
     field: 'status',
     label: '状态',
     component: 'RadioButtonGroup',
-    defaultValue: '0',
+    defaultValue: '1',
     componentProps: {
       options: [
-        { label: '启用', value: '0' },
-        { label: '禁用', value: '1' },
+        { label: '启用', value: '1' },
+        { label: '停用', value: '0' },
       ],
     },
+    required: true,
   },
 ];

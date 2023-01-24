@@ -64,6 +64,7 @@
           // TODO custom api
 
           if (isUpdate.value) {
+            console.log(values)
             await updateBanner({ ...values, id: record.id });
           } else {
             await createBanner({ ...values });
