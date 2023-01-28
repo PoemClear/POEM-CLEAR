@@ -1,6 +1,6 @@
 const router = require('express').Router()
 /** 角色列表 创建角色 更新角色 删除据说 角色详情**/
-const {getMenuList,getAsyncMenuList, delMenu, createMenu, updateMenu} = require('../../../controller/admin/menu')
+const { getMenuList, getAsyncMenuList, delMenu, createMenu, updateMenu } = require('../../../../controller/admin/system/menu')
 
 
 router.get('/system/getMenuList', getMenuList)

@@ -1,7 +1,7 @@
-const {rTime, timestamp, listToTree} = require("../../../utils/timeformat")
-const DB = require("../../../db")
+const { rTime, timestamp, listToTree } = require("../../../../utils/timeformat")
+const DB = require("../../../../db")
 const jwt = require("jsonwebtoken");
-const config = require("../../../config");
+const config = require("../../../../config");
 
 /**
  * 创建部门
@@ -19,7 +19,7 @@ exports.createDept = async (req, res) => {
             code: 401, message: "TOKEN 已过期"
         });
     }
-    const {deptName, parentDept=0, orderNo, status, remark=''} = req.body
+    const { deptName, parentDept = 0, orderNo, status, remark = '' } = req.body
     const deptInfo = await DB(res, 'sy_depts', 'find', '服务器错误', `deptName='${deptName}'`)
     if (!deptInfo[0]) {
         const ret = await DB(res, 'sy_depts', 'insert', '服务器错误', {
@@ -58,19 +58,19 @@ exports.updateDept = async (req, res) => {
             code: 401, message: "TOKEN 已过期"
         });
     }
-    const {id,deptName, parentDept=0, orderNo, status,  remark} = req.body
+    const { id, deptName, parentDept = 0, orderNo, status, remark } = req.body
     const userList = await DB(res, 'sy_users', 'find', '服务器错误', `deptId='${id}'`)
-    if(userList[0]&&status==0){
+    if (userList[0] && status == 0) {
         res.json({
-            code:403,
-            message:`当前部门下已绑定用户，不能禁用`,
+            code: 403,
+            message: `当前部门下已绑定用户，不能禁用`,
             type: "success"
         })
         return
     }
     /**如果当前轮播图跳转链接不存在 就去新增*/
     const ret = await DB(res, 'sy_depts', 'update', '服务器错误', `id='${id}'`, {
-        deptName, parentDept, orderNo, status,  remark,
+        deptName, parentDept, orderNo, status, remark,
         updateTime: rTime(timestamp(new Date())),
     })
 
@@ -104,17 +104,17 @@ exports.delDept = async (req, res) => {
             code: 401, message: "TOKEN 已过期"
         });
     }
-    const {id} = req.body
+    const { id } = req.body
     const userList = await DB(res, 'sy_users', 'find', '服务器错误', `deptId='${id}'`)
     let user = []
-   userList.filter((ele)=>{
-        user.push( ele.username)
+    userList.filter((ele) => {
+        user.push(ele.username)
     })
     console.log(user)
-    if(userList[0]){
+    if (userList[0]) {
         res.json({
-            code:403,
-            message:`当前部门下已绑定【${user}】，不能删除`,
+            code: 403,
+            message: `当前部门下已绑定【${user}】，不能删除`,
             type: "success"
         })
         return
@@ -144,11 +144,11 @@ exports.deptInfo = async (req, res) => {
             code: 401, message: "TOKEN 已过期"
         });
     }
-    const {id} = req.query
+    const { id } = req.query
     const bannerInfo = await DB(res, 'sy_depts', 'find', '服务器错误', `ID='${id}'`)
     res.json({
         code: 200,
-        data: {...bannerInfo[0]}
+        data: { ...bannerInfo[0] }
     })
 }
 
@@ -214,8 +214,8 @@ exports.getSelectDeptList = async (req, res) => {
             code: 401, message: "TOKEN 已过期"
         });
     }
-    let {title,status} = req.query
-    let result = await DB(res, 'sy_depts', 'find', '服务器出错',`deptName like '%${title}%' or status like '%${status}%'`);
+    let { title, status } = req.query
+    let result = await DB(res, 'sy_depts', 'find', '服务器出错', `deptName like '%${title}%' or status like '%${status}%'`);
     let data = result.filter((v) => {
 
         if (v.createTime) {
@@ -234,14 +234,14 @@ exports.getSelectDeptList = async (req, res) => {
     if (!result[0]) {
         res.json({
             code: 200,
-            result:data
+            result: data
 
         })
     } else {
 
         res.json({
             code: 200, type: "success", message: 'ok',
-            result:data
+            result: data
         })
     }
 }

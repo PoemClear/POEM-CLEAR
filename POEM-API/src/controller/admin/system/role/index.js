@@ -1,7 +1,7 @@
-const {rTime, timestamp, listToTree, unique} = require("../../../utils/timeformat")
-const DB = require("../../../db")
+const {rTime, timestamp, listToTree, unique} = require("../../../../utils/timeformat")
+const DB = require("../../../../db")
 const jwt = require("jsonwebtoken");
-const config = require("../../../config");
+const config = require("../../../../config");
 
 /**
  * 创建角色

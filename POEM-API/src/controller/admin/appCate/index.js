@@ -4,7 +4,7 @@ const jwt = require("jsonwebtoken");
 const config = require("../../../config");
 
 /**
- * 创建轮播图
+ * 创建金刚区
  * @param req
  * @param res
  */
@@ -46,13 +46,13 @@ exports.createAppCate = async (req, res) => {
   } else {
     res.json({
       code: 200,
-      message: "链接已存在",
+      message: "金刚区已存在",
     });
   }
 };
 
 /**
- * 更新轮播图
+ * 更新金刚区
  * @param req
  * @param res
  */
@@ -106,6 +106,12 @@ exports.updateAppCate = async (req, res) => {
     });
   }
 };
+/**
+ * 修改金刚区状态
+ * @param {*} req 
+ * @param {*} res 
+ * @returns 
+ */
 exports.setBannerStatus = async (req, res) => {
   let payload = null;
   try {
@@ -147,7 +153,7 @@ exports.setBannerStatus = async (req, res) => {
   }
 };
 /**
- * 删除轮播图
+ * 删除金刚区
  * @param req
  * @param res
  */
@@ -201,7 +207,7 @@ exports.multipleDelBanner = async (req, res) => {
   }
 };
 /**
- * 轮播图详情
+ * 金刚区详情
  * @param req
  * @param res
  */
@@ -232,7 +238,7 @@ exports.bannerInfo = async (req, res) => {
 };
 
 /**
- * 轮播图列表
+ * 金刚区列表
  * @param req
  * @param res
  */

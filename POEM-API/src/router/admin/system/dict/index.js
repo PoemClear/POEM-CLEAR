@@ -6,7 +6,7 @@ const {
   updateDict,
   createDict,
 //   delDict,
-} = require("../../../controller/admin/dict");
+} = require("../../../../controller/admin/system/dict");
 
 router.post("/system/createDict", createDict);
 router.get("/system/dictTreeList", dictTreeList);

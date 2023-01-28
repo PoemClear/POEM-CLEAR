@@ -1,6 +1,6 @@
 const router = require('express').Router()
 /** 角色列表 创建角色 更新角色 删除据说 角色详情**/
-const {getRoleListByPage,getAllRoleList, createRole, updateRole, delRole, roleInfo,setRoleStatus} = require('../../../controller/admin/role')
+const { getRoleListByPage, getAllRoleList, createRole, updateRole, delRole, roleInfo, setRoleStatus } = require('../../../../controller/admin/system/role')
 
 
 router.get('/system/getRoleListByPage', getRoleListByPage)

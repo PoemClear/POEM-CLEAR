@@ -1,7 +1,7 @@
-const {rTime, timestamp} = require("../../../utils/timeformat")
-const DB = require("../../../db")
+const {rTime, timestamp} = require("../../../../utils/timeformat")
+const DB = require("../../../../db")
 const md5 = require("md5");
-const config = require("../../../config");
+const config = require("../../../../config");
 const jwt = require("jsonwebtoken");
 
 /**

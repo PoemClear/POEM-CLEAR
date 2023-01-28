@@ -1,6 +1,6 @@
 const router = require('express').Router()
 /** 用户列表**/
-const {getAccountList,accountExist,createUser,updateUser,delUser} = require('../../../controller/admin/user')
+const {getAccountList,accountExist,createUser,updateUser,delUser} = require('../../../../controller/admin/system/user')
 
 
 router.get('/system/getAccountList', getAccountList)

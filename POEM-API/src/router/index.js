@@ -1,18 +1,30 @@
 const router = require('express').Router()
-/** 上传图片*/
+
+
+
+/** 公共接口*/
 router.use(require('./common'))
 /** 登录注册用户信息*/
 router.use(require('./admin/loginAndRegistration'))
+/** 系统管理 --------------------------------------------------START*/
+/** 菜单管理*/
+router.use(require('./admin/system/menu'))
+/** 角色管理*/
+router.use(require('./admin/system/role'))
+/** 部门管理*/
+router.use(require('./admin/system/dept'))
+/** 用户管理*/
+router.use(require('./admin/system/user'))
+/** 字典管理*/
+router.use(require('./admin/system/dict'))
+/** 系统管理 --------------------------------------------------END*/
+
 /** 轮播图列表 创建轮播图 更新轮播图 删除轮播图 轮播图详情**/
 router.use(require('./admin/banner'))
-/** 菜单管理*/
-router.use(require('./admin/menu'))
-/** 角色管理*/
-router.use(require('./admin/role'))
-/** 部门管理*/
-router.use(require('./admin/dept'))
-/** 用户管理*/
-router.use(require('./admin/user'))
+
+/** 内容管理 --------------------------------------------------START*/
+
+/** 内容管理 --------------------------------------------------END/
 /** 金刚区|分类管理*/
 // router.use(require('./admin/cate'))
 /** 评论管理*/
@@ -27,10 +39,10 @@ router.use(require('./admin/column'))
 router.use(require('./admin/cate'))
 /** 文章标签管理*/
 router.use(require('./admin/label'))
-/** 字典管理*/
-router.use(require('./admin/dict'))
 /** 金刚区管理*/
 router.use(require('./admin/appCate'))
 /** 公告管理*/
 router.use(require('./admin/notice'))
+
+
 module.exports = router
