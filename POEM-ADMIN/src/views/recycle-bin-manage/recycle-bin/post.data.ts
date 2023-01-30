@@ -1,9 +1,8 @@
 import { BasicColumn } from '/@/components/Table';
 import { FormSchema } from '/@/components/Table';
 import { h } from 'vue';
-import { Switch, Tag } from 'ant-design-vue';
-import { setRoleStatus } from '/@/api/demo/system';
-import { useMessage } from '/@/hooks/web/useMessage';
+import { Tag } from 'ant-design-vue';
+
 import { MarkDown } from '/@/components/Markdown';
 import { getPostCateList } from '/@/api/content/blog';
 import { uploadApi } from '/@/api/sys/upload';
@@ -16,8 +15,10 @@ export const columns: BasicColumn[] = [
   {
     title: '文章标题',
     dataIndex: 'title',
-    width: 150,
+    width: 300,
+    align: 'left',
   },
+
   {
     title: '状态',
     dataIndex: 'status',
@@ -93,37 +94,24 @@ export const columns: BasicColumn[] = [
 
 export const searchFormSchema: FormSchema[] = [
   {
+    field: 'type',
+    label: '文章类型',
+    component: 'Select',
+    defaultValue: '1',
+    componentProps: {
+      options: [
+        { label: '文章', value: '1' },
+        { label: '专题', value: '2' },
+      ],
+    },
+    colProps: { span: 6 },
+  },
+  {
     field: 'title',
     label: '文章标题',
     component: 'Input',
     colProps: { span: 6 },
   },
-  {
-    field: 'status',
-    label: '状态',
-    component: 'Select',
-    componentProps: {
-      options: [
-        { label: '启用', value: '1' },
-        { label: '停用', value: '0' },
-      ],
-    },
-    colProps: { span: 6 },
-  },
-  {
-    field: 'checkStatus',
-    label: '审核状态',
-    component: 'Select',
-    componentProps: {
-      options: [
-        { label: '审核中', value: '0' },
-        { label: '审核失败', value: '1' },
-        { label: '审核通过', value: '2' },
-      ],
-    },
-    colProps: { span: 6 },
-  },
-  // checkStatus
 ];
 
 export const formSchema: FormSchema[] = [

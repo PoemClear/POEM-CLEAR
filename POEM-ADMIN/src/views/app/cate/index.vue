@@ -68,7 +68,7 @@
         title: '金刚区列表',
         api: getAppCateList,
         columns,
-        pagination: { pageSize: 8 },
+        pagination: { pageSize: 10 },
         formConfig: {
           labelWidth: 120,
           schemas: searchFormSchema,

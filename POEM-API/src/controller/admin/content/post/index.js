@@ -1,196 +1,305 @@
-const { rTime, timestamp } = require("../../../../utils/timeformat");
+const {rTime, timestamp} = require("../../../../utils/timeformat");
 const DB = require("../../../../db");
 const jwt = require("jsonwebtoken");
 const config = require("../../../../config");
 
 exports.createPost = async (req, res) => {
-  let payload = null;
-  try {
-    const authorizationHeader = req.get("Authorization");
-    const accessToken = authorizationHeader;
-    payload = jwt.verify(accessToken, config.jwtSecret);
-  } catch (error) {
-    return res.status(401).json({
-      code: 401,
-      message: "TOKEN 已过期",
-    });
-  }
-  const {
-    title,
-    content,
-    cover = '',
-    cateId = "",
-    labelIds = "",
-    postType,
-    postFormats,
-    status,
-    checkStatus = "0",
-    isRecycle = "1",
-    openComment='1',
-    isTop='0'
-  } = req.body;
-  const bannerInfo = await DB(
-    res,
-    "xcx_blog_post",
-    "find",
-    "服务器错误",
-    `title='${title}'`
-  );
-  if (!bannerInfo[0]) {
-    const ret = await DB(res, "xcx_blog_post", "insert", "服务器错误", {
-      title,
-      content,
-      cover,
-      cateId,
-      labelIds,
-      postType,
-      postFormats,
-      status,
-      checkStatus,
-      isRecycle,
-      openComment,
-      isTop,
-      createTime: rTime(timestamp(new Date())),
-    });
-
-    if (ret.affectedRows == 1) {
-      res.json({
-        code: 200,
-        message: "添加成功",
-      });
+    let payload = null;
+    try {
+        const authorizationHeader = req.get("Authorization");
+        const accessToken = authorizationHeader;
+        payload = jwt.verify(accessToken, config.jwtSecret);
+    } catch (error) {
+        return res.status(401).json({
+            code: 401,
+            message: "TOKEN 已过期",
+        });
     }
-  } else {
-    res.json({
-      code: 403,
-      message: "文章标题已存在",
-    });
-  }
+    const {
+        userId,
+        title,
+        content,
+        cover = '',
+        cateId = "",
+        labelIds = "",
+        postType,
+        postFormats,
+        status,
+        checkStatus = "0",
+        isRecycle = "1",
+        openComment ,
+        isTop
+    } = req.body;
+    const bannerInfo = await DB(
+        res,
+        "xcx_blog_post",
+        "find",
+        "服务器错误",
+        `title='${title}'`
+    );
+    if (!bannerInfo[0]) {
+        const ret = await DB(res, "xcx_blog_post", "insert", "服务器错误", {
+            userId,
+            title,
+            content,
+            cover,
+            cateId,
+            labelIds,
+            postType,
+            postFormats,
+            status,
+            checkStatus,
+            isRecycle,
+            openComment,
+            isTop,
+            createTime: rTime(timestamp(new Date())),
+        });
+
+        if (ret.affectedRows == 1) {
+            res.json({
+                code: 200,
+                message: "添加成功",
+            });
+        }
+    } else {
+        res.json({
+            code: 403,
+            message: "文章标题已存在",
+        });
+    }
 };
 
 
 exports.updatePost = async (req, res) => {
-  let payload = null;
-  try {
-    const authorizationHeader = req.get("Authorization");
-    const accessToken = authorizationHeader;
-    payload = jwt.verify(accessToken, config.jwtSecret);
-  } catch (error) {
-    return res.status(401).json({
-      code: 401,
-      message: "TOKEN 已过期",
-    });
-  }
-  const {
-    id,
-    title,
-    content,
-    cover = '',
-    cateId = "",
-    labelIds = "",
-    postType,
-    postFormats,
-    status,
-    isRecycle = "1",
-    openComment='1',
-    isTop='0'
-  } = req.body;
-  const ret = await DB(res, 'xcx_blog_post', 'update', '服务器错误', `id='${id}'`, {
-    title,
-    content,
-    cover,
-    cateId,
-    labelIds,
-    postType,
-    postFormats,
-    status,
-    isRecycle,
-    openComment,
-    isTop,
-    updateTime: rTime(timestamp(new Date())),
-  })
-
-  if (ret.affectedRows == 1) {
-    res.json({
-      code: 200,
-      message: "修改成功"
+    let payload = null;
+    try {
+        const authorizationHeader = req.get("Authorization");
+        const accessToken = authorizationHeader;
+        payload = jwt.verify(accessToken, config.jwtSecret);
+    } catch (error) {
+        return res.status(401).json({
+            code: 401,
+            message: "TOKEN 已过期",
+        });
+    }
+    const {
+        id,
+        title,
+        content,
+        cover = '',
+        cateId = "",
+        labelIds = "",
+        postType,
+        postFormats,
+        status,
+        isRecycle = "1",
+        openComment,
+        isTop
+    } = req.body;
+    /** 如果当前角色的 后台配置的 系统管理员 没有限制修改文章*/
+    if( payload.accountId.roleValue=='systemAdmin'){
+        const ret = await DB(res, 'xcx_blog_post', 'update', '服务器错误', `id=${id}`, {
+            title,
+            content,
+            cover,
+            cateId,
+            labelIds,
+            postType,
+            postFormats,
+            status,
+            isRecycle,
+            openComment,
+            isTop,
+            updateTime: rTime(timestamp(new Date())),
+        })
+        if (ret.affectedRows == 1) {
+            res.json({
+                code: 200,
+                message: "修改成功"
+            })
+        } else {
+            res.json({
+                code: 403,
+                message: "修改失败"
+            })
+        }
+        return
+    }
+    const ret = await DB(res, 'xcx_blog_post', 'update', '服务器错误', `userId=${payload.accountId.id} and id=${id}`, {
+        title,
+        content,
+        cover,
+        cateId,
+        labelIds,
+        postType,
+        postFormats,
+        status,
+        isRecycle,
+        openComment,
+        isTop,
+        updateTime: rTime(timestamp(new Date())),
     })
-  } else {
-    res.json({
-      code: 403,
-      message: "修改失败"
-    })
-  }
+    if (ret.affectedRows == 1) {
+        res.json({
+            code: 200,
+            message: "修改成功"
+        })
+    } else {
+        res.json({
+            code: 403,
+            message: "修改失败"
+        })
+    }
 };
 exports.postList = async (req, res) => {
-  let payload = null;
-  try {
-    const authorizationHeader = req.get("Authorization");
-    const accessToken = authorizationHeader;
-    payload = jwt.verify(accessToken, config.jwtSecret);
-  } catch (error) {
-    return res.status(401).json({
-      code: 401,
-      message: "TOKEN 已过期",
-    });
-  }
-
-  let params = {
-    status: req.query.status || "",
-    isRecycle: req.query.isRecycle || "1",
-    title: req.query.title || "",
-    checkStatus: req.query.checkStatus || "",
-    page: req.query.page || 1,
-    pageSize: req.query.pageSize || 10,
-  };
-
-  let result_num = await DB(
-    res,
-    "xcx_blog_post",
-    "find",
-    "服务器错误",
-    `title like '%${params.title}%' and isRecycle like '%${params.isRecycle}%' and status like '%${params.status}%' and checkStatus like '%${params.checkStatus}%'`
-  );
-
-  let result = await DB(
-    res,
-    "xcx_blog_post",
-    "find",
-    "服务器错误",
-    `title like '%${params.title}%' and isRecycle like '%${params.isRecycle
-    }%' and status like '%${params.status}%' and  checkStatus like '%${params.checkStatus
-    }%'  order by id desc  limit ${(params.page - 1) * params.pageSize},${params.pageSize
-    }`
-  );
-  result.forEach((v, i) => {
-    v.cover = v.cover ? [v.cover] : '';
-    if (v.createTime) {
-      v.createTime = rTime(timestamp(v.createTime));
+    let payload = null;
+    try {
+        const authorizationHeader = req.get("Authorization");
+        const accessToken = authorizationHeader;
+        payload = jwt.verify(accessToken, config.jwtSecret);
+    } catch (error) {
+        return res.status(401).json({
+            code: 401,
+            message: "TOKEN 已过期",
+        });
     }
-    if (v.updateTime) {
-      v.updateTime = rTime(timestamp(v.updateTime));
+
+    let params = {
+        status: req.query.status || "",
+        isRecycle: req.query.isRecycle || "1",
+        title: req.query.title || "",
+        checkStatus: req.query.checkStatus || "",
+        page: req.query.page || 1,
+        pageSize: req.query.pageSize || 10,
+    };
+
+    if( payload.accountId.roleValue=='systemAdmin'){
+        let result_num = await DB(
+            res,
+            "xcx_blog_post",
+            "find",
+            "服务器错误",
+            `title like '%${params.title}%' and isRecycle like '%${params.isRecycle}%' and status like '%${params.status}%' and checkStatus like '%${params.checkStatus}%'`
+        );
+
+        let result = await DB(
+            res,
+            "xcx_blog_post",
+            "find",
+            "服务器错误",
+            `title like '%${params.title}%' and isRecycle like '%${params.isRecycle
+            }%' and status like '%${params.status}%' and  checkStatus like '%${params.checkStatus
+            }%'  order by id desc  limit ${(params.page - 1) * params.pageSize},${params.pageSize
+            }`
+        );
+        let userList = await DB(
+            res,
+            "sy_users",
+            "find",
+            "服务器错误",
+        );
+        result.forEach((v, i) => {
+            v.cover = v.cover ? [v.cover] : '';
+            userList.forEach((ele)=>{
+                if(v.userId==ele.id){
+                    v.author = {
+                        username:ele.realName,
+                        avatar:ele.avatar
+                    }
+                }
+            })
+            if (v.createTime) {
+                v.createTime = rTime(timestamp(v.createTime));
+            }
+            if (v.updateTime) {
+                v.updateTime = rTime(timestamp(v.updateTime));
+            } else {
+                delete v.updateTime;
+            }
+        });
+
+        if (!result[0]) {
+            res.json({
+                code: 200,
+                result: {
+                    items: [],
+                },
+            });
+        } else {
+            res.json({
+                code: 200,
+                result: {
+                    items: result,
+                    total: result_num.length,
+                    page: Number(params.page),
+                    pageSize: Number(params.pageSize),
+                },
+            });
+        }
+        return
+    }
+    let result_num = await DB(
+        res,
+        "xcx_blog_post",
+        "find",
+        "服务器错误",
+        `userId=${payload.accountId.id} and title like '%${params.title}%' and isRecycle like '%${params.isRecycle}%' and status like '%${params.status}%' and checkStatus like '%${params.checkStatus}%'`
+    );
+
+    let result = await DB(
+        res,
+        "xcx_blog_post",
+        "find",
+        "服务器错误",
+        `userId=${payload.accountId.id} and title like '%${params.title}%' and isRecycle like '%${params.isRecycle
+        }%' and status like '%${params.status}%' and  checkStatus like '%${params.checkStatus
+        }%'  order by id desc  limit ${(params.page - 1) * params.pageSize},${params.pageSize
+        }`
+    );
+    let userList = await DB(
+        res,
+        "sy_users",
+        "find",
+        "服务器错误",
+    );
+    result.forEach((v, i) => {
+        v.cover = v.cover ? [v.cover] : '';
+        userList.forEach((ele)=>{
+            if(v.userId==ele.id){
+                v.author = {
+                    username:ele.realName,
+                    avatar:ele.avatar
+                }
+            }
+        })
+        if (v.createTime) {
+            v.createTime = rTime(timestamp(v.createTime));
+        }
+        if (v.updateTime) {
+            v.updateTime = rTime(timestamp(v.updateTime));
+        } else {
+            delete v.updateTime;
+        }
+    });
+
+    if (!result[0]) {
+        res.json({
+            code: 200,
+            result: {
+                items: [],
+            },
+        });
     } else {
-      delete v.updateTime;
+        res.json({
+            code: 200,
+            result: {
+                items: result,
+                total: result_num.length,
+                page: Number(params.page),
+                pageSize: Number(params.pageSize),
+            },
+        });
     }
-  });
-
-  if (!result[0]) {
-    res.json({
-      code: 200,
-      result: {
-        items: [],
-      },
-    });
-  } else {
-    res.json({
-      code: 200,
-      result: {
-        items: result,
-        total: result_num.length,
-        page: Number(params.page),
-        pageSize: Number(params.pageSize),
-      },
-    });
-  }
 };
 
 /**
@@ -200,100 +309,100 @@ exports.postList = async (req, res) => {
  * @returns {Promise<*>}
  */
 exports.postItem = async (req, res) => {
-  let payload = null;
-  try {
-    const authorizationHeader = req.get("Authorization");
-    const accessToken = authorizationHeader;
-    payload = jwt.verify(accessToken, config.jwtSecret);
-  } catch (error) {
-    return res.status(401).json({
-      code: 401,
-      message: "TOKEN 已过期",
-    });
-  }
-  let { id } = req.query;
-
-  let result = await DB(
-    res,
-    "xcx_blog_post",
-    "find",
-    "服务器错误",
-    `id='${id}'`
-  );
-
-  result.forEach((v) => {
-    v.cover = v.cover ? [v.cover] : [];
-    if (v.createTime) {
-      v.createTime = rTime(timestamp(v.createTime));
+    let payload = null;
+    try {
+        const authorizationHeader = req.get("Authorization");
+        const accessToken = authorizationHeader;
+        payload = jwt.verify(accessToken, config.jwtSecret);
+    } catch (error) {
+        return res.status(401).json({
+            code: 401,
+            message: "TOKEN 已过期",
+        });
     }
-    if (v.updateTime) {
-      v.updateTime = rTime(timestamp(v.updateTime));
+    let {id} = req.query;
+
+    let result = await DB(
+        res,
+        "xcx_blog_post",
+        "find",
+        "服务器错误",
+        `id='${id}'`
+    );
+
+    result.forEach((v) => {
+        v.cover = v.cover ? [v.cover] : [];
+        if (v.createTime) {
+            v.createTime = rTime(timestamp(v.createTime));
+        }
+        if (v.updateTime) {
+            v.updateTime = rTime(timestamp(v.updateTime));
+        } else {
+            delete v.updateTime;
+        }
+    });
+    if (!result[0]) {
+        res.json({
+            code: 200,
+            message: "ok",
+            type: "success",
+            result: {
+                items: {},
+            },
+        });
     } else {
-      delete v.updateTime;
+        res.json({
+            code: 200,
+            type: "success",
+            message: "ok",
+            result: {
+                items: result[0],
+            },
+        });
     }
-  });
-  if (!result[0]) {
-    res.json({
-      code: 200,
-      message: "ok",
-      type: "success",
-      result: {
-        items: {},
-      },
-    });
-  } else {
-    res.json({
-      code: 200,
-      type: "success",
-      message: "ok",
-      result: {
-        items: result[0],
-      },
-    });
-  }
 };
 
 /**
- * 文章放入回收站
+ * 文章放入回收站 恢复
  * @param req
  * @param res
  */
 exports.upDatePostRecycle = async (req, res) => {
-  let payload = null;
-  try {
-    const authorizationHeader = req.get("Authorization");
-    const accessToken = authorizationHeader;
-    payload = jwt.verify(accessToken, config.jwtSecret);
-  } catch (error) {
-    return res.status(401).json({
-      code: 401,
-      message: "TOKEN 已过期",
-    });
-  }
-  const { id, isRecycle } = req.body;
-  const ret = await DB(
-    res,
-    "xcx_blog_post",
-    "update",
-    "服务器错误",
-    `id='${id}'`,
-    {
-      isRecycle,
-      updateTime: rTime(timestamp(new Date())),
+    let payload = null;
+    try {
+        const authorizationHeader = req.get("Authorization");
+        const accessToken = authorizationHeader;
+        payload = jwt.verify(accessToken, config.jwtSecret);
+    } catch (error) {
+        return res.status(401).json({
+            code: 401,
+            message: "TOKEN 已过期",
+        });
     }
-  );
+    const {id, isRecycle} = req.body;
+    const ret = await DB(
+        res,
+        "xcx_blog_post",
+        "update",
+        "服务器错误",
+        `id='${id}'`,
+        {
+            isRecycle,
+            updateTime: rTime(timestamp(new Date())),
+        }
+    );
 
-  if (ret.affectedRows == 1) {
-    res.json({
-      code: 200,
-      message: "删除成功",
-    });
-  } else {
-    res.json({
-      code: 200,
-      message: "修改失败",
-    });
-  }
+    if (ret.affectedRows == 1) {
+        res.json({
+            code: 200,
+            message: "删除成功",
+        });
+    } else {
+        res.json({
+            code: 200,
+            message: "修改失败",
+        });
+    }
 };
 
 /**
@@ -303,28 +412,28 @@ exports.upDatePostRecycle = async (req, res) => {
  * @returns {Promise<void>}
  */
 exports.updateCheckPost = async (req, res) => {
-  const { id, checkStatus } = req.body;
-  const ret = await DB(
-    res,
-    "xcx_blog_post",
-    "update",
-    "服务器错误",
-    `id='${id}'`,
-    {
-      checkStatus,
+    const {id, checkStatus} = req.body;
+    const ret = await DB(
+        res,
+        "xcx_blog_post",
+        "update",
+        "服务器错误",
+        `id='${id}'`,
+        {
+            checkStatus,
+        }
+    );
+    if (ret.affectedRows == 1) {
+        res.json({
+            code: 200,
+            message: "审核成功",
+        });
+    } else {
+        res.json({
+            code: 200,
+            message: "审核失败",
+        });
     }
-  );
-  if (ret.affectedRows == 1) {
-    res.json({
-      code: 200,
-      message: "审核成功",
-    });
-  } else {
-    res.json({
-      code: 200,
-      message: "审核失败",
-    });
-  }
 };
 
 /**
@@ -334,35 +443,35 @@ exports.updateCheckPost = async (req, res) => {
  * @returns {Promise<*>}
  */
 exports.delPost = async (req, res) => {
-  let payload = null;
-  try {
-    const authorizationHeader = req.get("Authorization");
-    const accessToken = authorizationHeader;
-    payload = jwt.verify(accessToken, config.jwtSecret);
-  } catch (error) {
-    return res.status(401).json({
-      code: 401,
-      message: "TOKEN 已过期",
-    });
-  }
-  const { id } = req.body;
-  const ret = await DB(
-    res,
-    "xcx_blog_post",
-    "delete",
-    "服务器错误",
-    `id='${id}'`
-  );
+    let payload = null;
+    try {
+        const authorizationHeader = req.get("Authorization");
+        const accessToken = authorizationHeader;
+        payload = jwt.verify(accessToken, config.jwtSecret);
+    } catch (error) {
+        return res.status(401).json({
+            code: 401,
+            message: "TOKEN 已过期",
+        });
+    }
+    const {id} = req.body;
+    const ret = await DB(
+        res,
+        "xcx_blog_post",
+        "delete",
+        "服务器错误",
+        `id='${id}'`
+    );
 
-  if (ret.affectedRows == 1) {
-    res.json({
-      code: 200,
-      message: "删除成功",
-    });
-  } else {
-    res.json({
-      code: 200,
-      message: "修改失败",
-    });
-  }
+    if (ret.affectedRows == 1) {
+        res.json({
+            code: 200,
+            message: "删除成功",
+        });
+    } else {
+        res.json({
+            code: 200,
+            message: "修改失败",
+        });
+    }
 };

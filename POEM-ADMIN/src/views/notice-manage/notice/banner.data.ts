@@ -64,33 +64,13 @@ export const columns: BasicColumn[] = [
   {
     title: '状态',
     dataIndex: 'status',
-    width: 120,
+    width: 80,
     customRender: ({ record }) => {
-      if (!Reflect.has(record, 'pendingStatus')) {
-        record.pendingStatus = false;
-      }
-      return h(Switch, {
-        checked: record.status === '1',
-        checkedChildren: '已启用',
-        unCheckedChildren: '已禁用',
-        loading: record.pendingStatus,
-        onChange(checked: boolean) {
-          record.pendingStatus = true;
-          const newStatus = checked ? '1' : '0';
-          const { createMessage } = useMessage();
-          setBannerStatus(record.id, newStatus)
-            .then(() => {
-              record.status = newStatus;
-              createMessage.success(`已成功修改公告状态`);
-            })
-            .catch(() => {
-              // createMessage.error('修改公告状态失败');
-            })
-            .finally(() => {
-              record.pendingStatus = false;
-            });
-        },
-      });
+      const status = record.status;
+      const toDoEnable = ~~status === 1;
+      const color = toDoEnable ? 'green' : 'red';
+      const text = toDoEnable ? '已启用' : '已关闭';
+      return h(Tag, { color: color }, () => text);
     },
   },
   {

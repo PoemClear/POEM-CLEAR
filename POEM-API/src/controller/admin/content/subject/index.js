@@ -16,7 +16,7 @@ exports.createSubject = async (req, res) => {
     });
   }
   const {
-    userId = 1,
+    userId,
     title,
     cover,
     description = "",
@@ -26,7 +26,8 @@ exports.createSubject = async (req, res) => {
     subjectlabelId = "2",
     isEnd,
     status,
-    checkStatus,
+    openComment ,
+    isTop,
     isRecycle = "1",
   } = req.body;
   const deptInfo = await DB(
@@ -48,7 +49,8 @@ exports.createSubject = async (req, res) => {
       subjectlabelId,
       isEnd,
       status,
-      checkStatus,
+      openComment ,
+      isTop,
       isRecycle,
       createTime: rTime(timestamp(new Date())),
     });
@@ -80,33 +82,68 @@ exports.updateSubject = async (req, res) => {
   }
   const {
     id,
-    userId = 1,
     title,
     cover,
     description = "",
     orderNo,
     postIds,
     isEnd,
+    openComment,
+    isTop ,
     status,
   } = req.body;
+  if( payload.accountId.roleValue=='systemAdmin'){
+    const ret = await DB(
+        res,
+        "xcx_blog_subject",
+        "update",
+        "服务器错误",
+        `id='${id}'`,
+        {
+          title,
+          cover,
+          description,
+          orderNo,
+          postIds,
+          isEnd,
+          status,
+          openComment,
+          isTop ,
+          updateTime: rTime(timestamp(new Date())),
+        }
+    );
 
-  const ret = await DB(
-    res,
-    "xcx_blog_subject",
-    "update",
-    "服务器错误",
-    `id='${id}'`,
-    {
-      userId,
-      title,
-      cover,
-      description,
-      orderNo,
-      postIds,
-      isEnd,
-      status,
-      updateTime: rTime(timestamp(new Date())),
+    if (ret.affectedRows == 1) {
+      res.json({
+        code: 200,
+        msg: "编辑成功",
+      });
+    } else {
+      res.json({
+        code: 200,
+        msg: "专题已存在",
+      });
     }
+    return
+  }
+  const ret = await DB(
+      res,
+      "xcx_blog_subject",
+      "update",
+      "服务器错误",
+      `userId=${payload.accountId.id} and id=${id}`,
+      {
+        title,
+        cover,
+        description,
+        orderNo,
+        postIds,
+        isEnd,
+        openComment,
+        isTop,
+        status,
+        updateTime: rTime(timestamp(new Date())),
+      }
   );
 
   if (ret.affectedRows == 1) {
@@ -143,12 +180,83 @@ exports.subjectList = async (req, res) => {
     page: req.query.page || 1,
     pageSize: req.query.pageSize || 10,
   };
+  if( payload.accountId.roleValue=='systemAdmin'){
+
+    let result_num = await DB(
+        res,
+        "xcx_blog_subject",
+        "find",
+        "服务器错误",
+        `title like '%${params.title}%' and isRecycle like '%${params.isRecycle}%' and status like '%${params.status}%' and checkStatus like '%${params.checkStatus}%'`
+    );
+
+    let result = await DB(
+        res,
+        "xcx_blog_subject",
+        "find",
+        "服务器错误",
+        `title like '%${params.title}%' and isRecycle like '%${
+            params.isRecycle
+        }%' and status like '%${params.status}%' and  checkStatus like '%${
+            params.checkStatus
+        }%'  order by id desc  limit ${(params.page - 1) * params.pageSize},${
+            params.pageSize
+        }`
+    );
+    let userList = await DB(
+        res,
+        "sy_users",
+        "find",
+        "服务器错误",
+    );
+    result.forEach((v, i) => {
+      v.postIds = v.postIds.split(",").map(Number);
+      v.num = v.postIds.length;
+      v.cover = [v.cover];
+      userList.forEach((ele)=>{
+        if(v.userId==ele.id){
+          v.author = {
+            username:ele.realName,
+            avatar:ele.avatar
+          }
+        }
+      })
+      if (v.createTime) {
+        v.createTime = rTime(timestamp(v.createTime));
+      }
+      if (v.updateTime) {
+        v.updateTime = rTime(timestamp(v.updateTime));
+      } else {
+        delete v.updateTime;
+      }
+    });
+
+    if (!result[0]) {
+      res.json({
+        code: 200,
+        result: {
+          items: [],
+        },
+      });
+    } else {
+      res.json({
+        code: 200,
+        result: {
+          items: result,
+          total: result_num.length,
+          page: Number(params.page),
+          pageSize: Number(params.pageSize),
+        },
+      });
+    }
+    return
+  }
   let result_num = await DB(
     res,
     "xcx_blog_subject",
     "find",
     "服务器错误",
-    `title like '%${params.title}%' and isRecycle like '%${params.isRecycle}%' and status like '%${params.status}%' and checkStatus like '%${params.checkStatus}%'`
+    ` userId=${payload.accountId.id} and title like '%${params.title}%' and isRecycle like '%${params.isRecycle}%' and status like '%${params.status}%' and checkStatus like '%${params.checkStatus}%'`
   );
 
   let result = await DB(
@@ -156,7 +264,7 @@ exports.subjectList = async (req, res) => {
     "xcx_blog_subject",
     "find",
     "服务器错误",
-    `title like '%${params.title}%' and isRecycle like '%${
+    `userId=${payload.accountId.id} and  title like '%${params.title}%' and isRecycle like '%${
       params.isRecycle
     }%' and status like '%${params.status}%' and  checkStatus like '%${
       params.checkStatus
@@ -164,10 +272,24 @@ exports.subjectList = async (req, res) => {
       params.pageSize
     }`
   );
+  let userList = await DB(
+      res,
+      "sy_users",
+      "find",
+      "服务器错误",
+  );
   result.forEach((v, i) => {
     v.postIds = v.postIds.split(",").map(Number);
     v.num = v.postIds.length;
     v.cover = [v.cover];
+    userList.forEach((ele)=>{
+      if(v.userId==ele.id){
+        v.author = {
+          username:ele.realName,
+          avatar:ele.avatar
+        }
+      }
+    })
     if (v.createTime) {
       v.createTime = rTime(timestamp(v.createTime));
     }
@@ -264,7 +386,7 @@ exports.subjectItem = async (req, res) => {
 };
 
 /**
- * 文章放入回收站
+ * 文章放入回收站 恢复
  * @param req
  * @param res
  */
@@ -343,7 +465,7 @@ exports.updateCheckSubject = async (req, res) => {
  * @param res
  * @returns {Promise<*>}
  */
-exports.delPost = async (req, res) => {
+exports.delSubjectPost = async (req, res) => {
   let payload = null;
   try {
     const authorizationHeader = req.get("Authorization");

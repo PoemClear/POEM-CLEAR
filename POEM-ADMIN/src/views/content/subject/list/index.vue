@@ -1,8 +1,8 @@
 <template>
   <div>
-    <p>
+    <!-- <p>
       当前拥有的code列表: <a> {{ permissionStore.getPermCodeList }} </a>
-    </p>
+    </p> -->
     <BasicTable @register="registerTable">
       <template #toolbar>
         <a-button type="primary" @click="handleCreate" v-if="hasPermission('subject_list:view')">
@@ -10,8 +10,15 @@
         >
       </template>
       <template #bodyCell="{ column, record }">
+        <template v-if="column.key === 'view_count'">
+          {{ record.view_count }} / {{ record.like_count }} / {{ record.comment_count }} /
+          {{ record.collect_count }}
+        </template>
+        <template v-if="column.key === 'author'">
+          {{ record.author.username }}
+        </template>
         <template v-if="column.key === 'cover'">
-          <Image :width="40" :height="40" :src="record.cover" />
+          <Image :width="60" :height="30" :src="record.cover" />
         </template>
         <template v-if="column.key === 'num'">
           <a-button type="link" :color="record.isEnd == 0 ? 'info' : 'success'">

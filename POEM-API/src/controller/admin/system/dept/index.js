@@ -110,7 +110,7 @@ exports.delDept = async (req, res) => {
     userList.filter((ele) => {
         user.push(ele.username)
     })
-    console.log(user)
+
     if (userList[0]) {
         res.json({
             code: 403,

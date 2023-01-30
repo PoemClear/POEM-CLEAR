@@ -98,6 +98,8 @@ export default {
 
     userName: 'Username',
     password: 'Password',
+    realName: 'RealName',
+    deptName:'DeptName',
     confirmPassword: 'Confirm Password',
     email: 'Email',
     smsCode: 'SMS code',

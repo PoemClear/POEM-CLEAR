@@ -7,6 +7,8 @@ enum Api {
   SubjectItem = '/content/subjectItem',
   updateCheckSubject = '/content/updateCheckSubject',
   upDateSubjectRecycle = '/content/upDateSubjectRecycle',
+  // delSubjectPost
+  DelSubjectPost = '/content/delSubjectPost',
 }
 
 export function getSubjectList(params?: any) {
@@ -15,9 +17,13 @@ export function getSubjectList(params?: any) {
 export function createSubject(data?: any) {
   return defHttp.post({ url: Api.CreateSubject, data });
 }
-export function updateSubject(data?: any) {
-  return defHttp.post({ url: Api.UpdateSubject, data });
+export function updateSubject(params?: object) {
+  return defHttp.post({ url: Api.UpdateSubject, params });
 }
+export function delSubjectPost(id: number) {
+  return defHttp.post({ url: Api.DelSubjectPost, params: { id } });
+}
+
 export function getSubjectItem(id: number) {
   return defHttp.get({ url: Api.SubjectItem, params: { id } });
 }

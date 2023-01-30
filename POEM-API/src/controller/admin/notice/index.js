@@ -22,7 +22,6 @@ exports.createNotice = async (req, res) => {
   }
   const { title, type, switchTab, link_url, noticeStatus, orderNo, status } =
     req.body;
-  console.log(req.body);
   let dictList = await DB(
     res,
     "sy_dict",
@@ -99,7 +98,6 @@ exports.updateNotice = async (req, res) => {
     orderNo,
     status,
   } = req.body;
-  console.log(req.body);
   let dictList = await DB(
     res,
     "sy_dict",

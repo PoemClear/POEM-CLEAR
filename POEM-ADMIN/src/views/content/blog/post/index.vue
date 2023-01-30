@@ -5,10 +5,16 @@
         <a-button type="primary" @click="handleCreate"> 写文章</a-button>
       </template>
       <template #bodyCell="{ column, record }">
-        <template v-if="column.key === 'views_count'">
+        <template v-if="column.key === 'view_count'">
           {{ record.view_count }} / {{ record.like_count }} / {{ record.comment_count }} /
           {{ record.collect_count }}
         </template>
+        <template v-if="column.key === 'author'">
+        
+            {{ record.author.username }}
+          
+        </template>
+        <!-- author -->
         <template v-if="column.key === 'cover'">
           <Image
             :width="60"

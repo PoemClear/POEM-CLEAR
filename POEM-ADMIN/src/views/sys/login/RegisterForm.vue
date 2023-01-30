@@ -2,34 +2,50 @@
   <template v-if="getShow">
     <LoginFormTitle class="enter-x" />
     <Form class="p-4 enter-x" :model="formData" :rules="getFormRules" ref="formRef">
-      <FormItem name="account" class="enter-x">
+      <FormItem name="realName" class="enter-x">
         <Input
           class="fix-auto-fill"
           size="large"
-          v-model:value="formData.account"
+          v-model:value="formData.realName"
+          :placeholder="t('sys.login.realName')"
+          :maxlength="20"
+        />
+      </FormItem>
+      <FormItem name="username" class="enter-x">
+        <Input
+          class="fix-auto-fill"
+          size="large"
+          v-model:value="formData.username"
           :placeholder="t('sys.login.userName')"
         />
       </FormItem>
-      <FormItem name="mobile" class="enter-x">
+      <FormItem name="phone" class="enter-x">
         <Input
           size="large"
-          v-model:value="formData.mobile"
+          v-model:value="formData.phone"
           :placeholder="t('sys.login.mobile')"
           class="fix-auto-fill"
+          :maxlength="11"
         />
       </FormItem>
-      <FormItem name="sms" class="enter-x">
-        <CountdownInput
-          size="large"
-          class="fix-auto-fill"
-          v-model:value="formData.sms"
-          :placeholder="t('sys.login.smsCode')"
+      <FormItem name="deptId" class="enter-x">
+        <Select
+          v-model:value="formData.deptId"
+          :options="areas"
+          :placeholder="t('sys.login.deptName')"
         />
       </FormItem>
-      <FormItem name="password" class="enter-x">
+      <FormItem name="roleValue" class="enter-x">
+        <Select
+          v-model:value="formData.roleValue"
+          :options="roleList"
+          :placeholder="t('sys.login.deptName')"
+        />
+      </FormItem>
+      <FormItem name="pwd" class="enter-x">
         <StrengthMeter
           size="large"
-          v-model:value="formData.password"
+          v-model:value="formData.pwd"
           :placeholder="t('sys.login.password')"
         />
       </FormItem>
@@ -68,11 +84,12 @@
 <script lang="ts" setup>
   import { reactive, ref, unref, computed } from 'vue';
   import LoginFormTitle from './LoginFormTitle.vue';
-  import { Form, Input, Button, Checkbox } from 'ant-design-vue';
+  import { Form, Input, Button, Checkbox, Select } from 'ant-design-vue';
   import { StrengthMeter } from '/@/components/StrengthMeter';
-  import { CountdownInput } from '/@/components/CountDown';
+  // import { CountdownInput } from '/@/components/CountDown';
   import { useI18n } from '/@/hooks/web/useI18n';
   import { useLoginState, useFormRules, useFormValid, LoginStateEnum } from './useLogin';
+  import { registerApi } from '/@/api/sys/user';
 
   const FormItem = Form.Item;
   const InputPassword = Input.Password;
@@ -83,14 +100,17 @@
   const loading = ref(false);
 
   const formData = reactive({
-    account: '',
-    password: '',
+    username: '',
+    pwd: '',
     confirmPassword: '',
-    mobile: '',
-    sms: '',
+    phone: '',
+    realName: '',
     policy: false,
+    roleValue: 'RegularMembers',
+    deptId: '3',
   });
-
+  const areas = [{ label: '会员部', value: '3' }];
+  const roleList = [{ label: '普通会员', value: 'RegularMembers' }];
   const { getFormRules } = useFormRules(formData);
   const { validForm } = useFormValid(formRef);
 
@@ -100,5 +120,6 @@
     const data = await validForm();
     if (!data) return;
     console.log(data);
+    await registerApi(data);
   }
 </script>

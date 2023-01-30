@@ -4,6 +4,7 @@ import { LoginParams, LoginResultModel, GetUserInfoModel } from './model/userMod
 import { ErrorMessageMode } from '/#/axios';
 
 enum Api {
+  Register = '/register',
   Login = '/login',
   Logout = '/logout',
   GetUserInfo = '/userInfo',
@@ -25,7 +26,20 @@ export function loginApi(params: LoginParams, mode: ErrorMessageMode = 'modal') 
     },
   );
 }
-
+/**
+ * @description: user register api
+ */
+export function registerApi(params: LoginParams, mode: ErrorMessageMode = 'modal') {
+  return defHttp.post(
+    {
+      url: Api.Register,
+      params,
+    },
+    {
+      errorMessageMode: mode,
+    },
+  );
+}
 /**
  * @description: getUserInfo
  */

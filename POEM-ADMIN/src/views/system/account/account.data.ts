@@ -1,7 +1,9 @@
 import { getAllRoleList } from '/@/api/demo/system';
 import { BasicColumn } from '/@/components/Table';
 import { FormSchema } from '/@/components/Table';
-
+import { h } from 'vue';
+import { Tag } from 'ant-design-vue';
+import { uploadApi } from '/@/api/sys/upload';
 export const columns: BasicColumn[] = [
   {
     title: '用户名',
@@ -29,6 +31,18 @@ export const columns: BasicColumn[] = [
     width: 200,
   },
   {
+    title: '状态',
+    dataIndex: 'status',
+    width: 80,
+    customRender: ({ record }) => {
+      const status = record.status;
+      const toDoEnable = ~~status === 0;
+      const color = toDoEnable ? 'red' : 'green';
+      const text = toDoEnable ? '未激活' : '已激活';
+      return h(Tag, { color: color }, () => text);
+    },
+  },
+  {
     title: '备注',
     dataIndex: 'remark',
   },
@@ -50,6 +64,17 @@ export const searchFormSchema: FormSchema[] = [
 ];
 
 export const accountFormSchema: FormSchema[] = [
+  {
+    field: 'avatar',
+    component: 'Upload',
+    label: '头像',
+    rules: [{ required: true, message: '请选择上传头像' }],
+    componentProps: {
+      api: uploadApi,
+      maxSize: 20,
+      maxNumber: 1,
+    },
+  },
   {
     field: 'username',
     label: '用户名',
@@ -105,15 +130,26 @@ export const accountFormSchema: FormSchema[] = [
     field: 'nickname',
     label: '昵称',
     component: 'Input',
-    required: true,
+    required: false,
   },
   {
     label: '邮箱',
     field: 'email',
     component: 'Input',
-    required: true,
+    required: false,
   },
-
+  {
+    field: 'status',
+    label: '激活账号',
+    component: 'RadioButtonGroup',
+    defaultValue: '0',
+    componentProps: {
+      options: [
+        { label: '未激活', value: '0' },
+        { label: '激活', value: '1' },
+      ],
+    },
+  },
   {
     label: '备注',
     field: 'remark',

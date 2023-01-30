@@ -2,6 +2,13 @@
   <div>
     <BasicTable @register="registerTable" :searchInfo="searchInfo">
       <template #bodyCell="{ column, record }">
+        <template v-if="column.key === 'author'">
+          {{ record.author.username }}
+        </template>
+        <template v-if="column.key === 'view_count'">
+          {{ record.view_count }} / {{ record.like_count }} / {{ record.comment_count }} /
+          {{ record.collect_count }}
+        </template>
         <template v-if="column.key === 'cover'">
           <Image :width="80" :height="40" :src="record.cover" />
         </template>
@@ -42,8 +49,9 @@
   import { defineComponent } from 'vue';
 
   import { BasicTable, useTable, TableAction } from '/@/components/Table';
-  import { delPost, getPostList, upDatePostRecycle } from '/@/api/content/blog';
-
+  import { recycleBinList } from '/@/api/recycle-bin';
+  import { upDatePostRecycle, delPost } from '/@/api/content/blog';
+  import { upDateSubjectRecycle, delSubjectPost } from '/@/api/content/subject';
   import { usePermissionStore } from '/@/store/modules/permission';
   import { usePermission } from '/@/hooks/web/usePermission';
   import { columns, searchFormSchema } from './post.data';
@@ -63,9 +71,9 @@
       const permissionStore = usePermissionStore();
       const [registerTable, { reload }] = useTable({
         title: '【回收站】文章列表',
-        api: getPostList,
+        api: recycleBinList,
         columns,
-        pagination: { pageSize: 8 },
+        pagination: { pageSize: 10 },
         formConfig: {
           labelWidth: 120,
           schemas: searchFormSchema,
@@ -85,7 +93,12 @@
 
       async function handleEdit(record: Recordable) {
         let isRecycle = '1';
-        await upDatePostRecycle(record.id, isRecycle);
+        if (record.subjectCateId) {
+          await upDateSubjectRecycle(record.id, isRecycle);
+        } else {
+          await upDatePostRecycle(record.id, isRecycle);
+        }
+
         console.log(record);
         handleSuccess();
       }
@@ -94,7 +107,12 @@
         reload();
       }
       async function handleDelete(record: Recordable) {
-        await delPost(record.id);
+        if (record.subjectCateId) {
+          await delSubjectPost(record.id);
+        } else {
+          await delPost(record.id);
+        }
+
         reload();
       }
       function handleView(record: Recordable) {

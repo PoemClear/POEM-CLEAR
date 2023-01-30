@@ -32,12 +32,12 @@
   </BasicDrawer>
 </template>
 <script lang="ts">
-  import { defineComponent, ref, computed, unref, reactive } from 'vue';
+  import { defineComponent, ref, computed, unref, reactive, computed } from 'vue';
   import { BasicForm, useForm } from '/@/components/Form/index';
   import { formSchema } from './post.data';
   import { BasicDrawer, useDrawerInner } from '/@/components/Drawer';
   import { BasicTree, TreeItem } from '/@/components/Tree';
-
+  import { useUserStore } from '/@/store/modules/user';
   import { createPost, updatePost } from '/@/api/content/blog';
 
   export default defineComponent({
@@ -47,6 +47,10 @@
     setup(_, { emit }) {
       const isUpdate = ref(true);
       const treeData = ref<TreeItem[]>([]);
+
+      const userStore = useUserStore();
+      const userinfo = computed(() => userStore.getUserInfo);
+      console.log(userinfo.value.id);
       let record = reactive({ id: '' });
       const [registerForm, { resetFields, setFieldsValue, validate }] = useForm({
         labelWidth: 90,
@@ -81,9 +85,9 @@
           console.log(values);
           console.log(isUpdate.value);
           if (isUpdate.value) {
-            await updatePost({ ...values, id: record.id });
+            await updatePost({ ...values, id: record.id, userId: userinfo.value.id });
           } else {
-            await createPost({ ...values });
+            await createPost({ ...values, userId: userinfo.value.id });
           }
 
           closeDrawer();

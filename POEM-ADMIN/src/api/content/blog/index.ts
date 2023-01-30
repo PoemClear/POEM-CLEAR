@@ -16,12 +16,13 @@ interface GetPostInfoModel {
   orderNo: string;
   status?: string;
   title: string;
-  userId: string[];
+  userId: string | number;
   views_count: number;
   createTime: string;
 }
 
 interface BannerListItem {
+  userId: string | number;
   id?: string | number;
   collect_count: number;
   comment_count: number;
@@ -37,7 +38,6 @@ interface BannerListItem {
   orderNo: string;
   status?: string;
   title: string;
-  userId: string[];
   views_count: number;
   createTime: string;
 }
@@ -87,11 +87,8 @@ export function createPost(params?: BannerListItem) {
     { errorMessageMode: 'message' },
   );
 }
-export function updatePost(params?: BannerListItem) {
-  return defHttp.post<GetPostInfoModel>(
-    { url: Api.UpdatePost, params },
-    { errorMessageMode: 'message' },
-  );
+export function updatePost(params?: object) {
+  return defHttp.post({ url: Api.UpdatePost, params }, { errorMessageMode: 'message' });
 }
 export function createLabel(params?: BannerListItem) {
   return defHttp.post<GetPostInfoModel>({ url: Api.CreateLabel, params });

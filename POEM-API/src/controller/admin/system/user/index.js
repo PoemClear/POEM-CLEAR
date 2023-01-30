@@ -20,16 +20,27 @@ exports.createUser = async (req, res) => {
             code: 401, message: "TOKEN 已过期"
         });
     }
-    const {username, realName, avatar,nickname='', phone, remark = '', homePath = '', roleValue,deptId, email = ''} = req.body
+    const {
+        username,
+        realName,
+        avatar='',
+        nickname = '',
+        phone,
+        remark = '',
+        homePath = '',
+        roleValue,
+        deptId,
+        email = ''
+    } = req.body
     /**判断账号是否注册*/
     let isRegister = await DB(res, 'sy_users', 'find', '服务器错误', `username='${username}' and phone='${phone}' `)
     if (!isRegister[0]) {
         /**如果账号未注册 去注册*/
         const ret = await DB(res, 'sy_users', 'insert', '服务器错误', {
-            avatar: avatar ? avatar : "https://sy0415-1300507222.cos.ap-beijing.myqcloud.com/.gif",
+            avatar,
             account: username,
             email,
-            username, phone, realName, avatar,nickname, remark, homePath, roleValue,deptId,
+            username, phone, realName, avatar, nickname, remark, homePath, roleValue, deptId,
             password: md5(md5(phone) + config.md5Str),
             createTime: rTime(timestamp(new Date())),
         })
@@ -63,9 +74,33 @@ exports.updateUser = async (req, res) => {
             code: 401, message: "TOKEN 已过期"
         });
     }
-    const {id,username, realName,nickname='', phone, remark, homePath='', roleValue,deptId, email = ''} = req.body
+    const {
+        id,
+        username,
+        realName,
+        nickname = '',
+        avatar='',
+        phone,
+        remark,
+        homePath = '',
+        roleValue,
+        deptId,
+        status,
+        email = ''
+    } = req.body
     const ret = await DB(res, 'sy_users', 'update', '服务器错误', `id='${id}'`, {
-        username, realName,nickname, phone, remark, homePath, roleValue,deptId, email,
+        username,
+        realName,
+        nickname,
+        avatar,
+        phone,
+        remark,
+        homePath,
+        roleValue,
+        deptId,
+        email,
+        account: username,
+        status,
         updateTime: rTime(timestamp(new Date())),
     })
 
@@ -76,7 +111,7 @@ exports.updateUser = async (req, res) => {
         })
     } else {
         res.json({
-            code: 200,
+            code: 403,
             message: "修改失败"
         })
     }
@@ -99,14 +134,14 @@ exports.accountExist = async (req, res) => {
         res.json({
             code: 400,
             message: `${account} 已注册`,
-            result:`${account} 已注册`,
+            result: `${account} 已注册`,
             type: "success"
         })
-    }else{
+    } else {
         res.json({
             code: 200,
             message: `${account} 可以注册`,
-            result:`${account} 可以注册`,
+            result: `${account} 可以注册`,
             type: "success"
         })
     }
@@ -180,15 +215,16 @@ exports.getAccountList = async (req, res) => {
     }
     let params = {
         username: req.query.username || "",
-        deptId:req.query.deptId || "",
+        deptId: req.query.deptId || "",
         status: req.query.status || "",
         page: req.query.currentPage || 1,
         pageSize: req.query.pageSize || 10
     }
-    const roleInfo = await DB(res, 'sy_roles', 'find', '服务器错误', )
+    const roleInfo = await DB(res, 'sy_roles', 'find', '服务器错误',)
     let usersLen = await DB(res, 'sy_users', 'find', '服务器出错', `status like '%${params.status}%' and username like '%${params.username}%' and deptId like '%${params.deptId}%' `);
     let result = await DB(res, 'sy_users', 'find', '服务器出错', `status like '%${params.status}%' and username like '%${params.username}%' and deptId like '%${params.deptId}%'  order by id desc limit ${(params.page - 1) * params.pageSize},${params.pageSize}`);
     result.forEach((v) => {
+        v.avatar = v.avatar == '' ? '' : [v.avatar]
         if (v.createTime) {
             v.createTime = rTime(timestamp(v.createTime))
         }
@@ -197,8 +233,8 @@ exports.getAccountList = async (req, res) => {
         } else {
             delete v.updateTime
         }
-        roleInfo.forEach((ele)=>{
-            if(v.roleValue==ele.roleValue){
+        roleInfo.forEach((ele) => {
+            if (v.roleValue == ele.roleValue) {
                 v.role = ele.roleName
             }
         })

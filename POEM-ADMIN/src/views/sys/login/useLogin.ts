@@ -50,12 +50,13 @@ export function useFormRules(formData?: Recordable) {
     return !value ? Promise.reject(t('sys.login.policyPlaceholder')) : Promise.resolve();
   };
 
-  const validateConfirmPassword = (password: string) => {
+  const validateConfirmPassword = (pwd: string) => {
+    console.log(pwd);
     return async (_: RuleObject, value: string) => {
       if (!value) {
         return Promise.reject(t('sys.login.passwordPlaceholder'));
       }
-      if (value !== password) {
+      if (value !== pwd) {
         return Promise.reject(t('sys.login.diffPwd'));
       }
       return Promise.resolve();
@@ -77,9 +78,9 @@ export function useFormRules(formData?: Recordable) {
       case LoginStateEnum.REGISTER:
         return {
           account: accountFormRule,
-          password: passwordFormRule,
+          pwd: passwordFormRule,
           confirmPassword: [
-            { validator: validateConfirmPassword(formData?.password), trigger: 'change' },
+            { validator: validateConfirmPassword(formData?.pwd), trigger: 'change' },
           ],
           policy: [{ validator: validatePolicy, trigger: 'change' }],
           ...mobileRule,

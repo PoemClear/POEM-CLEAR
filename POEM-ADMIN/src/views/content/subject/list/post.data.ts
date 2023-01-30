@@ -62,47 +62,56 @@ export const columns: BasicColumn[] = [
   {
     title: '专题标题',
     dataIndex: 'title',
-    width: 300,
+    width: 180,
     align: 'left',
   },
 
   { title: '更新 / 完结', dataIndex: 'num', width: 100 },
   {
-    title: '排序',
-    dataIndex: 'orderNo',
-    width: 50,
-  },
-  {
     title: '状态',
     dataIndex: 'status',
-    width: 120,
+    width: 80,
     customRender: ({ record }) => {
-      if (!Reflect.has(record, 'pendingStatus')) {
-        record.pendingStatus = false;
-      }
-      return h(Switch, {
-        checked: record.status === '1',
-        checkedChildren: '已启用',
-        unCheckedChildren: '已禁用',
-        loading: record.pendingStatus,
-        onChange(checked: boolean) {
-          record.pendingStatus = true;
-          const newStatus = checked ? '1' : '0';
-          const { createMessage } = useMessage();
-          setRoleStatus(record.id, newStatus)
-            .then(() => {
-              record.status = newStatus;
-              createMessage.success(`已成功修改专题状态`);
-            })
-            .catch(() => {
-              // createMessage.error('修改专题状态失败');
-            })
-            .finally(() => {
-              record.pendingStatus = false;
-            });
-        },
-      });
+      const status = record.status;
+      const toDoEnable = ~~status === 1;
+      const color = toDoEnable ? 'green' : 'red';
+      const text = toDoEnable ? '已启用' : '已关闭';
+      return h(Tag, { color: color }, () => text);
     },
+  },
+  {
+    title: '开启评论',
+    dataIndex: 'openComment',
+    width: 80,
+    customRender: ({ record }) => {
+      const status = record.openComment;
+      const toDoEnable = ~~status === 1;
+      const color = toDoEnable ? 'blue' : 'red';
+      const text = toDoEnable ? '已开启' : '已关闭';
+      return h(Tag, { color: color }, () => text);
+    },
+  },
+  {
+    title: '置顶',
+    dataIndex: 'isTop',
+    width: 80,
+    customRender: ({ record }) => {
+      const status = record.isTop;
+      const toDoEnable = ~~status === 1;
+      const color = toDoEnable ? 'blue' : 'red';
+      const text = toDoEnable ? '已置顶' : '未置顶';
+      return h(Tag, { color: color }, () => text);
+    },
+  },
+  {
+    title: '作者',
+    dataIndex: 'author',
+    width: 100,
+  },
+  {
+    title: '浏览 / 点赞 / 评论 / 收藏',
+    dataIndex: 'view_count',
+    width: 150,
   },
   {
     title: '审核状态',
@@ -211,8 +220,32 @@ export const formSchema: FormSchema[] = [
     defaultValue: '0',
     componentProps: {
       options: [
-        { label: '未完结', value: '0' },
         { label: '已完结', value: '1' },
+        { label: '未完结', value: '0' },
+      ],
+    },
+  },
+  {
+    field: 'openComment',
+    label: '开启评论',
+    component: 'RadioButtonGroup',
+    defaultValue: '1',
+    componentProps: {
+      options: [
+        { label: '打开', value: '1' },
+        { label: '关闭', value: '0' },
+      ],
+    },
+  },
+  {
+    field: 'isTop',
+    label: '置顶文章',
+    component: 'RadioButtonGroup',
+    defaultValue: '0',
+    componentProps: {
+      options: [
+        { label: '置顶', value: '1' },
+        { label: '未置顶', value: '0' },
       ],
     },
   },
@@ -220,11 +253,11 @@ export const formSchema: FormSchema[] = [
     field: 'status',
     label: '状态',
     component: 'RadioButtonGroup',
-    defaultValue: '0',
+    defaultValue: '1',
     componentProps: {
       options: [
-        { label: '停用', value: '0' },
         { label: '启用', value: '1' },
+        { label: '停用', value: '0' },
       ],
     },
   },

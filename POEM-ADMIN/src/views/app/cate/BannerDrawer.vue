@@ -27,7 +27,7 @@
   import { formSchema } from './banner.data';
   import { BasicDrawer, useDrawerInner } from '/@/components/Drawer';
   // createBanner
-  import { updateAppCate } from '/@/api/appCate';
+  import { updateAppCate, createAppCate } from '/@/api/appCate';
 
   export default defineComponent({
     name: 'RoleDrawer',
@@ -66,7 +66,7 @@
           if (isUpdate.value) {
             await updateAppCate({ ...values, id: record.id });
           } else {
-            // await createBanner({ ...values });
+            await createAppCate({ ...values });
           }
           imageList.value = [];
           closeDrawer();

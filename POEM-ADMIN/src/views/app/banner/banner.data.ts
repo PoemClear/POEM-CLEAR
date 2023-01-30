@@ -1,9 +1,6 @@
 import { BasicColumn } from '/@/components/Table';
 import { FormSchema } from '/@/components/Table';
 import { h } from 'vue';
-import { Switch } from 'ant-design-vue';
-import { setBannerStatus } from '/@/api/banner';
-import { useMessage } from '/@/hooks/web/useMessage';
 import { uploadApi } from '/@/api/sys/upload';
 import { getDictList } from '/@/api/demo/system';
 import { Tag } from 'ant-design-vue';
@@ -35,33 +32,13 @@ export const columns: BasicColumn[] = [
   {
     title: '状态',
     dataIndex: 'status',
-    width: 120,
+    width: 80,
     customRender: ({ record }) => {
-      if (!Reflect.has(record, 'pendingStatus')) {
-        record.pendingStatus = false;
-      }
-      return h(Switch, {
-        checked: record.status === '1',
-        checkedChildren: '已启用',
-        unCheckedChildren: '已禁用',
-        loading: record.pendingStatus,
-        onChange(checked: boolean) {
-          record.pendingStatus = true;
-          const newStatus = checked ? '1' : '0';
-          const { createMessage } = useMessage();
-          setBannerStatus(record.id, newStatus)
-            .then(() => {
-              record.status = newStatus;
-              createMessage.success(`已成功修改轮播图状态`);
-            })
-            .catch(() => {
-              // createMessage.error('修改轮播图状态失败');
-            })
-            .finally(() => {
-              record.pendingStatus = false;
-            });
-        },
-      });
+      const status = record.status;
+      const toDoEnable = ~~status === 1;
+      const color = toDoEnable ? 'green' : 'red';
+      const text = toDoEnable ? '已启用' : '已关闭';
+      return h(Tag, { color: color }, () => text);
     },
   },
   {
@@ -146,8 +123,8 @@ export const formSchema: FormSchema[] = [
     defaultValue: '0',
     componentProps: {
       options: [
-        { label: '停用', value: '0' },
         { label: '启用', value: '1' },
+        { label: '停用', value: '0' },
       ],
     },
   },
@@ -155,6 +132,7 @@ export const formSchema: FormSchema[] = [
     field: 'orderNo',
     label: '排序',
     component: 'InputNumber',
+    defaultValue: '1',
     required: true,
   },
   {
