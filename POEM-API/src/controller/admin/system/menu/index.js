@@ -39,14 +39,14 @@ exports.createMenu = async (req, res) => {
     permission = "",
     component = "LAYOUT",
   } = req.body;
-  const info = await DB(
-    res,
-    "sy_menus",
-    "find",
-    "服务器错误",
-    `menuName='${menuName}'`
-  );
-  if (!info[0]) {
+  // const info = await DB(
+  //   res,
+  //   "sy_menus",
+  //   "find",
+  //   "服务器错误",
+  //   `menuName='${menuName}'`
+  // );
+  // if (!info[0]) {
     const ret = await DB(res, "sy_menus", "insert", "服务器错误", {
       type,
       menuName,
@@ -66,15 +66,15 @@ exports.createMenu = async (req, res) => {
     if (ret.affectedRows == 1) {
       res.json({
         code: 200,
-        msg: "添加成功",
+        message: "添加成功",
       });
     }
-  } else {
-    res.json({
-      code: 403,
-      msg: "菜单已存在",
-    });
-  }
+  // } else {
+  //   res.json({
+  //     code: 403,
+  //     message: "菜单已存在",
+  //   });
+  // }
 };
 
 /**
@@ -240,7 +240,7 @@ exports.getMenuList = async (req, res) => {
 };
 
 /***
- * 用户菜单权限
+ * 用户左侧菜单
  * @param req
  * @param res
  */

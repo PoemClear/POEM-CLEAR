@@ -23,26 +23,27 @@ router.use(require('./admin/system/dict'))
 router.use(require('./admin/banner'))
 
 /** 内容管理 --------------------------------------------------START*/
+/** 专题管理*/
+router.use(require('./admin/content/subject'))
+/** 文章管理*/
+router.use(require('./admin/content/post'))
+/** 圈子 | 专栏*/
+router.use(require('./admin/content/column'))
+/** 文章分类管理*/
+router.use(require('./admin/content/cate'))
+/** 文章标签管理*/
+router.use(require('./admin/content/label'))
 
 /** 内容管理 --------------------------------------------------END/
 /** 金刚区|分类管理*/
 // router.use(require('./admin/cate'))
 /** 评论管理*/
 router.use(require('./admin/comment'))
-/** 专题管理*/
-router.use(require('./admin/subject'))
-/** 文章管理*/
-router.use(require('./admin/post'))
-/** 圈子 | 专栏*/
-router.use(require('./admin/column'))
-/** 文章分类管理*/
-router.use(require('./admin/cate'))
-/** 文章标签管理*/
-router.use(require('./admin/label'))
 /** 金刚区管理*/
 router.use(require('./admin/appCate'))
 /** 公告管理*/
 router.use(require('./admin/notice'))
 
-
+/** 回收站管理*/
+router.use(require('./admin/recycle-bin'))
 module.exports = router

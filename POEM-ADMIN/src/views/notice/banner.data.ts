@@ -22,10 +22,19 @@ export const columns: BasicColumn[] = [
   },
   {
     title: '公告状态',
-    dataIndex: 'noticeStatusName',
+    dataIndex: 'noticeStatus',
+    // customRender: ({ record }) => {
+    //   const color = 'green';
+    //   return h(Tag, { color: color }, () => record.noticeStatusName);
+    // },
     customRender: ({ record }) => {
-      const color = 'green';
-      return h(Tag, { color: color }, () => record.noticeStatusName);
+      const status = record.noticeStatus[1];
+      const toDoEnable = ~~status === 18;
+      const FailEnable = ~~status === 19;
+      const SuccessEnable = ~~status === 20;
+      const color = toDoEnable ? 'orange' : SuccessEnable ? 'green' : 'red';
+      const text = toDoEnable ? '一般' : FailEnable ? '重要' : '紧急';
+      return h(Tag, { color: color }, () => text);
     },
     width: 100,
   },
