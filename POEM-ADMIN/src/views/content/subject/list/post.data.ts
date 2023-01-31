@@ -192,12 +192,6 @@ export const formSchema: FormSchema[] = [
     component: 'Input',
   },
   {
-    field: 'orderNo',
-    label: '排序',
-    component: 'InputNumber',
-    required: true,
-  },
-  {
     label: '简介',
     field: 'description',
     component: 'InputTextArea',
@@ -206,7 +200,7 @@ export const formSchema: FormSchema[] = [
     field: 'postIds',
     component: 'Input',
     label: '选择文章',
-    helpMessage: ['ApiSelect组件', '将关键词发送到接口进行远程搜索'],
+    helpMessage: ['选择专题文章', '将关键词发送到接口进行远程搜索'],
     required: true,
     slot: 'remoteSearch',
     componentProps: {
@@ -215,7 +209,7 @@ export const formSchema: FormSchema[] = [
   },
   {
     field: 'isEnd',
-    label: '是否完结',
+    label: '完结',
     component: 'RadioGroup',
     defaultValue: '0',
     componentProps: {
@@ -227,7 +221,7 @@ export const formSchema: FormSchema[] = [
   },
   {
     field: 'openComment',
-    label: '开启评论',
+    label: '评论',
     component: 'RadioGroup',
     defaultValue: '1',
     componentProps: {
@@ -239,7 +233,7 @@ export const formSchema: FormSchema[] = [
   },
   {
     field: 'isTop',
-    label: '置顶文章',
+    label: '置顶',
     component: 'RadioGroup',
     defaultValue: '0',
     componentProps: {
@@ -260,5 +254,12 @@ export const formSchema: FormSchema[] = [
         { label: '停用', value: '0' },
       ],
     },
+  },
+  {
+    field: 'orderNo',
+    label: '排序',
+    defaultValue: '1',
+    component: 'InputNumber',
+    required: true,
   },
 ];

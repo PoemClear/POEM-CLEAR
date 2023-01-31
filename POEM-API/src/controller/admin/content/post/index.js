@@ -30,6 +30,7 @@ exports.createPost = async (req, res) => {
         isRecycle = "1",
         openComment ,
         drafts,
+        orderNo,
         isTop
     } = req.body;
     const bannerInfo = await DB(
@@ -56,6 +57,7 @@ exports.createPost = async (req, res) => {
             openComment,
             drafts,
             isTop,
+            orderNo,
             createTime: rTime(timestamp(new Date())),
         });
 
@@ -100,7 +102,8 @@ exports.updatePost = async (req, res) => {
         isRecycle = "1",
         openComment,
         isTop,
-        drafts
+        drafts,
+        orderNo
     } = req.body;
     /** 如果当前角色的 后台配置的 系统管理员 没有限制修改文章*/
     if( payload.accountId.roleValue=='systemAdmin'){
@@ -118,6 +121,7 @@ exports.updatePost = async (req, res) => {
             openComment,
             isTop,
             drafts,
+            orderNo,
             updateTime: rTime(timestamp(new Date())),
         })
         if (ret.affectedRows == 1) {
@@ -265,7 +269,7 @@ exports.postList = async (req, res) => {
         "服务器错误",
         `userId=${payload.accountId.id} and drafts like '%${params.drafts}%'   and postType like '%${params.postType}%'  and title like '%${params.title}%' and isRecycle like '%${params.isRecycle
         }%' and status like '%${params.status}%' and  checkStatus like '%${params.checkStatus
-        }%'  order by id desc  limit ${(params.page - 1) * params.pageSize},${params.pageSize
+        }%'  order by orderNo desc  limit ${(params.page - 1) * params.pageSize},${params.pageSize
         }`
     );
     let userList = await DB(

@@ -15,7 +15,7 @@
           {{ record.collect_count }}
         </template>
         <template v-if="column.key === 'author'">
-          {{ record.author.username }}
+          {{ record.username }}
         </template>
         <template v-if="column.key === 'cover'">
           <Image

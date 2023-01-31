@@ -250,7 +250,7 @@ export const formSchema: FormSchema[] = [
   },
   {
     field: 'openComment',
-    label: '开启评论',
+    label: '评论',
     component: 'RadioButtonGroup',
     defaultValue: '1',
     componentProps: {
@@ -263,7 +263,7 @@ export const formSchema: FormSchema[] = [
   },
   {
     field: 'isTop',
-    label: '置顶文章',
+    label: '置顶',
     component: 'RadioButtonGroup',
     defaultValue: '0',
     componentProps: {
@@ -326,6 +326,16 @@ export const formSchema: FormSchema[] = [
           value: '4',
         },
       ],
+    },
+  },
+  {
+    field: 'orderNo',
+    label: '排序',
+    component: 'InputNumber',
+    defaultValue: '1',
+    required: true,
+    colProps: {
+      span: 8,
     },
   },
 ];

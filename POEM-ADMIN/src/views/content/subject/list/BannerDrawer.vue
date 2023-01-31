@@ -44,6 +44,8 @@
   import { useDebounceFn } from '@vueuse/core';
   import { createSubject, updateSubject } from '../../../../api/content/subject';
   import { getPostList } from '/@/api/content/blog';
+  import { useUserStore } from '/@/store/modules/user';
+
   export default defineComponent({
     name: 'RoleDrawer',
     components: { BasicDrawer, BasicForm, ApiSelect },
@@ -52,6 +54,8 @@
       const isUpdate = ref(true);
       let record = reactive({ id: '' });
       const imageList = ref<string[]>([]);
+        const userStore = useUserStore();
+      const userinfo = computed(() => userStore.getUserInfo);
       const [registerForm, { resetFields, setFieldsValue, validate }] = useForm({
         labelWidth: 90,
         baseColProps: { span: 24 },
@@ -83,10 +87,10 @@
 
           if (isUpdate.value) {
             console.log(values);
-            await updateSubject({ ...values, id: record.id });
+            await updateSubject({ ...values, id: record.id, userId: userinfo.value.id });
           } else {
             console.log(values);
-            await createSubject({ ...values });
+            await createSubject({ ...values, userId: userinfo.value.id });
           }
           imageList.value = [];
           closeDrawer();
@@ -106,6 +110,7 @@
         searchParams,
         getPostList,
         onSearch: useDebounceFn(onSearch, 300),
+        userinfo,
       };
     },
   });

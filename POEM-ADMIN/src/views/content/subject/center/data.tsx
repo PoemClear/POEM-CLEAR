@@ -107,7 +107,7 @@ export const articleList = (() => {
 
 export const applicationList = (() => {
   const result: any[] = [];
-  for (let i = 0; i < 8; i++) {
+  for (let i = 0; i < 20; i++) {
     result.push({
       title: 'Vben Admin',
       icon: 'emojione-monotone:letter-a',

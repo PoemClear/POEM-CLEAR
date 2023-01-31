@@ -1,33 +1,60 @@
 <template>
   <PageWrapper :title="`文章： ${info.title}`" contentBackground @back="goBack">
-    <template #footer>
-      <a-tabs default-active-key="detail" v-model:activeKey="currentKey">
-        <a-tab-pane key="detail" tab="专题详情" />
-        <a-tab-pane key="logs" tab="文章列表" />
-      </a-tabs>
-    </template>
-    <div class="pt-4 m-4 desc-wrap">
-      <template v-if="currentKey == 'detail'">
-        <Image :width="200" :height="200" :src="info.cover" />
+    <div style="padding: 20px; display: flex">
+      <div style="margin-right: 40px">
+        <Image :width="300" :height="180" :src="info.cover" />
+      </div>
+      <div>
         <p>专题简介：{{ info.description }}</p>
-        <p
-          ><span>文章数：{{ info.num }}</span
-          ><span>关注数：0 </span><span>文章阅读量：2344</span><span>文章收藏量：0</span></p
-        >
-        <p> 作者: volit_</p>
+        <p>
+          <span class="count">文章数：{{ info.num }}</span>
+          <span class="count"> 关注数：0 </span>
+          <span class="count">文章阅读量：2344</span>
+          <span class="count">文章收藏量：0</span>
+        </p>
+        <div style="display: flex; align-items: center">
+          作者:
+          <Avatar :src="info.avatar" :size="24" />
+          <Button type="link" primary>{{ info.author }}</Button>
+        </div>
         <p> 这个作者很懒，什么都没留下… </p>
-      </template>
-      <template v-if="currentKey == 'logs'">
-        <a-row :gutter="16" justify="space-around">
-          <a-col class="gutter-row" :span="6" v-for="(v, i) in info.children" :key="i">
-            <a-card>
-              {{ v.title }}
-            </a-card>
-          </a-col>
-        </a-row>
-      </template>
+      </div>
     </div>
+    <div> </div>
+    <!-- <a-row :gutter="16" justify="space-around">
+      <a-col class="gutter-row" :span="6" v-for="(v, i) in info.children" :key="i">
+        <a-card>
+          {{ v.title }}
+        </a-card>
+      </a-col>
+    </a-row> -->
   </PageWrapper>
+  <!-- <a-row :gutter="16" justify="space-around">
+    <a-col class="gutter-row" :span="6" v-for="(v, i) in info.children" :key="i">
+      <a-card>
+        {{ v.title }}
+      </a-card>
+    </a-col>
+  </a-row> -->
+  <List :class="prefixCls" style="padding: 20px">
+    <a-row :gutter="16">
+      <template v-for="item in info.children" :key="item.title">
+        <a-col :span="5">
+          <ListItem>
+            <Card :hoverable="true" :class="`${prefixCls}__card`">
+              <Image :width="100" :height="60" :src="item.cover" />
+              <div :class="`${prefixCls}__card-title`">
+                {{ item.title }}
+              </div>
+              <div :class="`${prefixCls}__card-content`">
+                <!-- {{ item.content }} -->
+              </div>
+            </Card>
+          </ListItem>
+        </a-col>
+      </template>
+    </a-row>
+  </List>
 </template>
 
 <script>
@@ -36,11 +63,21 @@
   import { PageWrapper } from '/@/components/Page';
   import { useGo } from '/@/hooks/web/usePage';
   import { useTabs } from '/@/hooks/web/useTabs';
-  import { Tabs, Image, Card } from 'ant-design-vue';
+  import { Avatar, Image, Button, List, Card, Row, Col } from 'ant-design-vue';
   import { getSubjectItem } from '/@/api/content/subject';
   export default defineComponent({
     name: 'AccountDetail',
-    components: { PageWrapper, ATabs: Tabs, ATabPane: Tabs.TabPane, Image, ACard: Card },
+    components: {
+      PageWrapper,
+      Image,
+      Avatar,
+      Button,
+      List,
+      ListItem: List.Item,
+      Card,
+      [Row.name]: Row,
+      [Col.name]: Col,
+    },
     setup() {
       const route = useRoute();
       const go = useGo();
@@ -67,13 +104,13 @@
       onMounted(async () => {
         await getInfo();
       });
-      return { id, currentKey, goBack, info };
+      return { id, currentKey, goBack, info, prefixCls: 'account-center-project' };
     },
   });
 </script>
 
 <style scoped>
-  span {
+  .count {
     margin-right: 30px;
   }
 </style>
