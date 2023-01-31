@@ -46,6 +46,18 @@ export const columns: BasicColumn[] = [
     },
   },
   {
+    title: '显示',
+    dataIndex: 'show',
+    width: 80,
+    customRender: ({ record }) => {
+      const status = record.show;
+      const enable = ~~status === 1;
+      const color = enable ? 'blue' : 'red';
+      const text = enable ? '显示' : '关闭';
+      return h(Tag, { color: color }, () => text);
+    },
+  },
+  {
     title: '创建时间',
     dataIndex: 'createTime',
     width: 180,
@@ -117,6 +129,7 @@ export const formSchema: FormSchema[] = [
     field: 'orderNo',
     label: '排序',
     component: 'InputNumber',
+    defaultValue: '1',
     required: true,
   },
   {
@@ -165,7 +178,6 @@ export const formSchema: FormSchema[] = [
     defaultValue: '0',
     componentProps: {
       options: [
-
         { label: '是', value: '1' },
         { label: '否', value: '0' },
       ],

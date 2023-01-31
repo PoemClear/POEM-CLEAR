@@ -18,7 +18,12 @@
           {{ record.author.username }}
         </template>
         <template v-if="column.key === 'cover'">
-          <Image :width="60" :height="30" :src="record.cover" />
+          <Image
+            :width="60"
+            :height="30"
+            :src="record.cover"
+            fallback="https://sy0415-1300507222.cos.ap-beijing.myqcloud.com/1675144320527.png"
+          />
         </template>
         <template v-if="column.key === 'num'">
           <a-button type="link" :color="record.isEnd == 0 ? 'info' : 'success'">
@@ -127,7 +132,6 @@
       }
 
       function handleEdit(record: Recordable) {
-        console.log(record);
         openDrawer(true, {
           record,
           isUpdate: true,
@@ -137,19 +141,16 @@
       async function handleDelete(record: Recordable) {
         let isRecycle = '0';
         await upDateSubjectRecycle(record.id, isRecycle);
-        console.log(record);
         handleSuccess();
       }
 
       async function handleCheckSuccess(record: Recordable) {
-        console.log(record);
         let checkStatus = '2';
         await updateCheckSubject(record.id, checkStatus);
         handleSuccess();
       }
 
       async function handleCheckFail(record: Recordable) {
-        console.log(record);
         let checkStatus = '1';
         await updateCheckSubject(record.id, checkStatus);
         handleSuccess();

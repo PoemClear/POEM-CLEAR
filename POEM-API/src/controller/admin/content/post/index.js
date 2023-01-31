@@ -16,6 +16,7 @@ exports.createPost = async (req, res) => {
         });
     }
     const {
+        type,
         userId,
         title,
         content,
@@ -28,6 +29,7 @@ exports.createPost = async (req, res) => {
         checkStatus = "0",
         isRecycle = "1",
         openComment ,
+        drafts,
         isTop
     } = req.body;
     const bannerInfo = await DB(
@@ -39,6 +41,7 @@ exports.createPost = async (req, res) => {
     );
     if (!bannerInfo[0]) {
         const ret = await DB(res, "xcx_blog_post", "insert", "服务器错误", {
+            type,
             userId,
             title,
             content,
@@ -51,6 +54,7 @@ exports.createPost = async (req, res) => {
             checkStatus,
             isRecycle,
             openComment,
+            drafts,
             isTop,
             createTime: rTime(timestamp(new Date())),
         });
@@ -84,6 +88,7 @@ exports.updatePost = async (req, res) => {
     }
     const {
         id,
+        type,
         title,
         content,
         cover = '',
@@ -94,11 +99,13 @@ exports.updatePost = async (req, res) => {
         status,
         isRecycle = "1",
         openComment,
-        isTop
+        isTop,
+        drafts
     } = req.body;
     /** 如果当前角色的 后台配置的 系统管理员 没有限制修改文章*/
     if( payload.accountId.roleValue=='systemAdmin'){
         const ret = await DB(res, 'xcx_blog_post', 'update', '服务器错误', `id=${id}`, {
+            type,
             title,
             content,
             cover,
@@ -110,6 +117,7 @@ exports.updatePost = async (req, res) => {
             isRecycle,
             openComment,
             isTop,
+            drafts,
             updateTime: rTime(timestamp(new Date())),
         })
         if (ret.affectedRows == 1) {
@@ -126,6 +134,7 @@ exports.updatePost = async (req, res) => {
         return
     }
     const ret = await DB(res, 'xcx_blog_post', 'update', '服务器错误', `userId=${payload.accountId.id} and id=${id}`, {
+        type,
         title,
         content,
         cover,
@@ -137,6 +146,7 @@ exports.updatePost = async (req, res) => {
         isRecycle,
         openComment,
         isTop,
+        drafts,
         updateTime: rTime(timestamp(new Date())),
     })
     if (ret.affectedRows == 1) {
@@ -167,8 +177,10 @@ exports.postList = async (req, res) => {
     let params = {
         status: req.query.status || "",
         isRecycle: req.query.isRecycle || "1",
+        drafts: req.query.drafts || '0',
         title: req.query.title || "",
         checkStatus: req.query.checkStatus || "",
+        postType:req.query.postType || "",
         page: req.query.page || 1,
         pageSize: req.query.pageSize || 10,
     };
@@ -179,7 +191,7 @@ exports.postList = async (req, res) => {
             "xcx_blog_post",
             "find",
             "服务器错误",
-            `title like '%${params.title}%' and isRecycle like '%${params.isRecycle}%' and status like '%${params.status}%' and checkStatus like '%${params.checkStatus}%'`
+            `title like '%${params.title}%'  and drafts like '%${params.drafts}%' and  isRecycle like '%${params.isRecycle}%' and postType like '%${params.postType}%' and status like '%${params.status}%' and checkStatus like '%${params.checkStatus}%'`
         );
 
         let result = await DB(
@@ -187,8 +199,8 @@ exports.postList = async (req, res) => {
             "xcx_blog_post",
             "find",
             "服务器错误",
-            `title like '%${params.title}%' and isRecycle like '%${params.isRecycle
-            }%' and status like '%${params.status}%' and  checkStatus like '%${params.checkStatus
+            `title like '%${params.title}%' and drafts like '%${params.drafts}%'  and isRecycle like '%${params.isRecycle
+            }%' and status like '%${params.status}%'  and postType like '%${params.postType}%'  and  checkStatus like '%${params.checkStatus
             }%'  order by id desc  limit ${(params.page - 1) * params.pageSize},${params.pageSize
             }`
         );
@@ -243,7 +255,7 @@ exports.postList = async (req, res) => {
         "xcx_blog_post",
         "find",
         "服务器错误",
-        `userId=${payload.accountId.id} and title like '%${params.title}%' and isRecycle like '%${params.isRecycle}%' and status like '%${params.status}%' and checkStatus like '%${params.checkStatus}%'`
+        `userId=${payload.accountId.id}  and drafts like '%${params.drafts}%'   and postType like '%${params.postType}%'  and title like '%${params.title}%' and isRecycle like '%${params.isRecycle}%' and status like '%${params.status}%' and checkStatus like '%${params.checkStatus}%'`
     );
 
     let result = await DB(
@@ -251,7 +263,7 @@ exports.postList = async (req, res) => {
         "xcx_blog_post",
         "find",
         "服务器错误",
-        `userId=${payload.accountId.id} and title like '%${params.title}%' and isRecycle like '%${params.isRecycle
+        `userId=${payload.accountId.id} and drafts like '%${params.drafts}%'   and postType like '%${params.postType}%'  and title like '%${params.title}%' and isRecycle like '%${params.isRecycle
         }%' and status like '%${params.status}%' and  checkStatus like '%${params.checkStatus
         }%'  order by id desc  limit ${(params.page - 1) * params.pageSize},${params.pageSize
         }`

@@ -1,7 +1,7 @@
 <template>
   <PageWrapper dense contentFullHeight fixedHeight contentClass="flex">
-    <DeptTree class="w-1/4 xl:w-1/5" @select="handleSelect" />
-    <BasicTable @register="registerTable" class="w-3/4 xl:w-4/5" :searchInfo="searchInfo">
+    <DeptTree class="w-1/5 xl:w-1/6" @select="handleSelect" />
+    <BasicTable @register="registerTable" class="w-4/5 xl:w-5/6" :searchInfo="searchInfo">
       <template #toolbar>
         <a-button type="primary" @click="handleCreate">新增账号</a-button>
       </template>
@@ -63,7 +63,7 @@
       const { hasPermission } = usePermission();
       const [registerModal, { openModal }] = useModal();
       const searchInfo = reactive<Recordable>({});
-      const userStore = useUserStore()
+      const userStore = useUserStore();
       const userId = userStore.getUserInfo?.userId;
       const [registerTable, { reload, updateTableDataRecord }] = useTable({
         title: '账号列表',

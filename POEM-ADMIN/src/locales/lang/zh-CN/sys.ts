@@ -67,8 +67,9 @@ export default {
     signUpFormTitle: '注册',
     forgetFormTitle: '重置密码',
 
-    signInTitle: '开箱即用的中后台管理系统',
-    signInDesc: '输入您的个人详细信息开始使用！',
+    signInTitle: '全功能博客后台管理系统',
+    signInDesc:
+      '之后使用Flutter、uni-app开发APP，小程序。接口由作者独立开发，如有使用接口，有偿联系。',
     policy: '我同意Poem Admin隐私政策',
     scanSign: `扫码后点击"确认"，即可完成登录`,
 
@@ -93,7 +94,7 @@ export default {
     userName: '账号',
     password: '密码',
     realName: '真实姓名',
-    deptName:'部门',
+    deptName: '部门',
     confirmPassword: '确认密码',
     email: '邮箱',
     smsCode: '短信验证码',

@@ -1,9 +1,6 @@
 <template>
   <div>
-    <BasicTable @register="registerTable">
-      <template #toolbar>
-        <a-button type="primary" @click="handleCreate"> 写文章</a-button>
-      </template>
+    <BasicTable @register="registerTable" :searchInfo="searchInfo">
       <template #bodyCell="{ column, record }">
         <template v-if="column.key === 'view_count'">
           {{ record.view_count }} / {{ record.like_count }} / {{ record.comment_count }} /
@@ -20,24 +17,6 @@
         <template v-if="column.key === 'action'">
           <TableAction
             :actions="[
-              {
-                icon: 'ant-design:clock-circle-outlined',
-                tooltip: '审核',
-                color: 'warning',
-                popConfirm: {
-                  title: '是否审核改文章',
-                  placement: 'left',
-                  cancelText: '不通过',
-                  okText: '通过',
-                  confirm: handleCheckSuccess.bind(null, record),
-                  cancel: handleCheckFail.bind(null, record),
-                },
-              },
-              {
-                icon: 'clarity:info-standard-line',
-                tooltip: '查看详情',
-                onClick: handleView.bind(null, record),
-              },
               {
                 icon: 'clarity:note-edit-line',
                 onClick: handleEdit.bind(null, record),
@@ -64,26 +43,27 @@
   import { defineComponent } from 'vue';
 
   import { BasicTable, useTable, TableAction } from '/@/components/Table';
-  import { getPostList, upDatePostRecycle, updateCheckPost } from '/@/api/content/blog';
+  import { getPostList, upDatePostRecycle } from '/@/api/content/blog';
   import { useDrawer } from '/@/components/Drawer';
   import { usePermissionStore } from '/@/store/modules/permission';
   import { usePermission } from '/@/hooks/web/usePermission';
   import { columns, searchFormSchema } from './post.data';
   import { useModal } from '/@/components/Modal';
   import { Image } from 'ant-design-vue';
-  import { useGo } from '/@/hooks/web/usePage';
   import PostDrawer from './PostDrawer.vue';
   export default defineComponent({
     name: 'RoleManagement',
     components: { BasicTable, TableAction, Image, PostDrawer },
     setup() {
-      const go = useGo();
       const [registerDrawer, { openDrawer }] = useDrawer();
       const { hasPermission } = usePermission();
       const [register2, { openModal: openModal2 }] = useModal();
+      const searchInfo = {
+        drafts: 1,
+      };
       const permissionStore = usePermissionStore();
       const [registerTable, { reload }] = useTable({
-        title: '文章列表',
+        title: '草稿箱列表',
         api: getPostList,
         columns,
         pagination: { pageSize: 10 },
@@ -126,24 +106,8 @@
         handleSuccess();
       }
 
-      async function handleCheckSuccess(record: Recordable) {
-        let checkStatus = '2';
-        await updateCheckPost(record.id, checkStatus);
-        handleSuccess();
-      }
-
-      async function handleCheckFail(record: Recordable) {
-        let checkStatus = '1';
-        await updateCheckPost(record.id, checkStatus);
-        handleSuccess();
-      }
-
       function handleSuccess() {
         reload();
-      }
-
-      function handleView(record: Recordable) {
-        go('/content/blog/post_detail/' + record.id);
       }
 
       return {
@@ -155,11 +119,9 @@
         handleSuccess,
         hasPermission,
         permissionStore,
-        handleView,
         openModal2,
         register2,
-        handleCheckSuccess,
-        handleCheckFail,
+        searchInfo,
       };
     },
   });

@@ -3,54 +3,31 @@
     v-bind="$attrs"
     @register="registerDrawer"
     showFooter
-    width="90%"
+    width="100%"
     :title="getTitle"
     @ok="handleSubmit"
   >
-    <BasicForm @register="registerForm">
-      <template #menu="{ model, field }">
-        <BasicTree
-          v-model:value="model[field]"
-          :treeData="treeData"
-          :fieldNames="{ title: 'menuName', key: 'id' }"
-          checkable
-          toolbar
-          title="菜单分配"
-        />
-      </template>
-    </BasicForm>
+    <BasicForm @register="registerForm" />
     <template #insertFooter>
-      <a-button> 切换编辑器</a-button>
-    </template>
-    <template #centerFooter>
-      <a-button> btn2</a-button>
-    </template>
-
-    <template #appendFooter>
-      <a-button> btn3</a-button>
+      <a-button @click="handleDrafts"> 保存草稿箱</a-button>
     </template>
   </BasicDrawer>
 </template>
 <script lang="ts">
-  import { defineComponent, ref, computed, unref, reactive, computed } from 'vue';
+  import { defineComponent, ref, computed, unref, reactive } from 'vue';
   import { BasicForm, useForm } from '/@/components/Form/index';
   import { formSchema } from './post.data';
   import { BasicDrawer, useDrawerInner } from '/@/components/Drawer';
-  import { BasicTree, TreeItem } from '/@/components/Tree';
   import { useUserStore } from '/@/store/modules/user';
   import { createPost, updatePost } from '/@/api/content/blog';
-
   export default defineComponent({
     name: 'RoleDrawer',
-    components: { BasicDrawer, BasicForm, BasicTree },
+    components: { BasicDrawer, BasicForm },
     emits: ['success', 'register'],
     setup(_, { emit }) {
       const isUpdate = ref(true);
-      const treeData = ref<TreeItem[]>([]);
-
       const userStore = useUserStore();
       const userinfo = computed(() => userStore.getUserInfo);
-      console.log(userinfo.value.id);
       let record = reactive({ id: '' });
       const [registerForm, { resetFields, setFieldsValue, validate }] = useForm({
         labelWidth: 90,
@@ -82,8 +59,7 @@
           const values = await validate();
           setDrawerProps({ confirmLoading: true });
           // TODO custom api
-          console.log(values);
-          console.log(isUpdate.value);
+          values.drafts = 0;
           if (isUpdate.value) {
             await updatePost({ ...values, id: record.id, userId: userinfo.value.id });
           } else {
@@ -96,13 +72,30 @@
           setDrawerProps({ confirmLoading: false });
         }
       }
+      async function handleDrafts() {
+        try {
+          const values = await validate();
+          setDrawerProps({ confirmLoading: true });
+          // TODO custom api
+          values.drafts = 1;
+          if (isUpdate.value) {
+            await updatePost({ ...values, id: record.id, userId: userinfo.value.id });
+          } else {
+            await createPost({ ...values, userId: userinfo.value.id });
+          }
 
+          closeDrawer();
+          emit('success');
+        } finally {
+          setDrawerProps({ confirmLoading: false });
+        }
+      }
       return {
         registerDrawer,
         registerForm,
         getTitle,
         handleSubmit,
-        treeData,
+        handleDrafts,
       };
     },
   });

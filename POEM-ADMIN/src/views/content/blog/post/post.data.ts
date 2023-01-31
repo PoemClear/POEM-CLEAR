@@ -1,12 +1,11 @@
 import { BasicColumn } from '/@/components/Table';
 import { FormSchema } from '/@/components/Table';
 import { h } from 'vue';
-import { Switch, Tag } from 'ant-design-vue';
-import { setRoleStatus } from '/@/api/demo/system';
-import { useMessage } from '/@/hooks/web/useMessage';
-import { MarkDown } from '/@/components/Markdown';
+import { Tag } from 'ant-design-vue';
 import { getPostCateList } from '/@/api/content/blog';
 import { uploadApi } from '/@/api/sys/upload';
+import { MarkDown } from '/@/components/Markdown';
+import { Tinymce } from '/@/components/Tinymce/index';
 export const columns: BasicColumn[] = [
   {
     title: '封面',
@@ -19,25 +18,30 @@ export const columns: BasicColumn[] = [
     width: 150,
   },
   {
+    title: '浏览 / 点赞 / 评论 / 收藏',
+    dataIndex: 'view_count',
+    width: 150,
+  },
+  {
     title: '状态',
     dataIndex: 'status',
     width: 80,
     customRender: ({ record }) => {
       const status = record.status;
       const toDoEnable = ~~status === 1;
-      const color = toDoEnable ? 'green' : 'red';
-      const text = toDoEnable ? '已启用' : '已关闭';
+      const color = toDoEnable ? 'green' : 'yellow';
+      const text = toDoEnable ? '显示' : '隐藏';
       return h(Tag, { color: color }, () => text);
     },
   },
   {
-    title: '开启评论',
+    title: '评论',
     dataIndex: 'openComment',
     width: 80,
     customRender: ({ record }) => {
       const status = record.openComment;
       const toDoEnable = ~~status === 1;
-      const color = toDoEnable ? 'blue' : 'red';
+      const color = toDoEnable ? 'blue' : 'pink';
       const text = toDoEnable ? '已开启' : '已关闭';
       return h(Tag, { color: color }, () => text);
     },
@@ -49,20 +53,10 @@ export const columns: BasicColumn[] = [
     customRender: ({ record }) => {
       const status = record.isTop;
       const toDoEnable = ~~status === 1;
-      const color = toDoEnable ? 'blue' : 'red';
+      const color = toDoEnable ? 'blue' : '';
       const text = toDoEnable ? '已置顶' : '未置顶';
       return h(Tag, { color: color }, () => text);
     },
-  },
-  {
-    title: '作者',
-    dataIndex: 'author',
-    width: 100,
-  },
-  {
-    title: '浏览 / 点赞 / 评论 / 收藏',
-    dataIndex: 'view_count',
-    width: 150,
   },
   {
     title: '审核状态',
@@ -78,7 +72,14 @@ export const columns: BasicColumn[] = [
       return h(Tag, { color: color }, () => text);
     },
   },
-
+  {
+    title: '作者',
+    dataIndex: 'author',
+    width: 100,
+    customRender: ({ record }) => {
+      return h(Tag, { color: 'cyan' }, () => record.author.username);
+    },
+  },
   {
     title: '发布时间',
     dataIndex: 'createTime',
@@ -99,16 +100,29 @@ export const searchFormSchema: FormSchema[] = [
     colProps: { span: 6 },
   },
   {
+    field: 'postType',
+    label: '文章类型',
+    component: 'Select',
+    componentProps: {
+      options: [
+        { label: '原创', value: '1' },
+        { label: '转载', value: '2' },
+        { label: '翻译', value: '3' },
+      ],
+    },
+    colProps: { span: 4 },
+  },
+  {
     field: 'status',
     label: '状态',
     component: 'Select',
     componentProps: {
       options: [
-        { label: '启用', value: '1' },
-        { label: '停用', value: '0' },
+        { label: '显示', value: '1' },
+        { label: '隐藏', value: '0' },
       ],
     },
-    colProps: { span: 6 },
+    colProps: { span: 4 },
   },
   {
     field: 'checkStatus',
@@ -121,12 +135,25 @@ export const searchFormSchema: FormSchema[] = [
         { label: '审核通过', value: '2' },
       ],
     },
-    colProps: { span: 6 },
+    colProps: { span: 4 },
   },
-  // checkStatus
 ];
 
+const isMarkdown = (type: string) => type === '1';
+const isTinymce = (type: string) => type === '2';
 export const formSchema: FormSchema[] = [
+  {
+    field: 'type',
+    label: '编辑器类型',
+    component: 'RadioButtonGroup',
+    defaultValue: '1',
+    componentProps: {
+      options: [
+        { label: 'Markdown编辑器', value: '1' },
+        { label: 'Tinymce富文本', value: '2' },
+      ],
+    },
+  },
   {
     field: 'title',
     component: 'Input',
@@ -134,11 +161,12 @@ export const formSchema: FormSchema[] = [
     defaultValue: '请输入文章标题 (5~100个字)',
     rules: [{ required: true }],
   },
+
   {
     field: 'content',
     component: 'Input',
     label: '内容',
-    defaultValue: '请输入内容',
+    defaultValue: '请输入文章内容',
     rules: [{ required: true, trigger: 'blur' }],
     render: ({ model, field }) => {
       return h(MarkDown, {
@@ -148,12 +176,30 @@ export const formSchema: FormSchema[] = [
         },
       });
     },
+    ifShow: ({ values }) => !isTinymce(values.type),
   },
+
+  {
+    field: 'content',
+    component: 'Input',
+    label: '内容',
+    defaultValue: '请输入文章内容',
+    rules: [{ required: true }],
+    render: ({ model, field }) => {
+      return h(Tinymce, {
+        value: model[field],
+        onChange: (value: string) => {
+          model[field] = value;
+        },
+      });
+    },
+    ifShow: ({ values }) => !isMarkdown(values.type),
+  },
+
   {
     field: 'cover',
     component: 'Upload',
     label: '上传封面',
-
     componentProps: {
       api: uploadApi,
       maxSize: 20,
@@ -196,8 +242,8 @@ export const formSchema: FormSchema[] = [
     defaultValue: '1',
     componentProps: {
       options: [
-        { label: '停用', value: '0' },
-        { label: '启用', value: '1' },
+        { label: '显示', value: '1' },
+        { label: '隐藏', value: '0' },
       ],
     },
     colProps: { span: 8 },
@@ -209,8 +255,8 @@ export const formSchema: FormSchema[] = [
     defaultValue: '1',
     componentProps: {
       options: [
-        { label: '关闭', value: '0' },
         { label: '打开', value: '1' },
+        { label: '关闭', value: '0' },
       ],
     },
     colProps: { span: 8 },
@@ -222,8 +268,8 @@ export const formSchema: FormSchema[] = [
     defaultValue: '0',
     componentProps: {
       options: [
-        { label: '未置顶', value: '0' },
         { label: '置顶', value: '1' },
+        { label: '未置顶', value: '0' },
       ],
     },
     colProps: { span: 8 },

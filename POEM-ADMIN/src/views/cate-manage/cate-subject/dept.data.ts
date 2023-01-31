@@ -72,24 +72,9 @@ export const searchFormSchema: FormSchema[] = [
 
 export const formSchema: FormSchema[] = [
   {
-    field: 'type',
-    label: '分类类型',
-    component: 'RadioButtonGroup',
-    defaultValue: '1',
-    componentProps: {
-      options: [
-        { label: '一级', value: '1' },
-        { label: '二级', value: '2' },
-      ],
-    },
-    colProps: { lg: 24, md: 24 },
-    required: true,
-  },
-  {
     field: 'image_url',
     component: 'Upload',
     label: '背景图片',
-    rules: [{ required: true, message: '请选择上传背景图片' }],
     componentProps: {
       api: uploadApi,
       maxSize: 20,
@@ -100,7 +85,6 @@ export const formSchema: FormSchema[] = [
     field: 'cover',
     component: 'Upload',
     label: '封面',
-    rules: [{ required: true, message: '请选择上传封面' }],
     componentProps: {
       api: uploadApi,
       maxSize: 20,

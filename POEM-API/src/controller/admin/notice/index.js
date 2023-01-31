@@ -294,6 +294,31 @@ exports.NoticeList = async (req, res) => {
     pageSize: req.query.pageSize || 10,
   };
 
+  let noticeStatusParent = await DB(
+    res,
+    "sy_dict",
+    "find",
+    "服务器出错", `value='noticeStatus'`
+  );
+
+  let noticeTypeParent = await DB(
+    res,
+    "sy_dict",
+    "find",
+    "服务器出错", `value='noticeType'`
+  );
+  let noticeStatusList = await DB(
+    res,
+    "sy_dict",
+    "find",
+    "服务器出错", `parentId=${noticeStatusParent[0].id}`
+  );
+  let noticeTypeList = await DB(
+    res,
+    "sy_dict",
+    "find",
+    "服务器出错", `parentId=${noticeTypeParent[0].id}`
+  );
   let NoticeLen = await DB(
     res,
     "xcx_notice",
@@ -306,25 +331,36 @@ exports.NoticeList = async (req, res) => {
     "xcx_notice",
     "find",
     "服务器出错",
-    `title like '%${params.title}%' and status like '%${
-      params.status
-    }%' and type like '%${params.type}%' order by orderNo desc limit ${
-      (params.page - 1) * params.pageSize
+    `title like '%${params.title}%' and status like '%${params.status
+    }%' and type like '%${params.type}%' order by orderNo desc limit ${(params.page - 1) * params.pageSize
     },${params.pageSize}`
   );
 
   result.forEach((v) => {
-    v.type = v.type.split(",").map(Number);
-    v.noticeStatus = v.noticeStatus.split(",").map(Number);
+    let type = v.type.split(",").map(Number);
+    v.type = type[1]
+    let noticeStatus = v.noticeStatus.split(",").map(Number);
+    v.noticeStatus = noticeStatus[1]
     if (v.createTime) {
       v.createTime = rTime(timestamp(v.createTime));
     }
+    noticeStatusList.forEach((ele) => {
+      if (v.noticeStatusName == ele.label) {
+        v.status_value = Number(ele.value)
+      }
+    })
+    noticeTypeList.forEach((ele) => {
+      if (v.typeName == ele.label) {
+        v.type_value = Number(ele.value)
+      }
+    })
     if (v.updateTime) {
       v.updateTime = rTime(timestamp(v.updateTime));
     } else {
       delete v.updateTime;
     }
   });
+
   if (!result[0]) {
     res.json({
       code: 200,

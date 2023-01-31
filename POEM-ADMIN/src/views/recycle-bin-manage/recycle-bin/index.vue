@@ -2,15 +2,17 @@
   <div>
     <BasicTable @register="registerTable" :searchInfo="searchInfo">
       <template #bodyCell="{ column, record }">
-        <template v-if="column.key === 'author'">
-          {{ record.author.username }}
-        </template>
         <template v-if="column.key === 'view_count'">
           {{ record.view_count }} / {{ record.like_count }} / {{ record.comment_count }} /
           {{ record.collect_count }}
         </template>
         <template v-if="column.key === 'cover'">
-          <Image :width="80" :height="40" :src="record.cover" />
+          <Image
+            :width="60"
+            :height="30"
+            :src="record.cover"
+            fallback="https://sy0415-1300507222.cos.ap-beijing.myqcloud.com/1675144320527.png"
+          />
         </template>
         <template v-if="column.key === 'action'">
           <TableAction

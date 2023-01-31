@@ -73,9 +73,10 @@ export default {
     signUpFormTitle: 'Sign up',
     forgetFormTitle: 'Reset password',
 
-    signInTitle: 'Backstage management system',
-    signInDesc: 'Enter your personal details and get started!',
-    policy: 'I agree to the xxx Privacy Policy',
+    signInTitle: 'Full function blog background management system',
+    signInDesc:
+      'Then I developed apps and small programs with Flutter and uni-app. The interface is independently developed by the author. If there is an interface to use, paid contact.',
+    policy: 'I agree to the Poem Admin Privacy Policy',
     scanSign: `scanning the code to complete the login`,
 
     loginButton: 'Sign in',
@@ -99,7 +100,7 @@ export default {
     userName: 'Username',
     password: 'Password',
     realName: 'RealName',
-    deptName:'DeptName',
+    deptName: 'DeptName',
     confirmPassword: 'Confirm Password',
     email: 'Email',
     smsCode: 'SMS code',

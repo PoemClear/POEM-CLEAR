@@ -164,7 +164,7 @@ exports.userInfo = async (req, res) => {
             message: "TOKEN 已过期",
         });
     }
-    let roleInfo = await DB(res, "sy_roles", "find", "服务器错误");
+    let roleList = await DB(res, "sy_roles", "find", "服务器错误");
     let userInfo = await DB(
         res,
         "sy_users",
@@ -172,6 +172,7 @@ exports.userInfo = async (req, res) => {
         "服务器错误",
         `id='${payload.accountId.id}'`
     );
+    let deptList = await DB(res, "sy_depts", "find", "服务器错误");
     userInfo.forEach((v) => {
         delete v.password;
         if (v.createTime) {
@@ -185,10 +186,15 @@ exports.userInfo = async (req, res) => {
         if (v.lastLoginTime) {
             v.lastLoginTime = rTime(timestamp(v.lastLoginTime));
         }
-        delete v.roleValue;
-        roleInfo.forEach((ele) => {
+        // delete v.roleValue;
+        roleList.forEach((ele) => {
             if (v.roleValue == ele.roleValue) {
-                v.roles = ele;
+                v.roleName = ele.roleName;
+            }
+        });
+        deptList.forEach((ele) => {
+            if (v.deptId == ele.id) {
+                v.deptName = ele.deptName;
             }
         });
         v.userId = v.id;

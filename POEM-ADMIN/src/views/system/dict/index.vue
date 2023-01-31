@@ -89,7 +89,7 @@
       }
 
       async function handleDelete(record: Recordable) {
-        await delCate(record.id);
+        // await delCate(record.id);
         console.log(record);
         handleSuccess();
       }

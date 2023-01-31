@@ -63,7 +63,7 @@
       const { hasPermission } = usePermission();
       const [registerModal, { openModal }] = useModal();
       const searchInfo = reactive<Recordable>({});
-      const userStore = useUserStore()
+      const userStore = useUserStore();
       const userId = userStore.getUserInfo?.userId;
       const [registerTable, { reload, updateTableDataRecord }] = useTable({
         title: '账号列表',

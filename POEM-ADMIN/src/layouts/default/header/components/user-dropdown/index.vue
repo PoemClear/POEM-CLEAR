@@ -17,6 +17,7 @@
           icon="ion:document-text-outline"
           v-if="getShowDoc"
         />
+        <MenuItem key="center" :text="t('layout.header.setting')" icon="ant-design:user-outlined" />
         <MenuDivider v-if="getShowDoc" />
         <MenuItem
           v-if="getUseLockPage"
@@ -52,10 +53,10 @@
   import headerImg from '/@/assets/images/header.jpg';
   import { propTypes } from '/@/utils/propTypes';
   import { openWindow } from '/@/utils';
-
+  import { useGo } from '/@/hooks/web/usePage';
   import { createAsyncComponent } from '/@/utils/factory/createAsyncComponent';
 
-  type MenuEvent = 'logout' | 'doc' | 'lock';
+  type MenuEvent = 'logout' | 'doc' | 'lock' | 'center';
 
   export default defineComponent({
     name: 'UserDropdown',
@@ -73,6 +74,8 @@
       const { prefixCls } = useDesign('header-user-dropdown');
       const { t } = useI18n();
       const { getShowDoc, getUseLockPage } = useHeaderSetting();
+
+      const go = useGo();
       const userStore = useUserStore();
 
       const getUserInfo = computed(() => {
@@ -95,7 +98,9 @@
       function openDoc() {
         openWindow(DOC_URL);
       }
-
+      function handleCenter() {
+        go('/system/setting');
+      }
       function handleMenuClick(e: MenuInfo) {
         switch (e.key as MenuEvent) {
           case 'logout':
@@ -106,6 +111,9 @@
             break;
           case 'lock':
             handleLock();
+            break;
+          case 'center':
+            handleCenter();
             break;
         }
       }

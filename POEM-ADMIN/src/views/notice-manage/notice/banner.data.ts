@@ -1,9 +1,6 @@
 import { BasicColumn } from '/@/components/Table';
 import { FormSchema } from '/@/components/Table';
 import { h } from 'vue';
-import { Switch } from 'ant-design-vue';
-import { setBannerStatus } from '/@/api/banner';
-import { useMessage } from '/@/hooks/web/useMessage';
 import { getDictList } from '/@/api/demo/system';
 import { Tag } from 'ant-design-vue';
 export const columns: BasicColumn[] = [
@@ -22,16 +19,16 @@ export const columns: BasicColumn[] = [
   },
   {
     title: '公告状态',
-    dataIndex: 'noticeStatus',
+    dataIndex: 'status_value',
     // customRender: ({ record }) => {
     //   const color = 'green';
     //   return h(Tag, { color: color }, () => record.noticeStatusName);
     // },
     customRender: ({ record }) => {
-      const status = record.noticeStatus[1];
-      const toDoEnable = ~~status === 18;
-      const FailEnable = ~~status === 19;
-      const SuccessEnable = ~~status === 20;
+      const status = record.status_value;
+      const toDoEnable = ~~status === 10;
+      const FailEnable = ~~status === 20;
+      const SuccessEnable = ~~status === 30;
       const color = toDoEnable ? 'orange' : SuccessEnable ? 'green' : 'red';
       const text = toDoEnable ? '一般' : FailEnable ? '重要' : '紧急';
       return h(Tag, { color: color }, () => text);

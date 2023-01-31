@@ -11,14 +11,6 @@ export const columns: BasicColumn[] = [
     width: 100,
   },
   {
-    title: '位置',
-    dataIndex: 'typeName',
-    customRender: ({ record }) => {
-      const color = 'green';
-      return h(Tag, { color: color }, () => record.typeName);
-    },
-  },
-  {
     title: '跳转链接',
     dataIndex: 'link_url',
     width: 600,
@@ -28,6 +20,15 @@ export const columns: BasicColumn[] = [
     title: '排序',
     dataIndex: 'orderNo',
     width: 50,
+  },
+  {
+    title: '位置',
+    dataIndex: 'typeName',
+    customRender: ({ record }) => {
+      const color = 'pink';
+      return h(Tag, { color: color }, () => record.typeName);
+    },
+    width: 80,
   },
   {
     title: '状态',

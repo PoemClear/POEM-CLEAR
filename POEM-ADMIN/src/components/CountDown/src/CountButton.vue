@@ -44,10 +44,12 @@
        */
       async function handleStart() {
         const { beforeStartFunc } = props;
+        console.log('获取验证码');
         if (beforeStartFunc && isFunction(beforeStartFunc)) {
           loading.value = true;
           try {
             const canStart = await beforeStartFunc();
+
             canStart && start();
           } finally {
             loading.value = false;

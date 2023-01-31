@@ -1,9 +1,7 @@
 import { BasicColumn } from '/@/components/Table';
 import { FormSchema } from '/@/components/Table';
 import { h } from 'vue';
-import { Switch, Tag } from 'ant-design-vue';
-import { setRoleStatus } from '/@/api/demo/system';
-import { useMessage } from '/@/hooks/web/useMessage';
+import { Tag } from 'ant-design-vue';
 import { uploadApi } from '/@/api/sys/upload';
 import { getPostList } from '/@/api/content/blog';
 export interface TabItem {
@@ -65,7 +63,11 @@ export const columns: BasicColumn[] = [
     width: 180,
     align: 'left',
   },
-
+  {
+    title: '浏览 / 点赞 / 评论 / 收藏',
+    dataIndex: 'view_count',
+    width: 150,
+  },
   { title: '更新 / 完结', dataIndex: 'num', width: 100 },
   {
     title: '状态',
@@ -74,19 +76,19 @@ export const columns: BasicColumn[] = [
     customRender: ({ record }) => {
       const status = record.status;
       const toDoEnable = ~~status === 1;
-      const color = toDoEnable ? 'green' : 'red';
-      const text = toDoEnable ? '已启用' : '已关闭';
+      const color = toDoEnable ? 'green' : 'yellow';
+      const text = toDoEnable ? '显示' : '隐藏';
       return h(Tag, { color: color }, () => text);
     },
   },
   {
-    title: '开启评论',
+    title: '评论',
     dataIndex: 'openComment',
     width: 80,
     customRender: ({ record }) => {
       const status = record.openComment;
       const toDoEnable = ~~status === 1;
-      const color = toDoEnable ? 'blue' : 'red';
+      const color = toDoEnable ? 'blue' : 'pink';
       const text = toDoEnable ? '已开启' : '已关闭';
       return h(Tag, { color: color }, () => text);
     },
@@ -98,20 +100,10 @@ export const columns: BasicColumn[] = [
     customRender: ({ record }) => {
       const status = record.isTop;
       const toDoEnable = ~~status === 1;
-      const color = toDoEnable ? 'blue' : 'red';
+      const color = toDoEnable ? 'blue' : '';
       const text = toDoEnable ? '已置顶' : '未置顶';
       return h(Tag, { color: color }, () => text);
     },
-  },
-  {
-    title: '作者',
-    dataIndex: 'author',
-    width: 100,
-  },
-  {
-    title: '浏览 / 点赞 / 评论 / 收藏',
-    dataIndex: 'view_count',
-    width: 150,
   },
   {
     title: '审核状态',
@@ -125,6 +117,14 @@ export const columns: BasicColumn[] = [
       const color = toDoEnable ? 'orange' : SuccessEnable ? 'green' : 'red';
       const text = toDoEnable ? '审核中' : FailEnable ? '未通过' : '审核通过';
       return h(Tag, { color: color }, () => text);
+    },
+  },
+  {
+    title: '作者',
+    dataIndex: 'author',
+    width: 100,
+    customRender: ({ record }) => {
+      return h(Tag, { color: 'cyan' }, () => record.author.username);
     },
   },
   {
@@ -220,15 +220,15 @@ export const formSchema: FormSchema[] = [
     defaultValue: '0',
     componentProps: {
       options: [
-        { label: '已完结', value: '1' },
         { label: '未完结', value: '0' },
+        { label: '已完结', value: '1' },
       ],
     },
   },
   {
     field: 'openComment',
     label: '开启评论',
-    component: 'RadioButtonGroup',
+    component: 'RadioGroup',
     defaultValue: '1',
     componentProps: {
       options: [
@@ -240,12 +240,12 @@ export const formSchema: FormSchema[] = [
   {
     field: 'isTop',
     label: '置顶文章',
-    component: 'RadioButtonGroup',
+    component: 'RadioGroup',
     defaultValue: '0',
     componentProps: {
       options: [
-        { label: '置顶', value: '1' },
         { label: '未置顶', value: '0' },
+        { label: '置顶', value: '1' },
       ],
     },
   },

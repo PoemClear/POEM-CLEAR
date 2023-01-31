@@ -6,23 +6,16 @@ import { getDictList } from '/@/api/demo/system';
 import { Tag } from 'ant-design-vue';
 export const columns: BasicColumn[] = [
   {
-    title: '标题名称',
-    dataIndex: 'title',
-    width: 120,
-  },
-  {
     title: '标题图标',
     dataIndex: 'image_url',
     width: 100,
   },
   {
-    title: '位置',
-    dataIndex: 'typeName',
-    customRender: ({ record }) => {
-      const color = 'green';
-      return h(Tag, { color: color }, () => record.typeName);
-    },
+    title: '标题名称',
+    dataIndex: 'title',
+    width: 120,
   },
+
   {
     title: '跳转链接',
     dataIndex: 'link_url',
@@ -32,6 +25,15 @@ export const columns: BasicColumn[] = [
     title: '排序',
     dataIndex: 'orderNo',
     width: 50,
+  },
+  {
+    title: '位置',
+    dataIndex: 'typeName',
+    customRender: ({ record }) => {
+      const color = 'pink';
+      return h(Tag, { color: color }, () => record.typeName);
+    },
+    width: 80,
   },
   {
     title: '状态',

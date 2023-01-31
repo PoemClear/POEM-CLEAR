@@ -4,7 +4,7 @@
     @register="registerDrawer"
     showFooter
     :title="getTitle"
-    width="500px"
+    width="600px"
     @ok="handleSubmit"
   >
     <!-- <div style="display: flex; align-items: center">

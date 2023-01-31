@@ -8,6 +8,7 @@ export default {
     // tooltip
     tooltipErrorLog: '错误日志',
     tooltipLock: '锁定屏幕',
+    setting: '个人设置',
     tooltipNotify: '消息通知',
 
     tooltipEntryFull: '全屏',

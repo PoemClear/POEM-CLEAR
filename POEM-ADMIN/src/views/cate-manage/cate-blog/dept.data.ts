@@ -75,7 +75,6 @@ export const formSchema: FormSchema[] = [
     field: 'image_url',
     component: 'Upload',
     label: '背景图片',
-    rules: [{ required: false, message: '请选择上传背景图片' }],
     componentProps: {
       api: uploadApi,
       maxSize: 20,
@@ -86,7 +85,6 @@ export const formSchema: FormSchema[] = [
     field: 'cover',
     component: 'Upload',
     label: '封面',
-    rules: [{ required: false, message: '请选择上传封面' }],
     componentProps: {
       api: uploadApi,
       maxSize: 20,
