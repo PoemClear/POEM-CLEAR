@@ -3,6 +3,7 @@ import { FormSchema } from '/@/components/Table';
 import { h } from 'vue';
 import { Tag } from 'ant-design-vue';
 import { getPostCateList } from '/@/api/content/blog';
+// import { getAccountList } from '/@/api/system';
 import { uploadApi } from '/@/api/sys/upload';
 import { MarkDown } from '/@/components/Markdown';
 import { Tinymce } from '/@/components/Tinymce/index';
@@ -97,7 +98,7 @@ export const searchFormSchema: FormSchema[] = [
     field: 'title',
     label: '文章标题',
     component: 'Input',
-    colProps: { span: 6 },
+    colProps: { span: 4 },
   },
   {
     field: 'postType',

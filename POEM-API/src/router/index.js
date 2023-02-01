@@ -46,4 +46,7 @@ router.use(require('./admin/notice'))
 
 /** 回收站管理*/
 router.use(require('./admin/recycle-bin'))
+
+/** 个人设置*/
+router.use(require('./admin/setting'))
 module.exports = router

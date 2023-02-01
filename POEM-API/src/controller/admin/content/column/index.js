@@ -26,14 +26,14 @@ exports.createColumn = async (req, res) => {
     if (!userResult[0]) {
         res.json({
             code: 403,
-            msg: "用户不存在"
+            message: "用户不存在"
         })
         return
     }
     if (columnResult[0]) {
         res.json({
             code: 403,
-            msg: "已存在"
+            message: "已存在"
         })
         return
     }
@@ -58,7 +58,7 @@ exports.createColumn = async (req, res) => {
 
         res.json({
             code: 200,
-            msg: "添加成功"
+            message: "添加成功"
         })
     }
 }

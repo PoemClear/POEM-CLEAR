@@ -15,27 +15,43 @@
             </template>
           </ListItemMeta>
         </ListItem>
-      </template>
-    </List>
+      </template> </List
+    ><PwdDarwer @register="registerModal" @success="handleSuccess" />
   </CollapseContainer>
 </template>
 <script lang="ts">
   import { List } from 'ant-design-vue';
   import { defineComponent } from 'vue';
   import { CollapseContainer } from '/@/components/Container/index';
-
+  import { useModal } from '/@/components/Modal';
   import { secureSettingList } from './data';
-
+  import PwdDarwer from './pwdDarwer.vue';
   export default defineComponent({
-    components: { CollapseContainer, List, ListItem: List.Item, ListItemMeta: List.Item.Meta },
+    components: {
+      CollapseContainer,
+      List,
+      ListItem: List.Item,
+      ListItemMeta: List.Item.Meta,
+      PwdDarwer,
+    },
 
     setup() {
+      const [registerModal, { openModal }] = useModal();
       function editPhone(item: Object) {
         console.log(item);
+        if (item.key == '1') {
+          openModal(true, {
+            isUpdate: false,
+          });
+        }
       }
+      function handleSuccess() {}
+
       return {
         list: secureSettingList,
         editPhone,
+        registerModal,
+        handleSuccess,
       };
     },
   });

@@ -180,6 +180,7 @@ exports.postList = async (req, res) => {
 
     let params = {
         status: req.query.status || "",
+        author:req.query.author ||'',
         isRecycle: req.query.isRecycle || "1",
         drafts: req.query.drafts || '0',
         title: req.query.title || "",
@@ -219,7 +220,7 @@ exports.postList = async (req, res) => {
             userList.forEach((ele) => {
                 if (v.userId == ele.id) {
                     v.author = {
-                        username: ele.realName,
+                        username: ele.nickname,
                         avatar: ele.avatar
                     }
                 }
@@ -283,7 +284,7 @@ exports.postList = async (req, res) => {
         userList.forEach((ele) => {
             if (v.userId == ele.id) {
                 v.author = {
-                    username: ele.realName,
+                    username: ele.nickname,
                     avatar: ele.avatar
                 }
             }
@@ -332,11 +333,11 @@ exports.postSelectList = async (req, res) => {
     }
 
     let params = {
-        status: req.query.status || "",
+        status: req.query.status || "1",
         isRecycle: req.query.isRecycle || "1",
         drafts: req.query.drafts || '0',
         title: req.query.title || "",
-        checkStatus: req.query.checkStatus || "",
+        checkStatus: req.query.checkStatus || "2",
         postType: req.query.postType || "",
         page: req.query.page || 1,
         pageSize: req.query.pageSize || 100000,
@@ -485,7 +486,7 @@ exports.upDatePostRecycle = async (req, res) => {
     if (ret.affectedRows == 1) {
         res.json({
             code: 200,
-            message: "删除成功",
+            message:isRecycle==1? "已还原":'已删除',
         });
     } else {
         res.json({

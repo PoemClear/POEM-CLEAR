@@ -1,4 +1,5 @@
 import { defHttp } from '/@/utils/http/axios';
+import { SuccessMessageMode } from '/#/axios';
 interface GetBannerInfoModel {
   title: string;
   type: string;
@@ -29,15 +30,35 @@ enum Api {
 export function getBannerList(params?: BannerListItem) {
   return defHttp.get<GetBannerInfoModel>({ url: Api.BannerList, params });
 }
-export function createBanner(params?: BannerListItem) {
-  return defHttp.post<GetBannerInfoModel>({ url: Api.CreateBanner, params });
+export function createBanner(params?: BannerListItem, mode: SuccessMessageMode = 'message') {
+  return defHttp.post<GetBannerInfoModel>(
+    { url: Api.CreateBanner, params },
+    {
+      successMessageMode: mode,
+    },
+  );
 }
-export function updateBanner(params?: BannerListItem) {
-  return defHttp.post<GetBannerInfoModel>({ url: Api.UpdateBanner, params });
+export function updateBanner(params?: BannerListItem, mode: SuccessMessageMode = 'message') {
+  return defHttp.post<GetBannerInfoModel>(
+    { url: Api.UpdateBanner, params },
+    {
+      successMessageMode: mode,
+    },
+  );
 }
-export function delBanner(id: number) {
-  return defHttp.post<GetBannerInfoModel>({ url: Api.DelBanner, params: { id } });
+export function delBanner(id: number, mode: SuccessMessageMode = 'message') {
+  return defHttp.post<GetBannerInfoModel>(
+    { url: Api.DelBanner, params: { id } },
+    {
+      successMessageMode: mode,
+    },
+  );
 }
 
-export const setBannerStatus = (id: number, status: string) =>
-  defHttp.post({ url: Api.SetBannerStatus, params: { id, status } });
+export const setBannerStatus = (id: number, status: string, mode: SuccessMessageMode = 'message') =>
+  defHttp.post(
+    { url: Api.SetBannerStatus, params: { id, status } },
+    {
+      successMessageMode: mode,
+    },
+  );

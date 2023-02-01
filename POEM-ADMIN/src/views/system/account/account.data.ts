@@ -6,8 +6,8 @@ import { Tag } from 'ant-design-vue';
 import { uploadApi } from '/@/api/sys/upload';
 export const columns: BasicColumn[] = [
   {
-    title: '用户名',
-    dataIndex: 'account',
+    title: '姓名',
+    dataIndex: 'realName',
     width: 120,
   },
   {
@@ -77,7 +77,7 @@ export const accountFormSchema: FormSchema[] = [
   },
   {
     field: 'username',
-    label: '用户名',
+    label: '账号',
     component: 'Input',
     helpMessage: ['登录账号'],
     rules: [
@@ -97,7 +97,15 @@ export const accountFormSchema: FormSchema[] = [
     field: 'phone',
     label: '手机号',
     helpMessage: ['登录密码就是手机号码'],
-    component: 'Input',
+    component: 'InputNumber',
+    required: true,
+    ifShow: true,
+  },
+  {
+    field: 'pwd',
+    label: '密码',
+    helpMessage: ['登录密码', '前往个人设置修改密码'],
+    component: 'InputPassword',
     required: true,
     ifShow: true,
   },

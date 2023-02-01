@@ -31,14 +31,14 @@ exports.createCate = async (req, res) => {
     if (ret.affectedRows == 1) {
         res.json({
             code: 200,
-            msg: "添加成功"
+            message: "添加成功"
         })
     }
     // } else {
 
     //     res.json({
     //         code: 403,
-    //         msg: "分类已存在"
+    //         message: "分类已存在"
     //     })
     // }
 }

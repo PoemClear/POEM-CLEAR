@@ -58,13 +58,13 @@ exports.createSubject = async (req, res) => {
         if (ret.affectedRows == 1) {
             res.json({
                 code: 200,
-                msg: "添加成功",
+                message: "添加成功",
             });
         }
     } else {
         res.json({
             code: 200,
-            msg: "专题已存在",
+            message: "专题已存在",
         });
     }
 };
@@ -116,12 +116,12 @@ exports.updateSubject = async (req, res) => {
         if (ret.affectedRows == 1) {
             res.json({
                 code: 200,
-                msg: "编辑成功",
+                message: "编辑成功",
             });
         } else {
             res.json({
                 code: 200,
-                msg: "专题已存在",
+                message: "专题已存在",
             });
         }
         return
@@ -149,12 +149,12 @@ exports.updateSubject = async (req, res) => {
     if (ret.affectedRows == 1) {
         res.json({
             code: 200,
-            msg: "编辑成功",
+            message: "编辑成功",
         });
     } else {
         res.json({
             code: 200,
-            msg: "专题已存在",
+            message: "专题已存在",
         });
     }
 };
@@ -216,7 +216,7 @@ exports.subjectList = async (req, res) => {
             userList.forEach((ele) => {
                 if (v.userId == ele.id) {
                     v.author = {
-                        username: ele.realName,
+                        username: ele.nickname,
                         avatar: ele.avatar
                     }
                 }
@@ -279,7 +279,7 @@ exports.subjectList = async (req, res) => {
         userList.forEach((ele) => {
             if (v.userId == ele.id) {
                 v.author = {
-                    username: ele.realName,
+                    username: ele.nickname,
                     avatar: ele.avatar
                 }
             }
@@ -347,7 +347,7 @@ exports.subjectItem = async (req, res) => {
         "find",
         "服务器错误",
     );
-    let postList = await DB(res, "xcx_blog_post", "find", "服务器错误");
+    let postList = await DB(res, "xcx_blog_post", "find", "服务器错误",`isRecycle=1`);
     let checkedIds = result[0].postIds.split(",").map(Number);
     let arr = postList.filter((item) => checkedIds.includes(item.id));
     arr.sort((a, b) => b.orderNo - a.orderNo)
@@ -365,7 +365,7 @@ exports.subjectItem = async (req, res) => {
         }
         userList.forEach((ele) => {
             if (v.userId == ele.id) {
-                v.author = ele.realName
+                v.author = ele.nickname
                 v.avatar = ele.avatar
 
             }
@@ -425,11 +425,11 @@ exports.upDateSubjectRecycle = async (req, res) => {
     if (ret.affectedRows == 1) {
         res.json({
             code: 200,
-            message: "删除成功",
+            message:isRecycle==1? "已还原":'已删除',
         });
     } else {
         res.json({
-            code: 200,
+            code: 403,
             message: "修改失败",
         });
     }

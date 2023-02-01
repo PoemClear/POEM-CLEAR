@@ -101,6 +101,7 @@ export default {
     password: 'Password',
     realName: 'RealName',
     deptName: 'DeptName',
+    nickname: 'nickName',
     confirmPassword: 'Confirm Password',
     email: 'Email',
     smsCode: 'SMS code',

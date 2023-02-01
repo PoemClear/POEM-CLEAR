@@ -31,13 +31,13 @@ exports.createDept = async (req, res) => {
         if (ret.affectedRows == 1) {
             res.json({
                 code: 200,
-                msg: "添加成功"
+                message: "添加成功"
             })
         }
     } else {
         res.json({
             code: 200,
-            msg: "部门已存在"
+            message: "部门已存在"
         })
     }
 }
@@ -77,13 +77,13 @@ exports.updateDept = async (req, res) => {
     if (ret.affectedRows == 1) {
         res.json({
             code: 200,
-            msg: "修改成功"
+            message: "修改成功"
         })
     } else {
         /**提示轮播图 已存在相同链接*/
         res.json({
             code: 200,
-            msg: "修改失败"
+            message: "修改失败"
         })
     }
 }
@@ -123,7 +123,7 @@ exports.delDept = async (req, res) => {
     if (ret.affectedRows == 1) {
         res.json({
             code: 200,
-            msg: "删除成功"
+            message: "删除成功"
         })
     }
 }

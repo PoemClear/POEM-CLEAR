@@ -12,7 +12,7 @@ import {
   RoleListGetResultModel,
 } from './model/systemModel';
 import { defHttp } from '/@/utils/http/axios';
-
+import { SuccessMessageMode } from '/#/axios';
 enum Api {
   AccountList = '/system/getAccountList',
   IsAccountExist = '/system/accountExist',
@@ -49,21 +49,47 @@ export const getDeptList = (params?: DeptListItem) =>
 export const getSelectDeptList = (params?: DeptListItem) =>
   defHttp.get<DeptListGetResultModel>({ url: Api.GetSelectDeptList, params });
 
-export const createDept = (params?: DeptListItem) =>
-  defHttp.post<DeptListGetResultModel>({ url: Api.CreateDept, params });
-export const updateDept = (params?: DeptListItem) =>
-  defHttp.post<DeptListGetResultModel>({ url: Api.UpdateDept, params });
+export const createDept = (params?: DeptListItem, mode: SuccessMessageMode = 'message') =>
+  defHttp.post<DeptListGetResultModel>(
+    { url: Api.CreateDept, params },
+    {
+      successMessageMode: mode,
+    },
+  );
+export const updateDept = (params?: DeptListItem, mode: SuccessMessageMode = 'message') =>
+  defHttp.post<DeptListGetResultModel>(
+    { url: Api.UpdateDept, params },
+    {
+      successMessageMode: mode,
+    },
+  );
 
 export const getMenuList = (params?: MenuParams) =>
   defHttp.get<MenuListGetResultModel>({ url: Api.MenuList, params });
 export const getDictTreeList = (params?: MenuParams) =>
   defHttp.get({ url: Api.DictTreeList, params });
-export const createMenu = (params?: MenuParams) =>
-  defHttp.post<MenuListGetResultModel>({ url: Api.CreateMenu, params });
-export const delDept = (id: number) => defHttp.post({ url: Api.DelDept, params: { id } });
+export const createMenu = (params?: MenuParams, mode: SuccessMessageMode = 'message') =>
+  defHttp.post<MenuListGetResultModel>(
+    { url: Api.CreateMenu, params },
+    {
+      successMessageMode: mode,
+    },
+  );
+export const delDept = (id: number, mode: SuccessMessageMode = 'message') =>
+  defHttp.post(
+    { url: Api.DelDept, params: { id } },
+    {
+      successMessageMode: mode,
+    },
+  );
 
-export const updateMenu = (params?: MenuParams) =>
-  defHttp.post<MenuListGetResultModel>({ url: Api.UpdateMenu, params });
+export const updateMenu = (params?: MenuParams, mode: SuccessMessageMode = 'message') =>
+  defHttp.post<MenuListGetResultModel>(
+    { url: Api.UpdateMenu, params },
+    {
+      successMessageMode: mode,
+    },
+  );
 
 export const getRoleListByPage = (params?: RolePageParams) =>
   defHttp.get<RolePageListGetResultModel>({ url: Api.RolePageList, params });
@@ -71,34 +97,83 @@ export const getRoleListByPage = (params?: RolePageParams) =>
 export const getAllRoleList = (params?: RoleParams) =>
   defHttp.get<RoleListGetResultModel>({ url: Api.GetAllRoleList, params });
 
-export const setRoleStatus = (id: number, status: string) =>
-  defHttp.post({ url: Api.setRoleStatus, params: { id, status } });
+export const setRoleStatus = (id: number, status: string, mode: SuccessMessageMode = 'message') =>
+  defHttp.post(
+    { url: Api.setRoleStatus, params: { id, status } },
+    {
+      successMessageMode: mode,
+    },
+  );
 
-export const UpdateRole = (params: RoleListItem) =>
-  defHttp.post({ url: Api.UpdateRole, params }, { errorMessageMode: 'message' });
+export const UpdateRole = (params: RoleListItem, mode: SuccessMessageMode = 'message') =>
+  defHttp.post(
+    { url: Api.UpdateRole, params },
+    {
+      successMessageMode: mode,
+    },
+  );
 
-export const CreateRole = (params: RoleListItem) =>
-  defHttp.post({ url: Api.CreateRole, params }, { errorMessageMode: 'message' });
+export const CreateRole = (params: RoleListItem, mode: SuccessMessageMode = 'message') =>
+  defHttp.post(
+    { url: Api.CreateRole, params },
+    {
+      successMessageMode: mode,
+    },
+  );
 
 export const isAccountExist = (account: string) =>
   defHttp.post({ url: Api.IsAccountExist, params: { account } }, { errorMessageMode: 'none' });
 
-export const DelRole = (id: number) =>
-  defHttp.post({ url: Api.DelRole, params: { id } }, { errorMessageMode: 'message' });
+export const DelRole = (id: number, mode: SuccessMessageMode = 'message') =>
+  defHttp.post(
+    { url: Api.DelRole, params: { id } },
+    {
+      successMessageMode: mode,
+    },
+  );
 
-export const createUser = (params?: any) =>
-  defHttp.post({ url: Api.CreateUser, params }, { errorMessageMode: 'message' });
-export const updateUser = (params?: any) =>
-  defHttp.post({ url: Api.UpdateUser, params }, { errorMessageMode: 'message' });
-export const delUser = (id: number) =>
-  defHttp.post({ url: Api.DelUser, params: { id } }, { errorMessageMode: 'message' });
-export const delMenu = (id: number) =>
-  defHttp.post({ url: Api.DelMenu, params: { id } }, { errorMessageMode: 'message' });
+export const createUser = (params?: any, mode: SuccessMessageMode = 'message') =>
+  defHttp.post(
+    { url: Api.CreateUser, params },
+    {
+      successMessageMode: mode,
+    },
+  );
+export const updateUser = (params?: any, mode: SuccessMessageMode = 'message') =>
+  defHttp.post(
+    { url: Api.UpdateUser, params },
+    {
+      successMessageMode: mode,
+    },
+  );
+export const delUser = (id: number, mode: SuccessMessageMode = 'message') =>
+  defHttp.post(
+    { url: Api.DelUser, params: { id } },
+    {
+      successMessageMode: mode,
+    },
+  );
+export const delMenu = (id: number, mode: SuccessMessageMode = 'message') =>
+  defHttp.post(
+    { url: Api.DelMenu, params: { id } },
+    {
+      successMessageMode: mode,
+    },
+  );
 
-export const createDict = (params?: any) =>
-  defHttp.post({ url: Api.CreateDict, params }, { errorMessageMode: 'message' });
-export const updateDict = (params?: any) =>
-  defHttp.post({ url: Api.UpdateDict, params }, { errorMessageMode: 'message' });
+export const createDict = (params?: any, mode: SuccessMessageMode = 'message') =>
+  defHttp.post(
+    { url: Api.CreateDict, params },
+    {
+      successMessageMode: mode,
+    },
+  );
+export const updateDict = (params?: any, mode: SuccessMessageMode = 'message') =>
+  defHttp.post(
+    { url: Api.UpdateDict, params },
+    {
+      successMessageMode: mode,
+    },
+  );
 
-export const getDictList = (params?: any) =>
-  defHttp.post({ url: Api.DictList, params }, { errorMessageMode: 'message' });
+export const getDictList = (params?: any) => defHttp.post({ url: Api.DictList, params });

@@ -23,6 +23,7 @@ exports.createUser = async (req, res) => {
     const {
         username,
         realName,
+        pwd,
         avatar='',
         nickname = '',
         phone,
@@ -30,6 +31,7 @@ exports.createUser = async (req, res) => {
         homePath = '',
         roleValue,
         deptId,
+        status,
         email = ''
     } = req.body
     /**判断账号是否注册*/
@@ -40,8 +42,9 @@ exports.createUser = async (req, res) => {
             avatar,
             account: username,
             email,
-            username, phone, realName, avatar, nickname, remark, homePath, roleValue, deptId,
+            username, phone, realName, avatar, nickname, remark, homePath, roleValue, deptId,status,
             password: md5(md5(phone) + config.md5Str),
+            pwd: md5(md5(pwd) + config.md5Str),
             createTime: rTime(timestamp(new Date())),
         })
         if (ret.affectedRows == 1) {
@@ -167,7 +170,7 @@ exports.delUser = async (req, res) => {
     if (ret.affectedRows == 1) {
         res.json({
             code: 200,
-            msg: "删除成功"
+            message: "删除成功"
         })
     }
 }

@@ -157,7 +157,7 @@ exports.setBannerStatus = async (req, res) => {
  * @param req
  * @param res
  */
-exports.delBanner = async (req, res) => {
+exports.delAppCate = async (req, res) => {
   let payload = null;
   try {
     const authorizationHeader = req.get("Authorization");

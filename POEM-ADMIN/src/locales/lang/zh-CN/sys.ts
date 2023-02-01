@@ -94,6 +94,7 @@ export default {
     userName: '账号',
     password: '密码',
     realName: '真实姓名',
+    nickname: '昵称',
     deptName: '部门',
     confirmPassword: '确认密码',
     email: '邮箱',

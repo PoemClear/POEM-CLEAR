@@ -1,5 +1,5 @@
 import { defHttp } from '/@/utils/http/axios';
-
+import { SuccessMessageMode } from '/#/axios';
 interface GetPostInfoModel {
   id?: string | number;
   collect_count: number;
@@ -82,42 +82,99 @@ export function getPostSelectList(params?: any) {
 export function getLabelTreeList(params?: any) {
   return defHttp.get({ url: Api.LabelTreeList, params });
 }
-export function createCate(params?: BannerListItem) {
-  return defHttp.post<GetPostInfoModel>({ url: Api.CreateCate, params });
-}
-export function createPost(params?: BannerListItem) {
+export function createCate(params?: BannerListItem, mode: SuccessMessageMode = 'message') {
   return defHttp.post<GetPostInfoModel>(
-    { url: Api.CreatePost, params },
-    { errorMessageMode: 'message' },
+    { url: Api.CreateCate, params },
+    {
+      successMessageMode: mode,
+    },
   );
 }
-export function updatePost(params?: object) {
-  return defHttp.post({ url: Api.UpdatePost, params }, { errorMessageMode: 'message' });
+export function createPost(params?: BannerListItem, mode: SuccessMessageMode = 'message') {
+  return defHttp.post<GetPostInfoModel>(
+    { url: Api.CreatePost, params },
+    {
+      successMessageMode: mode,
+    },
+  );
 }
-export function createLabel(params?: BannerListItem) {
-  return defHttp.post<GetPostInfoModel>({ url: Api.CreateLabel, params });
+export function updatePost(params?: object, mode: SuccessMessageMode = 'message') {
+  return defHttp.post(
+    { url: Api.UpdatePost, params },
+    {
+      successMessageMode: mode,
+    },
+  );
+}
+export function createLabel(params?: BannerListItem, mode: SuccessMessageMode = 'message') {
+  return defHttp.post<GetPostInfoModel>(
+    { url: Api.CreateLabel, params },
+    {
+      successMessageMode: mode,
+    },
+  );
 }
 export function getPostItem(id: string | number) {
   return defHttp.get({ url: Api.PostItem, params: { id } });
 }
-export function updateCheckPost(id: number, checkStatus: string) {
-  return defHttp.post({ url: Api.UpdateCheckPost, params: { id, checkStatus } });
+export function updateCheckPost(
+  id: number,
+  checkStatus: string,
+  mode: SuccessMessageMode = 'message',
+) {
+  return defHttp.post(
+    { url: Api.UpdateCheckPost, params: { id, checkStatus } },
+    {
+      successMessageMode: mode,
+    },
+  );
 }
 
-export function upDatePostRecycle(id: number, isRecycle: string) {
-  return defHttp.post({ url: Api.UpDatePostRecycle, params: { id, isRecycle } });
+export function upDatePostRecycle(
+  id: number,
+  isRecycle: string,
+  mode: SuccessMessageMode = 'message',
+) {
+  return defHttp.post(
+    { url: Api.UpDatePostRecycle, params: { id, isRecycle } },
+    {
+      successMessageMode: mode,
+    },
+  );
 }
 
-export function delPost(id: number) {
-  return defHttp.post({ url: Api.DelPost, params: { id } });
+export function delPost(id: number, mode: SuccessMessageMode = 'message') {
+  return defHttp.post(
+    { url: Api.DelPost, params: { id } },
+    {
+      successMessageMode: mode,
+    },
+  );
 }
 
-export function delCate(id: number) {
-  return defHttp.post({ url: Api.DelCate, params: { id } }, { errorMessageMode: 'message' });
+export function delCate(id: number, mode: SuccessMessageMode = 'message') {
+  return defHttp.post(
+    { url: Api.DelCate, params: { id } },
+    {
+      successMessageMode: mode,
+    },
+  );
 }
 
-export const updateCate = (data: any) => defHttp.post({ url: Api.UpdateCate, data });
-export const updateLabel = (data: any) => defHttp.post({ url: Api.UpdateLabel, data });
+export const updateCate = (data: any, mode: SuccessMessageMode = 'message') =>
+  defHttp.post(
+    { url: Api.UpdateCate, data },
+    {
+      successMessageMode: mode,
+    },
+  );
+export const updateLabel = (data: any, mode: SuccessMessageMode = 'message') =>
+  defHttp.post(
+    { url: Api.UpdateLabel, data },
+    {
+      successMessageMode: mode,
+    },
+  );
 export function getPosTreeTCateList(params?: BannerListItem) {
   return defHttp.get<GetPostInfoModel>({ url: Api.PostCateTreeList, params });
 }

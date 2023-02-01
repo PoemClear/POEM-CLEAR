@@ -46,13 +46,13 @@ exports.createRole = async (req, res) => {
             })
             res.json({
                 code: 200,
-                msg: "添加成功"
+                message: "添加成功"
             })
         }
     } else {
         res.json({
             code: 200,
-            msg: "角色已存在"
+            message: "角色已存在"
         })
     }
 }
@@ -209,7 +209,7 @@ exports.delRole = async (req, res) => {
     if (ret.affectedRows == 1) {
         res.json({
             code: 200,
-            msg: "删除成功"
+            message: "删除成功"
         })
     }
 }

@@ -37,6 +37,7 @@
                 icon: 'ant-design:clock-circle-outlined',
                 tooltip: '审核',
                 color: 'warning',
+                auth: RoleEnum.SUPER,
                 popConfirm: {
                   title: '是否审核改专题',
                   placement: 'left',
@@ -85,6 +86,7 @@
   import { usePermissionStore } from '/@/store/modules/permission';
   import { usePermission } from '/@/hooks/web/usePermission';
   import { columns, searchFormSchema } from './post.data';
+  import { RoleEnum } from '/@/enums/roleEnum';
   import { Image } from 'ant-design-vue';
   import { useGo } from '/@/hooks/web/usePage';
   import { useAppStore } from '/@/store/modules/app';
@@ -177,6 +179,7 @@
         handleCheckSuccess,
         handleCheckFail,
         isBackPermissionMode,
+        RoleEnum,
       };
     },
   });

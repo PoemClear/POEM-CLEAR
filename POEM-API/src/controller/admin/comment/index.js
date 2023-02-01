@@ -1,4 +1,4 @@
-const {rTime, timestamp, listToTree, getFormatMsgTime} = require("../../../utils/timeformat")
+const {rTime, timestamp, listToTree, getFormatmessageTime} = require("../../../utils/timeformat")
 const DB = require("../../../db")
 const jwt = require("jsonwebtoken");
 const config = require("../../../config");
@@ -46,7 +46,7 @@ exports.createComment = async (req, res) => {
 
         res.json({
             code: 200,
-            msg: "评论成功"
+            message: "评论成功"
         })
     }
 }
@@ -83,7 +83,7 @@ exports.postCommentList = async (req, res) => {
         result.forEach((v) => {
             if (v.CREATE_TIME) {
                 v.CREATE_TIME = rTime(timestamp(v.CREATE_TIME))
-                v.TIME = getFormatMsgTime(v.CREATE_TIME)
+                v.TIME = getFormatmessageTime(v.CREATE_TIME)
             }
             if (v.UPDATE_TIME) {
                 v.UPDATE_TIME = rTime(timestamp(v.UPDATE_TIME))

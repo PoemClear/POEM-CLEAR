@@ -128,12 +128,12 @@ exports.updateMenu = async (req, res) => {
   if (ret.affectedRows == 1) {
     res.json({
       code: 200,
-      msg: "修改成功",
+      message: "修改成功",
     });
   } else {
     res.json({
       code: 200,
-      msg: "修改失败",
+      message: "修改失败",
     });
   }
 };
@@ -179,7 +179,7 @@ exports.delMenu = async (req, res) => {
   if (ret.affectedRows == 1) {
     res.json({
       code: 200,
-      msg: "删除成功",
+      message: "删除成功",
     });
   }
 };

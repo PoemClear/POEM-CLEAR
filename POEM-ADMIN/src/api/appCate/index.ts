@@ -1,4 +1,5 @@
 import { defHttp } from '/@/utils/http/axios';
+import { SuccessMessageMode } from '/#/axios';
 interface GetBannerInfoModel {
   title: string;
   type: string;
@@ -23,26 +24,51 @@ enum Api {
   CreateBanner = '/createBanner',
   UpdateAppCate = '/updateAppCate',
   CreateAppCate = '/createAppCate',
-  
-  DelBanner = '/delBanner',
+
+  DelAppCate = '/delAppCate',
   SetBannerStatus = '/setBannerStatus',
 }
 
 export function getAppCateList(params?: BannerListItem) {
   return defHttp.get({ url: Api.AppCateList, params });
 }
-export function createBanner(params?: BannerListItem) {
-  return defHttp.post<GetBannerInfoModel>({ url: Api.CreateBanner, params });
+export function createBanner(params?: BannerListItem, mode: SuccessMessageMode = 'message') {
+  return defHttp.post<GetBannerInfoModel>(
+    { url: Api.CreateBanner, params },
+    {
+      successMessageMode: mode,
+    },
+  );
 }
-export function createAppCate(params?: object) {
-  return defHttp.post({ url: Api.CreateAppCate, params });
+export function createAppCate(params?: object, mode: SuccessMessageMode = 'message') {
+  return defHttp.post(
+    { url: Api.CreateAppCate, params },
+    {
+      successMessageMode: mode,
+    },
+  );
 }
-export function updateAppCate(params?: BannerListItem) {
-  return defHttp.post<GetBannerInfoModel>({ url: Api.UpdateAppCate, params });
+export function updateAppCate(params?: BannerListItem, mode: SuccessMessageMode = 'message') {
+  return defHttp.post<GetBannerInfoModel>(
+    { url: Api.UpdateAppCate, params },
+    {
+      successMessageMode: mode,
+    },
+  );
 }
-export function delBanner(id: number) {
-  return defHttp.post<GetBannerInfoModel>({ url: Api.DelBanner, params: { id } });
+export function delAppCate(id: number, mode: SuccessMessageMode = 'message') {
+  return defHttp.post<GetBannerInfoModel>(
+    { url: Api.DelAppCate, params: { id } },
+    {
+      successMessageMode: mode,
+    },
+  );
 }
 
-export const setBannerStatus = (id: number, status: string) =>
-  defHttp.post({ url: Api.SetBannerStatus, params: { id, status } });
+export const setBannerStatus = (id: number, status: string, mode: SuccessMessageMode = 'message') =>
+  defHttp.post(
+    { url: Api.SetBannerStatus, params: { id, status } },
+    {
+      successMessageMode: mode,
+    },
+  );

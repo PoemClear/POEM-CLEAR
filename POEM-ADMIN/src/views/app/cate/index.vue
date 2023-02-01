@@ -49,7 +49,7 @@
   import { defineComponent, ref } from 'vue';
 
   import { BasicTable, useTable, TableAction } from '/@/components/Table';
-  import { getAppCateList } from '/@/api/appCate';
+  import { getAppCateList, delAppCate } from '/@/api/appCate';
   import { useDrawer } from '/@/components/Drawer';
   import BannerDrawer from './BannerDrawer.vue';
   import { usePermissionStore } from '/@/store/modules/permission';
@@ -108,7 +108,7 @@
 
       async function handleDelete(record: Recordable) {
         // await DelRole(record.id);
-        await delBanner(record.id);
+        await delAppCate(record.id);
         console.log(record);
         handleSuccess();
       }

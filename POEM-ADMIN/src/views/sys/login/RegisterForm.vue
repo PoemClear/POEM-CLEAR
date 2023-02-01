@@ -11,6 +11,15 @@
           :maxlength="20"
         />
       </FormItem>
+      <FormItem name="nickanme" class="enter-x">
+        <Input
+          size="large"
+          v-model:value="formData.nickname"
+          :placeholder="t('sys.login.nickname')"
+          class="fix-auto-fill"
+          :maxlength="11"
+        />
+      </FormItem>
       <FormItem name="username" class="enter-x">
         <Input
           class="fix-auto-fill"
@@ -28,7 +37,7 @@
           :maxlength="11"
         />
       </FormItem>
-      <FormItem name="deptId" class="enter-x">
+      <!-- <FormItem name="deptId" class="enter-x">
         <Select
           v-model:value="formData.deptId"
           :options="areas"
@@ -41,7 +50,7 @@
           :options="roleList"
           :placeholder="t('sys.login.deptName')"
         />
-      </FormItem>
+      </FormItem> -->
       <FormItem name="pwd" class="enter-x">
         <StrengthMeter
           size="large"
@@ -101,16 +110,17 @@
 
   const formData = reactive({
     username: '',
+    nickname: '',
     pwd: '',
     confirmPassword: '',
     phone: '',
     realName: '',
     policy: false,
     roleValue: 'RegularMembers',
-    deptId: '3',
+    deptId: '4',
   });
-  const areas = [{ label: '会员部', value: '3' }];
-  const roleList = [{ label: '普通会员', value: 'RegularMembers' }];
+  // const areas = [{ label: '会员部', value: '3' }];
+  // const roleList = [{ label: '普通会员', value: 'RegularMembers' }];
   const { getFormRules } = useFormRules(formData);
   const { validForm } = useFormValid(formRef);
 
