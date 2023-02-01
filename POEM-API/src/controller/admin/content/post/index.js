@@ -1,4 +1,4 @@
-const {rTime, timestamp} = require("../../../../utils/timeformat");
+const { rTime, timestamp } = require("../../../../utils/timeformat");
 const DB = require("../../../../db");
 const jwt = require("jsonwebtoken");
 const config = require("../../../../config");
@@ -28,7 +28,7 @@ exports.createPost = async (req, res) => {
         status,
         checkStatus = "0",
         isRecycle = "1",
-        openComment ,
+        openComment,
         drafts,
         orderNo,
         isTop
@@ -106,7 +106,7 @@ exports.updatePost = async (req, res) => {
         orderNo
     } = req.body;
     /** 如果当前角色的 后台配置的 系统管理员 没有限制修改文章*/
-    if( payload.accountId.roleValue=='systemAdmin'){
+    if (payload.accountId.roleValue == 'systemAdmin') {
         const ret = await DB(res, 'xcx_blog_post', 'update', '服务器错误', `id=${id}`, {
             type,
             title,
@@ -184,12 +184,12 @@ exports.postList = async (req, res) => {
         drafts: req.query.drafts || '0',
         title: req.query.title || "",
         checkStatus: req.query.checkStatus || "",
-        postType:req.query.postType || "",
+        postType: req.query.postType || "",
         page: req.query.page || 1,
         pageSize: req.query.pageSize || 10,
     };
 
-    if( payload.accountId.roleValue=='systemAdmin'){
+    if (payload.accountId.roleValue == 'systemAdmin') {
         let result_num = await DB(
             res,
             "xcx_blog_post",
@@ -216,11 +216,11 @@ exports.postList = async (req, res) => {
         );
         result.forEach((v, i) => {
             v.cover = v.cover ? [v.cover] : '';
-            userList.forEach((ele)=>{
-                if(v.userId==ele.id){
+            userList.forEach((ele) => {
+                if (v.userId == ele.id) {
                     v.author = {
-                        username:ele.realName,
-                        avatar:ele.avatar
+                        username: ele.realName,
+                        avatar: ele.avatar
                     }
                 }
             })
@@ -280,11 +280,11 @@ exports.postList = async (req, res) => {
     );
     result.forEach((v, i) => {
         v.cover = v.cover ? [v.cover] : '';
-        userList.forEach((ele)=>{
-            if(v.userId==ele.id){
+        userList.forEach((ele) => {
+            if (v.userId == ele.id) {
                 v.author = {
-                    username:ele.realName,
-                    avatar:ele.avatar
+                    username: ele.realName,
+                    avatar: ele.avatar
                 }
             }
         })
@@ -318,6 +318,80 @@ exports.postList = async (req, res) => {
     }
 };
 
+exports.postSelectList = async (req, res) => {
+    let payload = null;
+    try {
+        const authorizationHeader = req.get("Authorization");
+        const accessToken = authorizationHeader;
+        payload = jwt.verify(accessToken, config.jwtSecret);
+    } catch (error) {
+        return res.status(401).json({
+            code: 401,
+            message: "TOKEN 已过期",
+        });
+    }
+
+    let params = {
+        status: req.query.status || "",
+        isRecycle: req.query.isRecycle || "1",
+        drafts: req.query.drafts || '0',
+        title: req.query.title || "",
+        checkStatus: req.query.checkStatus || "",
+        postType: req.query.postType || "",
+        page: req.query.page || 1,
+        pageSize: req.query.pageSize || 100000,
+    };
+
+    let result_num = await DB(
+        res,
+        "xcx_blog_post",
+        "find",
+        "服务器错误",
+        `userId=${payload.accountId.id}  and drafts like '%${params.drafts}%'   and postType like '%${params.postType}%'  and title like '%${params.title}%' and isRecycle like '%${params.isRecycle}%' and status like '%${params.status}%' and checkStatus like '%${params.checkStatus}%'`
+    );
+
+    let result = await DB(
+        res,
+        "xcx_blog_post",
+        "find",
+        "服务器错误",
+        `userId=${payload.accountId.id} and drafts like '%${params.drafts}%'   and postType like '%${params.postType}%'  and title like '%${params.title}%' and isRecycle like '%${params.isRecycle
+        }%' and status like '%${params.status}%' and  checkStatus like '%${params.checkStatus
+        }%'  order by orderNo desc  limit ${(params.page - 1) * params.pageSize},${params.pageSize
+        }`
+    );
+
+    result.forEach((v, i) => {
+        v.cover = v.cover ? [v.cover] : '';
+        if (v.createTime) {
+            v.createTime = rTime(timestamp(v.createTime));
+        }
+        if (v.updateTime) {
+            v.updateTime = rTime(timestamp(v.updateTime));
+        } else {
+            delete v.updateTime;
+        }
+    });
+
+    if (!result[0]) {
+        res.json({
+            code: 200,
+            result: {
+                items: [],
+            },
+        });
+    } else {
+        res.json({
+            code: 200,
+            result: {
+                items: result,
+                total: result_num.length,
+                page: Number(params.page),
+                pageSize: Number(params.pageSize),
+            },
+        });
+    }
+};
 /**
  * 文章详情
  * @param req
@@ -336,7 +410,7 @@ exports.postItem = async (req, res) => {
             message: "TOKEN 已过期",
         });
     }
-    let {id} = req.query;
+    let { id } = req.query;
 
     let result = await DB(
         res,
@@ -395,7 +469,7 @@ exports.upDatePostRecycle = async (req, res) => {
             message: "TOKEN 已过期",
         });
     }
-    const {id, isRecycle} = req.body;
+    const { id, isRecycle } = req.body;
     const ret = await DB(
         res,
         "xcx_blog_post",
@@ -428,7 +502,7 @@ exports.upDatePostRecycle = async (req, res) => {
  * @returns {Promise<void>}
  */
 exports.updateCheckPost = async (req, res) => {
-    const {id, checkStatus} = req.body;
+    const { id, checkStatus } = req.body;
     const ret = await DB(
         res,
         "xcx_blog_post",
@@ -470,7 +544,7 @@ exports.delPost = async (req, res) => {
             message: "TOKEN 已过期",
         });
     }
-    const {id} = req.body;
+    const { id } = req.body;
     const ret = await DB(
         res,
         "xcx_blog_post",

@@ -3,7 +3,7 @@ import { FormSchema } from '/@/components/Table';
 import { h } from 'vue';
 import { Tag } from 'ant-design-vue';
 import { uploadApi } from '/@/api/sys/upload';
-import { getPostList } from '/@/api/content/blog';
+import { getPostSelectList } from '/@/api/content/blog';
 export interface TabItem {
   key: string;
   name: string;
@@ -204,7 +204,7 @@ export const formSchema: FormSchema[] = [
     required: true,
     slot: 'remoteSearch',
     componentProps: {
-      api: getPostList,
+      api: getPostSelectList,
     },
   },
   {

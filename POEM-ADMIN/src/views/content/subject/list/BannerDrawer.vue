@@ -21,7 +21,7 @@
     <BasicForm @register="registerForm" @submit="handleSubmit">
       <template #remoteSearch="{ model, field }">
         <ApiSelect
-          :api="getPostList"
+          :api="getPostSelectList"
           showSearch
           mode="multiple"
           v-model:value="model[field]"
@@ -43,7 +43,7 @@
   import { BasicDrawer, useDrawerInner } from '/@/components/Drawer';
   import { useDebounceFn } from '@vueuse/core';
   import { createSubject, updateSubject } from '../../../../api/content/subject';
-  import { getPostList } from '/@/api/content/blog';
+  import { getPostSelectList } from '/@/api/content/blog';
   import { useUserStore } from '/@/store/modules/user';
 
   export default defineComponent({
@@ -54,7 +54,7 @@
       const isUpdate = ref(true);
       let record = reactive({ id: '' });
       const imageList = ref<string[]>([]);
-        const userStore = useUserStore();
+      const userStore = useUserStore();
       const userinfo = computed(() => userStore.getUserInfo);
       const [registerForm, { resetFields, setFieldsValue, validate }] = useForm({
         labelWidth: 90,
@@ -108,7 +108,7 @@
         getTitle,
         handleSubmit,
         searchParams,
-        getPostList,
+        getPostSelectList,
         onSearch: useDebounceFn(onSearch, 300),
         userinfo,
       };

@@ -55,6 +55,7 @@ export interface CateParams {
 
 enum Api {
   PostList = '/content/postList',
+  PostSelectList = '/content/postSelectList',
   PostItem = '/content/postItem',
   PostCateList = '/content/cateList',
   CreatePost = '/content/createPost',
@@ -74,6 +75,9 @@ enum Api {
 
 export function getPostList(params?: any) {
   return defHttp.get({ url: Api.PostList, params });
+}
+export function getPostSelectList(params?: any) {
+  return defHttp.get({ url: Api.PostSelectList, params });
 }
 export function getLabelTreeList(params?: any) {
   return defHttp.get({ url: Api.LabelTreeList, params });
