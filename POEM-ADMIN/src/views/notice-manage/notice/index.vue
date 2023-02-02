@@ -15,7 +15,7 @@
         </a-alert> -->
       </template>
       <template #toolbar>
-        <a-button type="primary" @click="handleCreate"> 新增公告 </a-button>
+        <a-button type="primary" @click="handleCreate" :disabled="getUserInfo.roleValue == 'RegularMembers'"> 新增公告 </a-button>
       </template>
       <template #bodyCell="{ column, record }">
         <template v-if="column.key === 'image_url'">
@@ -27,10 +27,12 @@
               {
                 icon: 'clarity:note-edit-line',
                 onClick: handleEdit.bind(null, record),
+                disabled: getUserInfo.roleValue == 'RegularMembers',
               },
               {
                 icon: 'ant-design:delete-outlined',
                 color: 'error',
+                disabled: getUserInfo.roleValue == 'RegularMembers',
                 popConfirm: {
                   title: '是否确认删除',
                   placement: 'left',
@@ -46,7 +48,7 @@
   </div>
 </template>
 <script lang="ts">
-  import { defineComponent, ref } from 'vue';
+  import { defineComponent, ref ,computed} from 'vue';
 
   import { BasicTable, useTable, TableAction } from '/@/components/Table';
   import { getNoticeList } from '/@/api/notice';
@@ -56,6 +58,8 @@
   import { usePermission } from '/@/hooks/web/usePermission';
   import { columns, searchFormSchema } from './banner.data';
   import { Image } from 'ant-design-vue';
+  
+  import { useUserStore } from '/@/store/modules/user';
   export default defineComponent({
     name: 'RoleManagement',
     components: { BasicTable, BannerDrawer, TableAction, Image }, // AAlert: Alert
@@ -64,6 +68,11 @@
       const [registerDrawer, { openDrawer }] = useDrawer();
       const { hasPermission } = usePermission();
       const permissionStore = usePermissionStore();
+      const userStore = useUserStore();
+      const getUserInfo = computed(() => {
+        const { roleValue } = userStore.getUserInfo || {};
+        return { roleValue };
+      });
       const [registerTable, { reload }] = useTable({
         title: '公告列表',
         api: getNoticeList,
@@ -131,6 +140,7 @@
         permissionStore,
         checkedKeys,
         onSelectChange,
+        getUserInfo,
       };
     },
   });

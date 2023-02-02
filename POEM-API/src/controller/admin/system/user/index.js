@@ -199,7 +199,6 @@ exports.userInfo = async (req, res) => {
     })
 }
 
-
 /**
  * 用户列表
  * @param req
@@ -227,7 +226,8 @@ exports.getAccountList = async (req, res) => {
     let usersLen = await DB(res, 'sy_users', 'find', '服务器出错', `status like '%${params.status}%' and username like '%${params.username}%' and deptId like '%${params.deptId}%' `);
     let result = await DB(res, 'sy_users', 'find', '服务器出错', `status like '%${params.status}%' and username like '%${params.username}%' and deptId like '%${params.deptId}%'  order by id desc limit ${(params.page - 1) * params.pageSize},${params.pageSize}`);
     result.forEach((v) => {
-        v.avatar = v.avatar == '' ? '' : [v.avatar]
+        v.avatar = v.avatar == '' ? null : [v.avatar]
+        v.pwd ='***'
         if (v.createTime) {
             v.createTime = rTime(timestamp(v.createTime))
         }

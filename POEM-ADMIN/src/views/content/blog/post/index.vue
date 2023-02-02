@@ -24,7 +24,7 @@
                 icon: 'ant-design:clock-circle-outlined',
                 tooltip: '审核',
                 color: 'warning',
-                auth: RoleEnum.SUPER,
+                disabled: getUserInfo.roleValue == 'RegularMembers',
                 popConfirm: {
                   title: '是否审核改文章',
                   placement: 'left',
@@ -62,7 +62,7 @@
   </div>
 </template>
 <script lang="ts">
-  import { defineComponent } from 'vue';
+  import { defineComponent, computed } from 'vue';
 
   import { BasicTable, useTable, TableAction } from '/@/components/Table';
   import { getPostList, upDatePostRecycle, updateCheckPost } from '/@/api/content/blog';
@@ -75,6 +75,8 @@
   import { Image } from 'ant-design-vue';
   import { useGo } from '/@/hooks/web/usePage';
   import PostDrawer from './PostDrawer.vue';
+
+  import { useUserStore } from '/@/store/modules/user';
   export default defineComponent({
     name: 'RoleManagement',
     components: { BasicTable, TableAction, Image, PostDrawer },
@@ -84,6 +86,12 @@
       const { hasPermission } = usePermission();
       const [register2, { openModal: openModal2 }] = useModal();
       const permissionStore = usePermissionStore();
+
+      const userStore = useUserStore();
+      const getUserInfo = computed(() => {
+        const { roleValue } = userStore.getUserInfo || {};
+        return { roleValue };
+      });
       const [registerTable, { reload }] = useTable({
         title: '文章列表',
         api: getPostList,
@@ -163,6 +171,7 @@
         handleCheckSuccess,
         handleCheckFail,
         RoleEnum,
+        getUserInfo,
       };
     },
   });

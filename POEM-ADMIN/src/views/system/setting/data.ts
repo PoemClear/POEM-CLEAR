@@ -1,5 +1,7 @@
 import { FormSchema } from '/@/components/Form/index';
-import { getAllRoleList } from '/@/api/demo/system';
+import { useUserStore } from '/@/store/modules/user';
+const userStore = useUserStore();
+const { phone } = userStore.getUserInfo || {};
 export interface ListItem {
   key: string;
   title: string;
@@ -47,24 +49,24 @@ export const baseSetschemas: FormSchema[] = [
     label: '邮箱',
     colProps: { span: 18 },
   },
-  {
-    field: 'phone',
-    component: 'Input',
-    label: '联系电话',
-    colProps: { span: 18 },
-  },
-  {
-    label: '角色',
-    field: 'roleName',
-    component: 'Input',
-    colProps: { span: 18 },
-  },
-  {
-    field: 'deptName',
-    label: '所属部门',
-    component: 'Input',
-    colProps: { span: 18 },
-  },
+  // {
+  //   field: 'phone',
+  //   component: 'Input',
+  //   label: '联系电话',
+  //   colProps: { span: 18 },
+  // },
+  // {
+  //   label: '角色',
+  //   field: 'roleName',
+  //   component: 'Input',
+  //   colProps: { span: 18 },
+  // },
+  // {
+  //   field: 'deptName',
+  //   label: '所属部门',
+  //   component: 'Input',
+  //   colProps: { span: 18 },
+  // },
   {
     field: 'remark',
     component: 'InputTextArea',
@@ -91,27 +93,27 @@ export const secureSettingList: ListItem[] = [
   {
     key: '2',
     title: '密保手机',
-    description: '已绑定手机：138****8293',
+    description: `已绑定手机：${phone}`,
     extra: '修改',
   },
-  {
-    key: '3',
-    title: '密保问题',
-    description: '未设置密保问题，密保问题可有效保护账户安全',
-    extra: '修改',
-  },
-  {
-    key: '4',
-    title: '备用邮箱',
-    description: '已绑定邮箱：ant***sign.com',
-    extra: '修改',
-  },
-  {
-    key: '5',
-    title: 'MFA 设备',
-    description: '未绑定 MFA 设备，绑定后，可以进行二次确认',
-    extra: '修改',
-  },
+  // {
+  //   key: '3',
+  //   title: '密保问题',
+  //   description: '未设置密保问题，密保问题可有效保护账户安全',
+  //   extra: '修改',
+  // },
+  // {
+  //   key: '4',
+  //   title: '备用邮箱',
+  //   description: '已绑定邮箱：ant***sign.com',
+  //   extra: '修改',
+  // },
+  // {
+  //   key: '5',
+  //   title: 'MFA 设备',
+  //   description: '未绑定 MFA 设备，绑定后，可以进行二次确认',
+  //   extra: '修改',
+  // },
 ];
 
 // 账号绑定 list

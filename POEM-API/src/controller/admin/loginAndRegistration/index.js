@@ -174,6 +174,7 @@ exports.userInfo = async (req, res) => {
     );
     let deptList = await DB(res, "sy_depts", "find", "服务器错误");
     userInfo.forEach((v) => {
+        v.phone =  v.phone.substr(0,3) + "****" + v.phone.substr(7)
         delete v.password;
         if (v.createTime) {
             v.createTime = rTime(timestamp(v.createTime));

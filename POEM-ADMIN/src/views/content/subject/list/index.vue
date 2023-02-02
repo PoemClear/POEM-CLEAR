@@ -5,9 +5,7 @@
     </p> -->
     <BasicTable @register="registerTable">
       <template #toolbar>
-        <a-button type="primary" @click="handleCreate" v-if="hasPermission('subject_list:view')">
-          添加专题</a-button
-        >
+        <a-button type="primary" @click="handleCreate"> 添加专题</a-button>
       </template>
       <template #bodyCell="{ column, record }">
         <template v-if="column.key === 'view_count'">
@@ -37,7 +35,7 @@
                 icon: 'ant-design:clock-circle-outlined',
                 tooltip: '审核',
                 color: 'warning',
-                auth: RoleEnum.SUPER,
+                disabled: getUserInfo.roleValue == 'RegularMembers',
                 popConfirm: {
                   title: '是否审核改专题',
                   placement: 'left',
@@ -92,6 +90,8 @@
   import { useAppStore } from '/@/store/modules/app';
   import BannerDrawer from './BannerDrawer.vue';
   import { PermissionModeEnum } from '/@/enums/appEnum';
+
+  import { useUserStore } from '/@/store/modules/user';
   export default defineComponent({
     name: 'RoleManagement',
     components: { BasicTable, TableAction, Image, BannerDrawer },
@@ -101,7 +101,11 @@
       const [registerDrawer, { openDrawer }] = useDrawer();
       const { hasPermission } = usePermission();
       const permissionStore = usePermissionStore();
-
+      const userStore = useUserStore();
+      const getUserInfo = computed(() => {
+        const { roleValue } = userStore.getUserInfo || {};
+        return { roleValue };
+      });
       const [registerTable, { reload }] = useTable({
         title: '专题列表',
         api: getSubjectList,
@@ -180,6 +184,7 @@
         handleCheckFail,
         isBackPermissionMode,
         RoleEnum,
+        getUserInfo,
       };
     },
   });

@@ -96,7 +96,7 @@ export const accountFormSchema: FormSchema[] = [
   {
     field: 'phone',
     label: '手机号',
-    helpMessage: ['登录密码就是手机号码'],
+    helpMessage: ['手机号码也可以作为登录密码'],
     component: 'InputNumber',
     required: true,
     ifShow: true,
