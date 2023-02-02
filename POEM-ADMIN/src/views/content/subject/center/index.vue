@@ -16,9 +16,9 @@
                 <p>专题简介：{{ info.description }}</p>
                 <div style="display: flex">
                   <p class="count">文章数：{{ info.num }}</p>
-                  <p class="count"> 关注数：0 </p>
-                  <p class="count">文章阅读量：2344</p>
-                  <p class="count">文章收藏量：0</p>
+                  <p class="count"> 关注数：{{ info.like_count }}</p>
+                  <p class="count">浏览量：{{ info.view_count }}</p>
+                  <p class="count">收藏量：{{ info.collect_count }}</p>
                 </div>
                 <div style="display: flex; align-items: center">
                   作者：

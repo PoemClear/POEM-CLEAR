@@ -167,7 +167,7 @@ export const formSchema: FormSchema[] = [
     field: 'content',
     component: 'Input',
     label: '内容',
-    defaultValue: '请输入文章内容',
+    defaultValue: '',
     rules: [{ required: true, trigger: 'blur' }],
     render: ({ model, field }) => {
       return h(MarkDown, {
@@ -184,7 +184,7 @@ export const formSchema: FormSchema[] = [
     field: 'content',
     component: 'Input',
     label: '内容',
-    defaultValue: '请输入文章内容',
+    defaultValue: '',
     rules: [{ required: true }],
     render: ({ model, field }) => {
       return h(Tinymce, {
@@ -211,6 +211,7 @@ export const formSchema: FormSchema[] = [
   {
     field: 'cateId',
     component: 'ApiCascader',
+    rules: [{ required: true, trigger: 'change' }],
     label: '分类',
     colProps: {
       span: 8,

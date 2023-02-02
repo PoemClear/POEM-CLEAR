@@ -24,6 +24,7 @@
                 ifShow: (_action) => {
                   return record.id !== userId; // 根据业务控制是否显示: 非enable状态的不显示启用按钮
                 },
+                // disabled: getUserInfo.roleValue == 'RegularMembers',
                 icon: 'ant-design:delete-outlined',
                 color: 'error',
                 tooltip: '删除此账号',

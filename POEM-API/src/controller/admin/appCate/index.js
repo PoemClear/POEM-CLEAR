@@ -20,7 +20,7 @@ exports.createAppCate = async (req, res) => {
       message: "TOKEN 已过期",
     });
   }
-  const { type, image_url, link_url, orderNo, status } = req.body;
+  const { type,title, image_url, link_url, orderNo, status } = req.body;
   let dictList = await DB(res, "sy_dict", "find", "服务器错误",`id=${type[1]}`)
 
   const bannerInfo = await DB(
@@ -33,7 +33,7 @@ exports.createAppCate = async (req, res) => {
   if (!bannerInfo[0]) {
     const ret = await DB(res, "xcx_cate", "insert", "服务器错误", {
       typeName:dictList[0].label,
-      type, image_url, link_url, orderNo, status,
+      title, type, image_url, link_url, orderNo, status,
       createTime: rTime(timestamp(new Date())),
     });
 

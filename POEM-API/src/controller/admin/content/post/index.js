@@ -217,6 +217,7 @@ exports.postList = async (req, res) => {
         );
         result.forEach((v, i) => {
             v.cover = v.cover ? [v.cover] : '';
+            v.cateId = v.cateId.split(',').map(Number)
             userList.forEach((ele) => {
                 if (v.userId == ele.id) {
                     v.author = {
@@ -281,6 +282,7 @@ exports.postList = async (req, res) => {
     );
     result.forEach((v, i) => {
         v.cover = v.cover ? [v.cover] : '';
+        v.cateId = v.cateId.split(',').map(Number)
         userList.forEach((ele) => {
             if (v.userId == ele.id) {
                 v.author = {

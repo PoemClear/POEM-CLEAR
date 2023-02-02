@@ -84,6 +84,8 @@ export default {
     loginSuccessDesc: '欢迎回来',
 
     // placeholder
+    realNamePlaceholder: '请输入真实姓名',
+    nicknamePlaceholder: '请输入昵称',
     accountPlaceholder: '请输入账号',
     passwordPlaceholder: '请输入密码',
     smsPlaceholder: '请输入验证码',

@@ -116,8 +116,6 @@
     phone: '',
     realName: '',
     policy: false,
-    roleValue: 'RegularMembers',
-    deptId: '4',
   });
   // const areas = [{ label: '会员部', value: '3' }];
   // const roleList = [{ label: '普通会员', value: 'RegularMembers' }];
@@ -130,6 +128,8 @@
     const data = await validForm();
     if (!data) return;
     console.log(data);
+    data.roleValue = 'RegularMembers';
+    data.deptId = '4';
     await registerApi(data);
   }
 </script>

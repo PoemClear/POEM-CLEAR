@@ -8,9 +8,9 @@
         <p>专题简介：{{ info.description }}</p>
         <p>
           <span class="count">文章数：{{ info.num }}</span>
-          <span class="count"> 关注数：0 </span>
-          <span class="count">文章阅读量：2344</span>
-          <span class="count">文章收藏量：0</span>
+          <span class="count"> 关注数：{{ info.like_count }}</span>
+          <span class="count">文章浏览量：{{ info.view_count }}</span>
+          <span class="count">文章收藏量：{{ info.collect_count }}</span>
         </p>
         <div style="display: flex; align-items: center">
           作者:

@@ -99,6 +99,10 @@
         openWindow(DOC_URL);
       }
       function handleCenter() {
+        if (userStore.getUserInfo.roleValue == 'RegularMembers') {
+          go('/center/index');
+          return;
+        }
         go('/system/setting');
       }
       function handleMenuClick(e: MenuInfo) {

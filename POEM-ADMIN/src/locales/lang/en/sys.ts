@@ -90,6 +90,8 @@ export default {
     loginSuccessDesc: 'Welcome back',
 
     // placeholder
+    realNamePlaceholder: 'Please input realName',
+    nicknamePlaceholder: 'Please input nickanme',
     accountPlaceholder: 'Please input username',
     passwordPlaceholder: 'Please input password',
     smsPlaceholder: 'Please input sms code',

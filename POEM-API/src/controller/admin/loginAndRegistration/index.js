@@ -19,7 +19,7 @@ exports.register = async (req, res) => {
     const {
         username,
         realName,
-        avatar,
+        avatar= "https://sy0415-1300507222.cos.ap-beijing.myqcloud.com/1675345105819.jpg",
         nickname = "",
         phone,
         remark = "",
@@ -40,9 +40,7 @@ exports.register = async (req, res) => {
     if (!isRegister[0]) {
         /**如果账号未注册 去注册*/
         const ret = await DB(res, "sy_users", "insert", "服务器错误", {
-            avatar: avatar
-                ? avatar
-                : "https://sy0415-1300507222.cos.ap-beijing.myqcloud.com/.gif",
+            avatar,
             account: username,
             email,
             username,
@@ -61,7 +59,7 @@ exports.register = async (req, res) => {
         if (ret.affectedRows == 1) {
             res.json({
                 code: 200,
-                message: "已申请",
+                message: "注册成功",
             });
         }
     } else {
@@ -174,7 +172,7 @@ exports.userInfo = async (req, res) => {
     );
     let deptList = await DB(res, "sy_depts", "find", "服务器错误");
     userInfo.forEach((v) => {
-        v.phone =  v.phone.substr(0,3) + "****" + v.phone.substr(7)
+        v.phone = v.phone.substr(0, 3) + "****" + v.phone.substr(7)
         delete v.password;
         if (v.createTime) {
             v.createTime = rTime(timestamp(v.createTime));

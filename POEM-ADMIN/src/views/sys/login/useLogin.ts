@@ -40,7 +40,8 @@ export function useFormValid<T extends Object = any>(formRef: Ref<any>) {
 
 export function useFormRules(formData?: Recordable) {
   const { t } = useI18n();
-
+  const getRealnameFormRule = computed(() => createRule(t('sys.login.realNamePlaceholder')));
+  const getnicknameFormRule = computed(() => createRule(t('sys.login.nicknamePlaceholder')));
   const getAccountFormRule = computed(() => createRule(t('sys.login.accountPlaceholder')));
   const getPasswordFormRule = computed(() => createRule(t('sys.login.passwordPlaceholder')));
   const getSmsFormRule = computed(() => createRule(t('sys.login.smsPlaceholder')));
@@ -64,6 +65,8 @@ export function useFormRules(formData?: Recordable) {
   };
 
   const getFormRules = computed((): { [k: string]: ValidationRule | ValidationRule[] } => {
+    const realNameFormRule = unref(getRealnameFormRule);
+    const nicknameFormRule = unref(getnicknameFormRule);
     const accountFormRule = unref(getAccountFormRule);
     const passwordFormRule = unref(getPasswordFormRule);
     const smsFormRule = unref(getSmsFormRule);
@@ -79,6 +82,8 @@ export function useFormRules(formData?: Recordable) {
         return {
           account: accountFormRule,
           pwd: passwordFormRule,
+          realName: realNameFormRule,
+          nickname: nicknameFormRule,
           confirmPassword: [
             { validator: validateConfirmPassword(formData?.pwd), trigger: 'change' },
           ],
