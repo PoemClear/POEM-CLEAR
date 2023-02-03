@@ -78,7 +78,7 @@
           });
         }
       });
-      const getTitle = computed(() => (!unref(isUpdate) ? '添加专题' : '编辑专题'));
+      const getTitle = computed(() => (!unref(isUpdate) ? '添加专栏' : '编辑专栏'));
       async function handleSubmit() {
         try {
           const values = await validate();

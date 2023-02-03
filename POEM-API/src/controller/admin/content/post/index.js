@@ -22,7 +22,7 @@ exports.createPost = async (req, res) => {
         content,
         cover = '',
         cateId = "",
-        labelIds = "",
+        label_title = "",
         postType,
         postFormats,
         status,
@@ -48,7 +48,7 @@ exports.createPost = async (req, res) => {
             content,
             cover,
             cateId,
-            labelIds,
+            label_title,
             postType,
             postFormats,
             status,
@@ -95,7 +95,7 @@ exports.updatePost = async (req, res) => {
         content,
         cover = '',
         cateId = "",
-        labelIds = "",
+        label_title = "",
         postType,
         postFormats,
         status,
@@ -113,7 +113,7 @@ exports.updatePost = async (req, res) => {
             content,
             cover,
             cateId,
-            labelIds,
+            label_title,
             postType,
             postFormats,
             status,
@@ -180,7 +180,7 @@ exports.postList = async (req, res) => {
 
     let params = {
         status: req.query.status || "",
-        author:req.query.author ||'',
+        author: req.query.author || '',
         isRecycle: req.query.isRecycle || "1",
         drafts: req.query.drafts || '0',
         title: req.query.title || "",
@@ -217,6 +217,7 @@ exports.postList = async (req, res) => {
         );
         result.forEach((v, i) => {
             v.cover = v.cover ? [v.cover] : '';
+            v.label_title = v.label_title ? v.label_title.split(',') : [];
             v.cateId = v.cateId.split(',').map(Number)
             userList.forEach((ele) => {
                 if (v.userId == ele.id) {
@@ -282,6 +283,7 @@ exports.postList = async (req, res) => {
     );
     result.forEach((v, i) => {
         v.cover = v.cover ? [v.cover] : '';
+        v.label_title = v.label_title ? v.cateId.split(',') : [];
         v.cateId = v.cateId.split(',').map(Number)
         userList.forEach((ele) => {
             if (v.userId == ele.id) {
@@ -488,7 +490,7 @@ exports.upDatePostRecycle = async (req, res) => {
     if (ret.affectedRows == 1) {
         res.json({
             code: 200,
-            message:isRecycle==1? "已还原":'已删除',
+            message: isRecycle == 1 ? "已还原" : '已删除',
         });
     } else {
         res.json({

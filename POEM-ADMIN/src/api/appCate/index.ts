@@ -21,6 +21,7 @@ interface BannerListItem {
 }
 enum Api {
   AppCateList = '/appCateList',
+  AppCateLocation = '/appCateLocation',
   CreateBanner = '/createBanner',
   UpdateAppCate = '/updateAppCate',
   CreateAppCate = '/createAppCate',
@@ -31,6 +32,9 @@ enum Api {
 
 export function getAppCateList(params?: BannerListItem) {
   return defHttp.get({ url: Api.AppCateList, params });
+}
+export function getAppCateLocation(params?: BannerListItem) {
+  return defHttp.get({ url: Api.AppCateLocation, params });
 }
 export function createBanner(params?: BannerListItem, mode: SuccessMessageMode = 'message') {
   return defHttp.post<GetBannerInfoModel>(

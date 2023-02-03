@@ -20,8 +20,8 @@ exports.createAppCate = async (req, res) => {
       message: "TOKEN 已过期",
     });
   }
-  const { type,title, image_url, link_url, orderNo, status } = req.body;
-  let dictList = await DB(res, "sy_dict", "find", "服务器错误",`id=${type[1]}`)
+  const { value, title, image_url, link_url, orderNo, status } = req.body;
+  // let dictList = await DB(res, "sy_dict", "find", "服务器错误",`id=${type[1]}`)
 
   const bannerInfo = await DB(
     res,
@@ -32,8 +32,8 @@ exports.createAppCate = async (req, res) => {
   );
   if (!bannerInfo[0]) {
     const ret = await DB(res, "xcx_cate", "insert", "服务器错误", {
-      typeName:dictList[0].label,
-      title, type, image_url, link_url, orderNo, status,
+      // typeName:dictList[0].label,
+      title, value, image_url, link_url, orderNo, status,
       createTime: rTime(timestamp(new Date())),
     });
 
@@ -70,13 +70,13 @@ exports.updateAppCate = async (req, res) => {
   }
   const {
     id,
-    type,
+    value,
     image_url,
     link_url,
     orderNo,
     status
   } = req.body;
-  let dictList = await DB(res, "sy_dict", "find", "服务器错误",`id=${type[1]}`)
+  // let dictList = await DB(res, "sy_dict", "find", "服务器错误",`id=${type[1]}`)
   const ret = await DB(
     res,
     "xcx_cate",
@@ -84,10 +84,10 @@ exports.updateAppCate = async (req, res) => {
     "服务器错误",
     `id='${id}'`,
     {
-      type,
+      value,
       image_url,
       link_url,
-      typeName:dictList[0].label,
+      // typeName:dictList[0].label,
       orderNo,
       status,
       updateTime: rTime(timestamp(new Date())),
@@ -256,34 +256,45 @@ exports.appCateList = async (req, res) => {
   }
   let params = {
     title: req.query.title || "",
-    type: req.query.type || "",
+    value: req.query.value || "",
     status: req.query.status || "",
     page: req.query.page || 1,
     pageSize: req.query.pageSize || 10,
   };
+  let list = await DB(res, "sy_dict", "find", "服务器出错", `value='banner' and parentId=0`);
+  let cateList = []
+  if (list[0]) {
+    cateList = await DB(res, "sy_dict", "find", "服务器出错", `parentId=${list[0].id}`);
+  }
 
   let bannerLen = await DB(
     res,
     "xcx_cate",
     "find",
     "服务器出错",
-    `title like '%${params.title}%' and status like '%${params.status}%' and type like '%${params.type}%' `
+    `title like '%${params.title}%' and status like '%${params.status}%' and value like '%${params.value}%' `
   );
   let result = await DB(
     res,
     "xcx_cate",
     "find",
     "服务器出错",
-    `title like '%${params.title}%' and status like '%${
-      params.status
-    }%' and type like '%${params.type}%' order by orderNo desc limit ${
-      (params.page - 1) * params.pageSize
+    `title like '%${params.title}%' and status like '%${params.status
+    }%' and value like '%${params.value}%' order by orderNo desc limit ${(params.page - 1) * params.pageSize
     },${params.pageSize}`
   );
-
-  result.forEach(async(v) => {
+  result.forEach(async (v) => {
     v.image_url = [v.image_url];
-    v.type = v.type.split(",").map(Number);
+    if (cateList[0]) {
+      cateList.forEach((ele) => {
+        if (ele.value == v.value) {
+          v.typeName = ele.label
+        }
+      })
+    } else {
+      v.typeName = ''
+    }
+
     if (v.createTime) {
       v.createTime = rTime(timestamp(v.createTime));
     }
@@ -312,3 +323,30 @@ exports.appCateList = async (req, res) => {
     });
   }
 };
+
+
+/**
+ * 获取位置
+ */
+exports.cateLocation = async (req, res) => {
+  let info = await DB(
+    res,
+    "sy_dict",
+    "find",
+    "服务器出错",
+    `value='banner' `
+  );
+  let list = await DB(
+    res,
+    "sy_dict",
+    "find",
+    "服务器出错",
+  );
+  let data = [info[0].id].map(item => list.filter(v => v.parentId == item))
+  res.json({
+    code: 200,
+    result:data[0],
+
+
+  })
+}

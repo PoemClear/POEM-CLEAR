@@ -2,7 +2,7 @@ import { BasicColumn } from '/@/components/Table';
 import { FormSchema } from '/@/components/Table';
 import { h } from 'vue';
 import { uploadApi } from '/@/api/sys/upload';
-import { getDictList } from '/@/api/demo/system';
+import { getAppCateLocation } from '/@/api/appCate';
 import { Tag } from 'ant-design-vue';
 export const columns: BasicColumn[] = [
   {
@@ -99,24 +99,37 @@ export const formSchema: FormSchema[] = [
     component: 'Input',
   },
   {
-    field: 'type',
-    component: 'ApiCascader',
-    helpMessage: ['标注位置'],
     label: '金刚区位置',
+    field: 'value',
+    component: 'ApiSelect',
     componentProps: {
-      api: getDictList,
-      apiParamKey: 'parentId',
-      dataField: 'data',
+      api: getAppCateLocation,
       labelField: 'label',
-      valueField: 'id',
-      initFetchParams: {
-        parentId: '',
-        value: 'cate',
-      },
-      isLeaf: (record) => {
-        return !(record.type < 2);
-      },
+      valueField: 'value',
     },
+    required: true,
+    // componentProps: {
+    //   // more details see /src/components/Form/src/components/ApiSelect.vue
+    //   api: getAppCateLocation,
+    //   // params: {
+    //   //   id: 1,
+    //   // },
+    //   resultField: 'items',
+    //   // use name as label
+    //   labelField: 'label',
+    //   // use id as value
+    //   valueField: 'value',
+    //   // not request untill to select
+    //   immediate: false,
+    //   onChange: (e) => {
+    //     console.log('selected:', e);
+    //   },
+    //   // atfer request callback
+    //   onOptionsChange: (options) => {
+    //     console.log('get options', options.length, options);
+    //   },
+    // },
+    // defaultValue: '0',
   },
   {
     field: 'link_url',

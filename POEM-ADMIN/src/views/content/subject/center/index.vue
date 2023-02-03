@@ -1,5 +1,5 @@
 <template>
-  <PageWrapper :title="`专题： ${info.title}`" contentBackground @back="goBack" />
+  <PageWrapper :title="`专栏： ${info.title}`" contentBackground @back="goBack" />
   <div :class="prefixCls">
     <a-row :class="`${prefixCls}-top`">
       <a-col :span="24" :class="`${prefixCls}-col`">
@@ -13,7 +13,7 @@
             <div :class="`${prefixCls}-top__detail`">
               <p class="title">{{ info.title }}</p>
               <div>
-                <p>专题简介：{{ info.description }}</p>
+                <p>专栏简介：{{ info.description }}</p>
                 <div style="display: flex">
                   <p class="count">文章数：{{ info.num }}</p>
                   <p class="count"> 关注数：{{ info.like_count }}</p>
@@ -99,7 +99,7 @@
         let data = await getSubjectItem(id.value);
         console.log(data, 123);
         info.value = data.items;
-        setTitle(`专题：${data.items.title}`);
+        setTitle(`专栏：${data.items.title}`);
       }
       function goBack() {
         // 本例的效果时点击返回始终跳转到账号列表页，实际应用时可返回上一页

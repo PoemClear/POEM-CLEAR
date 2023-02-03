@@ -7,7 +7,18 @@
     :title="getTitle"
     @ok="handleSubmit"
   >
-    <BasicForm @register="registerForm" />
+    <BasicForm @register="registerForm">
+      <template #tag="{ model, field }">
+        <a-select
+          v-model:value="model[field]"
+          mode="tags"
+          style="width: 100%"
+          :token-separators="[',']"
+          placeholder="选择标签"
+          @change="handleChange"
+        />
+      </template>
+    </BasicForm>
     <template #insertFooter>
       <a-button @click="handleDrafts"> 保存草稿箱</a-button>
     </template>
@@ -20,9 +31,10 @@
   import { BasicDrawer, useDrawerInner } from '/@/components/Drawer';
   import { useUserStore } from '/@/store/modules/user';
   import { createPost, updatePost } from '/@/api/content/blog';
+  import { Select } from 'ant-design-vue';
   export default defineComponent({
     name: 'RoleDrawer',
-    components: { BasicDrawer, BasicForm },
+    components: { BasicDrawer, BasicForm, ASelect: Select },
     emits: ['success', 'register'],
     setup(_, { emit }) {
       const isUpdate = ref(true);

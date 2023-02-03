@@ -53,12 +53,12 @@ export const projectList = (() => {
 
 export const columns: BasicColumn[] = [
   {
-    title: '专题封面',
+    title: '专栏封面',
     dataIndex: 'cover',
     width: 80,
   },
   {
-    title: '专题标题',
+    title: '专栏标题',
     dataIndex: 'title',
     width: 180,
     align: 'left',
@@ -142,7 +142,7 @@ export const columns: BasicColumn[] = [
 export const searchFormSchema: FormSchema[] = [
   {
     field: 'title',
-    label: '专题标题',
+    label: '专栏标题',
     component: 'Input',
     colProps: { span: 6 },
   },
@@ -187,7 +187,7 @@ export const formSchema: FormSchema[] = [
   },
   {
     field: 'title',
-    label: '专题标题',
+    label: '专栏标题',
     required: true,
     component: 'Input',
   },
@@ -200,7 +200,7 @@ export const formSchema: FormSchema[] = [
     field: 'postIds',
     component: 'Input',
     label: '选择文章',
-    helpMessage: ['选择专题文章', '将关键词发送到接口进行远程搜索'],
+    helpMessage: ['选择专栏文章', '将关键词发送到接口进行远程搜索'],
     required: true,
     slot: 'remoteSearch',
     componentProps: {

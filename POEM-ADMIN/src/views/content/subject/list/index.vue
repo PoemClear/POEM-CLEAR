@@ -5,7 +5,7 @@
     </p> -->
     <BasicTable @register="registerTable">
       <template #toolbar>
-        <a-button type="primary" @click="handleCreate"> 添加专题</a-button>
+        <a-button type="primary" @click="handleCreate"> 添加专栏</a-button>
       </template>
       <template #bodyCell="{ column, record }">
         <template v-if="column.key === 'view_count'">
@@ -37,7 +37,7 @@
                 color: 'warning',
                 disabled: getUserInfo.roleValue == 'RegularMembers',
                 popConfirm: {
-                  title: '是否审核改专题',
+                  title: '是否审核改专栏',
                   placement: 'left',
                   cancelText: '不通过',
                   okText: '通过',
@@ -53,6 +53,7 @@
               {
                 icon: 'clarity:note-edit-line',
                 onClick: handleEdit.bind(null, record),
+                disabled: getUserInfo.id !== record.id,
               },
               {
                 icon: 'ant-design:delete-outlined',
@@ -103,11 +104,11 @@
       const permissionStore = usePermissionStore();
       const userStore = useUserStore();
       const getUserInfo = computed(() => {
-        const { roleValue } = userStore.getUserInfo || {};
-        return { roleValue };
+        const { roleValue, id } = userStore.getUserInfo || {};
+        return { roleValue, id };
       });
       const [registerTable, { reload }] = useTable({
-        title: '专题列表',
+        title: '专栏列表',
         api: getSubjectList,
         columns,
         pagination: { pageSize: 10 },

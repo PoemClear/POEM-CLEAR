@@ -21,9 +21,7 @@
                 onClick: handleEdit.bind(null, record),
               },
               {
-                ifShow: (_action) => {
-                  return record.id !== userId; // 根据业务控制是否显示: 非enable状态的不显示启用按钮
-                },
+                disabled: getUserInfo.id == record.id || record.roleValue == 'systemAdmin',
                 // disabled: getUserInfo.roleValue == 'RegularMembers',
                 icon: 'ant-design:delete-outlined',
                 color: 'error',
@@ -43,7 +41,7 @@
   </PageWrapper>
 </template>
 <script lang="ts">
-  import { defineComponent, reactive } from 'vue';
+  import { defineComponent, reactive, computed } from 'vue';
 
   import { BasicTable, useTable, TableAction } from '/@/components/Table';
   import { getAccountList, delUser } from '/@/api/demo/system';
@@ -65,7 +63,10 @@
       const [registerModal, { openModal }] = useModal();
       const searchInfo = reactive<Recordable>({});
       const userStore = useUserStore();
-      const userId = userStore.getUserInfo?.userId;
+      const getUserInfo = computed(() => {
+        const { roleValue, id } = userStore.getUserInfo || {};
+        return { roleValue, id };
+      });
       const [registerTable, { reload, updateTableDataRecord }] = useTable({
         title: '账号列表',
         api: getAccountList,
@@ -142,7 +143,7 @@
         handleView,
         searchInfo,
         hasPermission,
-        userId,
+        getUserInfo,
       };
     },
   });

@@ -211,7 +211,6 @@ export const formSchema: FormSchema[] = [
   {
     field: 'cateId',
     component: 'ApiCascader',
-    rules: [{ required: true, trigger: 'change' }],
     label: '分类',
     colProps: {
       span: 8,
@@ -232,8 +231,8 @@ export const formSchema: FormSchema[] = [
   },
   {
     label: '标签',
-    field: 'labelIds',
-    slot: 'label',
+    field: 'label_title',
+    slot: 'tag',
     component: 'Input',
     colProps: { span: 8 },
   },
