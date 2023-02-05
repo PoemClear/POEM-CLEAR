@@ -96,6 +96,7 @@ export const formSchema: FormSchema[] = [
   {
     field: 'orderNo',
     label: '排序',
+    defaultValue: '1',
     component: 'InputNumber',
     required: true,
   },

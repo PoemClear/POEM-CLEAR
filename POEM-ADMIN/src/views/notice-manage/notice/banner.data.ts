@@ -1,7 +1,7 @@
 import { BasicColumn } from '/@/components/Table';
 import { FormSchema } from '/@/components/Table';
 import { h } from 'vue';
-import { getDictList } from '/@/api/demo/system';
+import { getDictValue } from '/@/api/system';
 import { Tag } from 'ant-design-vue';
 export const columns: BasicColumn[] = [
   {
@@ -19,19 +19,10 @@ export const columns: BasicColumn[] = [
   },
   {
     title: '公告状态',
-    dataIndex: 'status_value',
-    // customRender: ({ record }) => {
-    //   const color = 'green';
-    //   return h(Tag, { color: color }, () => record.noticeStatusName);
-    // },
+    dataIndex: 'noticeStatusName',
     customRender: ({ record }) => {
-      const status = record.status_value;
-      const toDoEnable = ~~status === 10;
-      const FailEnable = ~~status === 20;
-      const SuccessEnable = ~~status === 30;
-      const color = toDoEnable ? 'orange' : SuccessEnable ? 'green' : 'red';
-      const text = toDoEnable ? '一般' : FailEnable ? '重要' : '紧急';
-      return h(Tag, { color: color }, () => text);
+      const color = 'cyan';
+      return h(Tag, { color: color }, () => record.noticeStatusName);
     },
     width: 100,
   },
@@ -111,46 +102,32 @@ export const formSchema: FormSchema[] = [
     component: 'Input',
   },
   {
-    field: 'type',
-    component: 'ApiCascader',
-    helpMessage: ['标注类型'],
     label: '公告类型',
-    required: true,
+    field: 'type',
+    component: 'ApiSelect',
     componentProps: {
-      api: getDictList,
-      apiParamKey: 'parentId',
-      dataField: 'data',
+      api: getDictValue,
+      params: {
+        value: 'noticeType',
+      },
       labelField: 'label',
-      valueField: 'id',
-      initFetchParams: {
-        parentId: '',
-        value: 'banner',
-      },
-      isLeaf: (record) => {
-        return !(record.type < 2);
-      },
+      valueField: 'value',
     },
+    required: true,
   },
   {
-    field: 'noticeStatus',
-    component: 'ApiCascader',
-    helpMessage: ['标注状态'],
     label: '公告状态',
-    required: true,
+    field: 'noticeStatus',
+    component: 'ApiSelect',
     componentProps: {
-      api: getDictList,
-      apiParamKey: 'parentId',
-      dataField: 'data',
+      api: getDictValue,
+      params: {
+        value: 'noticeStatus',
+      },
       labelField: 'label',
-      valueField: 'id',
-      initFetchParams: {
-        parentId: '',
-        value: 'banner',
-      },
-      isLeaf: (record) => {
-        return !(record.type < 2);
-      },
+      valueField: 'value',
     },
+    required: true,
   },
   {
     field: 'link_url',
@@ -161,6 +138,7 @@ export const formSchema: FormSchema[] = [
   {
     field: 'orderNo',
     label: '排序',
+    defaultValue: '1',
     component: 'InputNumber',
     required: true,
   },
@@ -171,8 +149,8 @@ export const formSchema: FormSchema[] = [
     defaultValue: '0',
     componentProps: {
       options: [
-        { label: '否', value: '0' },
         { label: '是', value: '1' },
+        { label: '否', value: '0' },
       ],
     },
   },
@@ -180,11 +158,11 @@ export const formSchema: FormSchema[] = [
     field: 'status',
     label: '状态',
     component: 'RadioButtonGroup',
-    defaultValue: '0',
+    defaultValue: '1',
     componentProps: {
       options: [
-        { label: '停用', value: '0' },
         { label: '启用', value: '1' },
+        { label: '停用', value: '0' },
       ],
     },
   },

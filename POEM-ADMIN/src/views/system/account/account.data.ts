@@ -21,11 +21,6 @@ export const columns: BasicColumn[] = [
     width: 120,
   },
   {
-    title: '创建时间',
-    dataIndex: 'createTime',
-    width: 180,
-  },
-  {
     title: '角色',
     dataIndex: 'roleValue',
     width: 200,
@@ -41,6 +36,16 @@ export const columns: BasicColumn[] = [
       const text = toDoEnable ? '未激活' : '已激活';
       return h(Tag, { color: color }, () => text);
     },
+  },
+  {
+    title: '创建时间',
+    dataIndex: 'createTime',
+    width: 180,
+  },
+  {
+    title: '最近一次登录',
+    dataIndex: 'lastLoginTime',
+    width: 180,
   },
   {
     title: '备注',

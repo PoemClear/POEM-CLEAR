@@ -6,10 +6,21 @@
     width="100%"
     :title="getTitle"
     @ok="handleSubmit"
+    ok-text="发布"
   >
-    <BasicForm @register="registerForm" />
+    <BasicForm @register="registerForm">
+      <template #tag="{ model, field }">
+        <a-select
+          v-model:value="model[field]"
+          mode="tags"
+          style="width: 100%"
+          :token-separators="[',']"
+          placeholder="选择标签"
+        />
+      </template>
+    </BasicForm>
     <template #insertFooter>
-      <a-button @click="handleDrafts">保存草稿箱</a-button>
+      <a-button @click="handleDrafts"> 保存草稿箱</a-button>
     </template>
   </BasicDrawer>
 </template>
@@ -20,14 +31,17 @@
   import { BasicDrawer, useDrawerInner } from '/@/components/Drawer';
   import { useUserStore } from '/@/store/modules/user';
   import { createPost, updatePost } from '/@/api/content/blog';
+  import { Select, Alert } from 'ant-design-vue';
+  import { useMessage } from '/@/hooks/web/useMessage';
   export default defineComponent({
     name: 'RoleDrawer',
-    components: { BasicDrawer, BasicForm },
+    components: { BasicDrawer, BasicForm, ASelect: Select, [Alert.name]: Alert },
     emits: ['success', 'register'],
     setup(_, { emit }) {
       const isUpdate = ref(true);
       const userStore = useUserStore();
       const userinfo = computed(() => userStore.getUserInfo);
+      const { createMessage } = useMessage();
       let record = reactive({ id: '' });
       const [registerForm, { resetFields, setFieldsValue, validate }] = useForm({
         labelWidth: 90,
@@ -58,6 +72,11 @@
         try {
           const values = await validate();
           setDrawerProps({ confirmLoading: true });
+          console.log(values);
+          if (!values.label_title) {
+            createMessage.info('至少添加一个标签');
+            return false;
+          }
           // TODO custom api
           values.drafts = 0;
           if (isUpdate.value) {
@@ -76,6 +95,10 @@
         try {
           const values = await validate();
           setDrawerProps({ confirmLoading: true });
+          if (!values.label_title) {
+            createMessage.info('至少添加一个标签');
+            return false;
+          }
           // TODO custom api
           values.drafts = 1;
           if (isUpdate.value) {

@@ -27,10 +27,10 @@
   import { formSchema } from './banner.data';
   import { BasicDrawer, useDrawerInner } from '/@/components/Drawer';
   // createBanner
-  import { createBanner, updateBanner } from '/@/api/banner';
+  import { createBanner, updateBanner } from '/@/api/app';
 
   export default defineComponent({
-    name: 'RoleDrawer',
+    name: 'BannerDrawer',
     components: { BasicDrawer, BasicForm },
     emits: ['success', 'register'],
     setup(_, { emit }) {

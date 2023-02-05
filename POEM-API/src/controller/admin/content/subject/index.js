@@ -2,7 +2,12 @@ const {rTime, timestamp} = require("../../../../utils/timeformat");
 const DB = require("../../../../db");
 const jwt = require("jsonwebtoken");
 const config = require("../../../../config");
-
+/**
+ * 添加专栏
+ * @param req
+ * @param res
+ * @returns {Promise<*>}
+ */
 exports.createSubject = async (req, res) => {
     let payload = null;
     try {
@@ -20,8 +25,7 @@ exports.createSubject = async (req, res) => {
         title,
         cover,
         description = "",
-        orderNo,
-        postIds,
+        postIds='',
         subjectCateId = "1",
         subjectlabelId = "2",
         isEnd,
@@ -43,7 +47,6 @@ exports.createSubject = async (req, res) => {
             title,
             cover,
             description,
-            orderNo,
             postIds,
             subjectCateId,
             subjectlabelId,
@@ -68,6 +71,12 @@ exports.createSubject = async (req, res) => {
         });
     }
 };
+/**
+ * 更新专栏
+ * @param req
+ * @param res
+ * @returns {Promise<*>}
+ */
 exports.updateSubject = async (req, res) => {
     let payload = null;
     try {
@@ -85,8 +94,7 @@ exports.updateSubject = async (req, res) => {
         title,
         cover,
         description = "",
-        orderNo,
-        postIds,
+        postIds='',
         isEnd,
         openComment,
         isTop,
@@ -103,7 +111,6 @@ exports.updateSubject = async (req, res) => {
                 title,
                 cover,
                 description,
-                orderNo,
                 postIds,
                 isEnd,
                 status,
@@ -136,7 +143,6 @@ exports.updateSubject = async (req, res) => {
             title,
             cover,
             description,
-            orderNo,
             postIds,
             isEnd,
             openComment,
@@ -158,7 +164,12 @@ exports.updateSubject = async (req, res) => {
         });
     }
 };
-
+/**
+ * 专栏列表
+ * @param req
+ * @param res
+ * @returns {Promise<*>}
+ */
 exports.subjectList = async (req, res) => {
     let payload = null;
     try {
@@ -210,7 +221,8 @@ exports.subjectList = async (req, res) => {
             }`
         );
         result.forEach((v, i) => {
-            v.postIds = v.postIds.split(",").map(Number);
+            v.postIds =v.postIds? v.postIds.split(",").map(Number):[]
+            v.subjectIds = v.subjectIds?v.subjectIds.split(",").map(Number):[]
             v.num = v.postIds.length;
             v.cover = [v.cover];
             userList.forEach((ele) => {
@@ -268,12 +280,13 @@ exports.subjectList = async (req, res) => {
             params.isRecycle
         }%' and status like '%${params.status}%' and  checkStatus like '%${
             params.checkStatus
-        }%'  order by orderNo desc  limit ${(params.page - 1) * params.pageSize},${
+        }%'  order by id desc  limit ${(params.page - 1) * params.pageSize},${
             params.pageSize
         }`
     );
     result.forEach((v, i) => {
-        v.postIds = v.postIds.split(",").map(Number);
+        v.postIds =v.postIds? v.postIds.split(",").map(Number):[]
+        v.subjectIds =v.subjectIds? v.subjectIds.split(",").map(Number):[]
         v.num = v.postIds.length;
         v.cover = [v.cover];
         userList.forEach((ele) => {
@@ -313,9 +326,84 @@ exports.subjectList = async (req, res) => {
         });
     }
 };
-
 /**
- * 文章详情
+ * 远程搜索专栏列表
+ * @param req
+ * @param res
+ * @returns {Promise<*>}
+ */
+exports.subjectSelectList = async (req, res) => {
+    let payload = null;
+    try {
+        const authorizationHeader = req.get("Authorization");
+        const accessToken = authorizationHeader;
+        payload = jwt.verify(accessToken, config.jwtSecret);
+    } catch (error) {
+        return res.status(401).json({
+            code: 401,
+            message: "TOKEN 已过期",
+        });
+    }
+
+    let params = {
+        status: req.query.status || "",
+        isRecycle: req.query.isRecycle || "1",
+        title: req.query.title || "",
+        page: req.query.page || 1,
+        pageSize: req.query.pageSize || 10000,
+    };
+
+    let result_num = await DB(
+        res,
+        "xcx_blog_subject",
+        "find",
+        "服务器错误",
+        `userId=${payload.accountId.id}   and title like '%${params.title}%' and isRecycle like '%${params.isRecycle}%' and status like '%${params.status}%' `
+    );
+
+    let result = await DB(
+        res,
+        "xcx_blog_subject",
+        "find",
+        "服务器错误",
+        `userId=${payload.accountId.id}  and title like '%${params.title}%' and isRecycle like '%${params.isRecycle
+        }%' and status like '%${params.status}%'  order by orderNo desc  limit ${(params.page - 1) * params.pageSize},${params.pageSize
+        }`
+    );
+
+    result.forEach((v, i) => {
+        v.cover = v.cover ? [v.cover] : '';
+        if (v.createTime) {
+            v.createTime = rTime(timestamp(v.createTime));
+        }
+        if (v.updateTime) {
+            v.updateTime = rTime(timestamp(v.updateTime));
+        } else {
+            delete v.updateTime;
+        }
+    });
+
+    if (!result[0]) {
+        res.json({
+            code: 200,
+            result: {
+                items: [],
+            },
+        });
+    } else {
+        res.json({
+            code: 200,
+            result: {
+                items: result,
+                total: result_num.length,
+                page: Number(params.page),
+                pageSize: Number(params.pageSize),
+            },
+        });
+    }
+};
+/**
+ * 专栏详情
  * @param req
  * @param res
  * @returns {Promise<*>}
@@ -350,10 +438,25 @@ exports.subjectItem = async (req, res) => {
     let postList = await DB(res, "xcx_blog_post", "find", "服务器错误",`isRecycle=1`);
     let checkedIds = result[0].postIds.split(",").map(Number);
     let arr = postList.filter((item) => checkedIds.includes(item.id));
+    if(arr[0]){
+        arr.forEach((v)=>{
+            v.label_title = v.label_title ? v.label_title.split(',') : [];
+
+            v.cateId = v.cateId? v.cateId.split(',').map(Number):[]
+        })
+    }
+
     arr.sort((a, b) => b.orderNo - a.orderNo)
     result.forEach((v) => {
-        v.postIds = v.postIds.split(",").map(Number);
-        v.children = arr;
+        console.log(v.postIds)
+        if(v.postIds){
+            v.postIds = v.postIds.split(",").map(Number);
+            v.children = arr;
+        }else{
+            v.postIds = []
+        }
+
+
         v.num = arr.length;
         if (v.createTime) {
             v.createTime = rTime(timestamp(v.createTime));
@@ -393,7 +496,7 @@ exports.subjectItem = async (req, res) => {
 };
 
 /**
- * 文章放入回收站 恢复
+ * 专栏放入回收站 恢复
  * @param req
  * @param res
  */
@@ -436,7 +539,7 @@ exports.upDateSubjectRecycle = async (req, res) => {
 };
 
 /**
- * 审核文章 0 审核中 1 审核失败 2 审核成功
+ * 审核专栏 0 审核中 1 审核失败 2 审核成功 【弃用】
  * @param req
  * @param res
  * @returns {Promise<void>}
@@ -467,7 +570,7 @@ exports.updateCheckSubject = async (req, res) => {
 };
 
 /**
- * 删除文章
+ * 删除专栏
  * @param req
  * @param res
  * @returns {Promise<*>}

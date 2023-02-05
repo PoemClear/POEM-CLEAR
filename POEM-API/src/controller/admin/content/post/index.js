@@ -1,4 +1,4 @@
-const { rTime, timestamp } = require("../../../../utils/timeformat");
+const {rTime, timestamp} = require("../../../../utils/timeformat");
 const DB = require("../../../../db");
 const jwt = require("jsonwebtoken");
 const config = require("../../../../config");
@@ -23,6 +23,7 @@ exports.createPost = async (req, res) => {
         cover = '',
         cateId = "",
         label_title = "",
+        subjectIds='',
         postType,
         postFormats,
         status,
@@ -46,8 +47,10 @@ exports.createPost = async (req, res) => {
             userId,
             title,
             content,
+            // content:JSON.stringify(content),
             cover,
             cateId,
+            subjectIds,
             label_title,
             postType,
             postFormats,
@@ -60,11 +63,29 @@ exports.createPost = async (req, res) => {
             orderNo,
             createTime: rTime(timestamp(new Date())),
         });
+        // for(let i  = 0;i<subjectList.length;i++){
+        //     await DB(res, "xcx_blog_subject", "insert", "服务器错误", {
+        //         userId,
+        //         title,
+        //         cover,
+        //         description = "",
+        //         postIds='',
+        //         subjectCateId = "1",
+        //         subjectlabelId = "2",
+        //         isEnd,
+        //         status,
+        //         openComment,
+        //         isTop,
+        //         isRecycle = "1",
+        //         createTime: rTime(timestamp(new Date())),
+        //     });
+        // }
 
         if (ret.affectedRows == 1) {
+
             res.json({
                 code: 200,
-                message: "添加成功",
+                message: "发布成功 正在审核中",
             });
         }
     } else {
@@ -100,6 +121,7 @@ exports.updatePost = async (req, res) => {
         postFormats,
         status,
         isRecycle = "1",
+        subjectIds='',
         openComment,
         isTop,
         drafts,
@@ -111,6 +133,7 @@ exports.updatePost = async (req, res) => {
             type,
             title,
             content,
+            // content:JSON.stringify(content).replace(/\"/g,"'"),
             cover,
             cateId,
             label_title,
@@ -119,6 +142,7 @@ exports.updatePost = async (req, res) => {
             status,
             isRecycle,
             openComment,
+            subjectIds,
             isTop,
             drafts,
             orderNo,
@@ -140,13 +164,15 @@ exports.updatePost = async (req, res) => {
     const ret = await DB(res, 'xcx_blog_post', 'update', '服务器错误', `userId=${payload.accountId.id} and id=${id}`, {
         type,
         title,
+        // content:JSON.stringify(content).replace(/\"/g,"'"),
         content,
         cover,
         cateId,
-        labelIds,
+        label_title,
         postType,
         postFormats,
         status,
+        subjectIds,
         isRecycle,
         openComment,
         isTop,
@@ -196,7 +222,7 @@ exports.postList = async (req, res) => {
             "xcx_blog_post",
             "find",
             "服务器错误",
-            `title like '%${params.title}%'  and drafts like '%${params.drafts}%' and  isRecycle like '%${params.isRecycle}%' and postType like '%${params.postType}%' and status like '%${params.status}%' and checkStatus like '%${params.checkStatus}%'`
+            `title like '%${params.title}%'  and drafts='${params.drafts}' and  isRecycle like '%${params.isRecycle}%' and postType like '%${params.postType}%' and status like '%${params.status}%' and checkStatus like '%${params.checkStatus}%'`
         );
 
         let result = await DB(
@@ -218,7 +244,11 @@ exports.postList = async (req, res) => {
         result.forEach((v, i) => {
             v.cover = v.cover ? [v.cover] : '';
             v.label_title = v.label_title ? v.label_title.split(',') : [];
-            v.cateId = v.cateId.split(',').map(Number)
+
+            v.cateId = v.cateId ? v.cateId.split(',').map(Number) : []
+            v.subjectIds = v.subjectIds ? v.subjectIds.split(",").map(Number) : []
+            // v.content = v.content.replace(/'/g, '"');
+
             userList.forEach((ele) => {
                 if (v.userId == ele.id) {
                     v.author = {
@@ -270,9 +300,9 @@ exports.postList = async (req, res) => {
         "xcx_blog_post",
         "find",
         "服务器错误",
-        `userId=${payload.accountId.id} and drafts like '%${params.drafts}%'   and postType like '%${params.postType}%'  and title like '%${params.title}%' and isRecycle like '%${params.isRecycle
+        `userId=${payload.accountId.id} and drafts='${params.drafts}'   and postType like '%${params.postType}%'  and title like '%${params.title}%' and isRecycle like '%${params.isRecycle
         }%' and status like '%${params.status}%' and  checkStatus like '%${params.checkStatus
-        }%'  order by orderNo desc  limit ${(params.page - 1) * params.pageSize},${params.pageSize
+        }%'  order by id desc  limit ${(params.page - 1) * params.pageSize},${params.pageSize
         }`
     );
     let userList = await DB(
@@ -283,8 +313,11 @@ exports.postList = async (req, res) => {
     );
     result.forEach((v, i) => {
         v.cover = v.cover ? [v.cover] : '';
-        v.label_title = v.label_title ? v.cateId.split(',') : [];
-        v.cateId = v.cateId.split(',').map(Number)
+        v.label_title = v.label_title ? v.label_title.split(',') : [];
+
+        v.cateId = v.cateId ? v.cateId.split(',').map(Number) : []
+        // v.content = v.content.replace(/'/g, '"');
+        v.subjectIds = v.subjectIds ? v.subjectIds.split(",").map(Number) : []
         userList.forEach((ele) => {
             if (v.userId == ele.id) {
                 v.author = {
@@ -415,8 +448,14 @@ exports.postItem = async (req, res) => {
             message: "TOKEN 已过期",
         });
     }
-    let { id } = req.query;
-
+    let {id} = req.query;
+    let userList = await DB(
+        res,
+        "sy_users",
+        "find",
+        "服务器错误",
+    );
+    let cateList = await DB(res, 'sy_blog_cate', 'find', '服务器出错', `status=1`);
     let result = await DB(
         res,
         "xcx_blog_post",
@@ -427,6 +466,12 @@ exports.postItem = async (req, res) => {
 
     result.forEach((v) => {
         v.cover = v.cover ? [v.cover] : [];
+        // v.cateId = v.cateId ? v.cateId.split(',') : [];
+        cateList.forEach((ele)=>{
+            if(ele.id==v.cateId)
+            v.cate_title = ele.title
+        })
+        v.label_title = v.label_title ? v.label_title.split(',') : [];
         if (v.createTime) {
             v.createTime = rTime(timestamp(v.createTime));
         }
@@ -435,6 +480,13 @@ exports.postItem = async (req, res) => {
         } else {
             delete v.updateTime;
         }
+        userList.forEach((ele) => {
+            if (v.userId == ele.id) {
+                v.author = ele.nickname
+                v.avatar = ele.avatar
+
+            }
+        })
     });
     if (!result[0]) {
         res.json({
@@ -474,7 +526,7 @@ exports.upDatePostRecycle = async (req, res) => {
             message: "TOKEN 已过期",
         });
     }
-    const { id, isRecycle } = req.body;
+    const {id, isRecycle} = req.body;
     const ret = await DB(
         res,
         "xcx_blog_post",
@@ -507,7 +559,7 @@ exports.upDatePostRecycle = async (req, res) => {
  * @returns {Promise<void>}
  */
 exports.updateCheckPost = async (req, res) => {
-    const { id, checkStatus } = req.body;
+    const {id, checkStatus} = req.body;
     const ret = await DB(
         res,
         "xcx_blog_post",
@@ -549,7 +601,7 @@ exports.delPost = async (req, res) => {
             message: "TOKEN 已过期",
         });
     }
-    const { id } = req.body;
+    const {id} = req.body;
     const ret = await DB(
         res,
         "xcx_blog_post",

@@ -2,6 +2,7 @@ import { defHttp } from '/@/utils/http/axios';
 import { SuccessMessageMode } from '/#/axios';
 enum Api {
   SubjectList = '/content/subjectList',
+  SubjectSelectList='/content/subjectSelectList',
   CreateSubject = '/content/createSubject',
   UpdateSubject = '/content/updateSubject',
   SubjectItem = '/content/subjectItem',
@@ -14,8 +15,16 @@ enum Api {
 export function getSubjectList(params?: any) {
   return defHttp.get({ url: Api.SubjectList, params });
 }
-export function createSubject(data?: any) {
-  return defHttp.post({ url: Api.CreateSubject, data });
+export function getSubjectSelectList(params?: any) {
+  return defHttp.get({ url: Api.SubjectSelectList, params });
+}
+export function createSubject(data?: any, mode: SuccessMessageMode = 'message') {
+  return defHttp.post(
+    { url: Api.CreateSubject, data },
+    {
+      successMessageMode: mode,
+    },
+  );
 }
 export function updateSubject(params?: object, mode: SuccessMessageMode = 'message') {
   return defHttp.post(

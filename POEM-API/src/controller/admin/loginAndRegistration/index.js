@@ -7,9 +7,11 @@ const {
 } = require("../../../utils/timeformat");
 const DB = require("../../../db");
 const jwt = require("jsonwebtoken");
+const ip = require('ip')
+// ip.address()
 const uuid = require("node-uuid");
 /** 过期时间 单位：毫秒 默认 1分钟过期，方便演示 */
-let expiresIn = 6000000;
+let expiresIn = 86400;
 /***
  * 注册|申请
  * @param req
@@ -19,7 +21,7 @@ exports.register = async (req, res) => {
     const {
         username,
         realName,
-        avatar= "https://sy0415-1300507222.cos.ap-beijing.myqcloud.com/1675345105819.jpg",
+        avatar = "https://sy0415-1300507222.cos.ap-beijing.myqcloud.com/1675345105819.jpg",
         nickname = "",
         phone,
         remark = "",
@@ -35,7 +37,7 @@ exports.register = async (req, res) => {
         "sy_users",
         "find",
         "服务器错误",
-        `username='${username}' and phone='${phone}' `
+        `username='${username}' or phone='${phone}' `
     );
     if (!isRegister[0]) {
         /**如果账号未注册 去注册*/
@@ -87,7 +89,6 @@ exports.login = async (req, res) => {
         "服务器错误",
         `username='${username}'  or account='${account}' `
     );
-    // let roleInfo = await DB(res, 'sy_roles', 'find', '服务器错误', )
     if (!userInfo[0]) {
         return res.json({
             code: 403,
@@ -169,6 +170,16 @@ exports.userInfo = async (req, res) => {
         "find",
         "服务器错误",
         `id='${payload.accountId.id}'`
+    );
+    await DB(
+        res,
+        "sy_users",
+        "update",
+        "服务器错误",
+        `id='${payload.accountId.id}'`,
+        {
+           ip:ip.address()
+        }
     );
     let deptList = await DB(res, "sy_depts", "find", "服务器错误");
     userInfo.forEach((v) => {

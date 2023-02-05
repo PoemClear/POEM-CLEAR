@@ -11,7 +11,7 @@
           :maxlength="20"
         />
       </FormItem>
-      <FormItem name="nickanme" class="enter-x">
+      <FormItem name="nickname" class="enter-x">
         <Input
           size="large"
           v-model:value="formData.nickname"

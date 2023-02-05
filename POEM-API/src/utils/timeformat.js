@@ -27,6 +27,21 @@ function timestamp(standardTime) {
     date.getSeconds() < 10 ? "0" + date.getSeconds() : date.getSeconds(); // 秒
   return Y + M + D + " " + h + ":" + m + ":" + s;
 }
+function timestampYMD(standardTime) {
+  let date = new Date(standardTime);
+  const Y = date.getFullYear() + "-";
+  const M =
+      (date.getMonth() + 1 < 10
+          ? "0" + (date.getMonth() + 1)
+          : date.getMonth() + 1) + "-";
+  const D = date.getDate() < 10 ? "0" + date.getDate() + " " : date.getDate();
+  const h = date.getHours() < 10 ? "0" + date.getHours() : date.getHours();
+  const m =
+      date.getMinutes() < 10 ? "0" + date.getMinutes() : date.getMinutes();
+  const s =
+      date.getSeconds() < 10 ? "0" + date.getSeconds() : date.getSeconds(); // 秒
+  return Y + M + D + " " + h + ":" + m + ":" + s;
+}
 
 function rTime(date) {
   var json_date = new Date(date).toJSON();
@@ -208,4 +223,5 @@ module.exports = {
   getFormatMsgTime,
   listMockToTree,
   uniqueNumber,
+  timestampYMD,
 };

@@ -15,7 +15,13 @@
         </a-alert> -->
       </template>
       <template #toolbar>
-        <a-button type="primary" @click="handleCreate" :disabled="getUserInfo.roleValue == 'RegularMembers'"> 新增公告 </a-button>
+        <a-button
+          type="primary"
+          @click="handleCreate"
+          :disabled="getUserInfo.roleValue == 'RegularMembers'"
+        >
+          新增公告
+        </a-button>
       </template>
       <template #bodyCell="{ column, record }">
         <template v-if="column.key === 'image_url'">
@@ -48,17 +54,17 @@
   </div>
 </template>
 <script lang="ts">
-  import { defineComponent, ref ,computed} from 'vue';
+  import { defineComponent, ref, computed } from 'vue';
 
   import { BasicTable, useTable, TableAction } from '/@/components/Table';
-  import { getNoticeList } from '/@/api/notice';
+  import { getNoticeList ,delNotice} from '/@/api/notice';
   import { useDrawer } from '/@/components/Drawer';
   import BannerDrawer from './BannerDrawer.vue';
   import { usePermissionStore } from '/@/store/modules/permission';
   import { usePermission } from '/@/hooks/web/usePermission';
   import { columns, searchFormSchema } from './banner.data';
   import { Image } from 'ant-design-vue';
-  
+
   import { useUserStore } from '/@/store/modules/user';
   export default defineComponent({
     name: 'RoleManagement',
@@ -117,7 +123,7 @@
 
       async function handleDelete(record: Recordable) {
         // await DelRole(record.id);
-        // await delBanner(record.id);
+        await delNotice(record.id);
         console.log(record);
         handleSuccess();
       }

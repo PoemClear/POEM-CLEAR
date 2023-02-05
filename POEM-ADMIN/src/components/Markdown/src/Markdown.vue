@@ -20,9 +20,9 @@
   import { useRootSetting } from '/@/hooks/setting/useRootSetting';
   import { onMountedOrActivated } from '/@/hooks/core/onMountedOrActivated';
   import { getTheme } from './getTheme';
-
   type Lang = 'zh_CN' | 'en_US' | 'ja_JP' | 'ko_KR' | undefined;
-
+  import { useGlobSetting } from '/@/hooks/setting';
+  const { uploadUrl = '/upload' } = useGlobSetting();
   export default defineComponent({
     inheritAttrs: false,
     props: {
@@ -92,6 +92,18 @@
           // 设置外观主题
           theme: getTheme(getDarkMode.value) as any,
           lang: unref(getCurrentLang),
+          comment: {
+            enable: true,
+            // add(id: string, text: string, commentsData: ICommentsData[]) {
+            //   console.log(id, text, commentsData);
+            // },
+            // remove(ids: string[]) {
+            //   console.log(ids);
+            // },
+          },
+          counter: {
+            enable: true,
+          },
           mode: 'sv',
           fullscreen: {
             index: 520,
@@ -106,6 +118,10 @@
               style: getTheme(getDarkMode.value, 'code'),
             },
             actions: [],
+            markdown: {
+              toc: true,
+              fixTermTypo: true,
+            },
           },
           input: (v) => {
             valueRef.value = v;
@@ -127,6 +143,22 @@
           ...bindValue,
           cache: {
             enable: false,
+          },
+          upload: {
+            url: uploadUrl,
+            fieldName: 'file',
+            accept: 'image/*',
+            multiple: false,
+            // success(editor: HTMLPreElement, msg: string) {
+            //   console.log(editor, msg);
+            // },
+          },
+          resize: {
+            enable: true,
+          },
+          outline: {
+            enable: true,
+            position: 'left',
           },
         });
       }

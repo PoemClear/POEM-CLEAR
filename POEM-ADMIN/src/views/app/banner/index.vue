@@ -49,7 +49,7 @@
   import { defineComponent, ref } from 'vue';
 
   import { BasicTable, useTable, TableAction } from '/@/components/Table';
-  import { getBannerList, delBanner } from '/@/api/banner';
+  import { getBannerList, delBanner } from '/@/api/app';
   import { useDrawer } from '/@/components/Drawer';
   import BannerDrawer from './BannerDrawer.vue';
   import { usePermissionStore } from '/@/store/modules/permission';

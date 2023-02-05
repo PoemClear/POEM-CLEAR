@@ -49,10 +49,17 @@ exports.UploadImage = (req, res) => {
                     // await DB(res, 'sy_image_material', 'insert', message[0], {
                     //     image_url:imageSrc
                     // })
+                    let succMap = {}
+
+                    succMap[ data.Key] = url
                     res.json({
-                        code: 200,
-                        message: "上传成功",
-                        url
+                        code: 0,
+                        msg: "上传成功",
+                        url,
+                        data : {
+                            errFiles: [],
+                            succMap
+                        }
 
                     })
                     // res.json({

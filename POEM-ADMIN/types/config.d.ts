@@ -143,6 +143,8 @@ export interface GlobConfig {
   apiUrl: string;
   // Upload url
   uploadUrl?: string;
+  // Markdown Upload url
+  markdownUploadUrl?: string;
   //  Service interface url prefix
   urlPrefix?: string;
   // Project abbreviation
@@ -159,4 +161,6 @@ export interface GlobEnvConfig {
   VITE_GLOB_APP_SHORT_NAME: string;
   // Upload url
   VITE_GLOB_UPLOAD_URL?: string;
+  // Markdown Upload url
+  VITE_GLOB_MARKDOWN_UPLOAD_URL?: string;
 }

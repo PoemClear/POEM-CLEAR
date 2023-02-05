@@ -4,7 +4,7 @@ const jwt = require("jsonwebtoken");
 const config = require("../../../../config");
 
 /**
- * 创建标签
+ * 创建字典
  * @param req
  * @param res
  */
@@ -46,7 +46,7 @@ exports.createDict = async (req, res) => {
 };
 
 /**
- * 更新标签
+ * 更新字典
  * @param req
  * @param res
  */
@@ -67,10 +67,10 @@ exports.updateDict = async (req, res) => {
     label,
     orderNo,
     value = "",
-    type,
     parentId = 0,
     status,
   } = req.body;
+  let type = 1
   if (parentId == 0) {
     type = 1;
   } else {
@@ -297,3 +297,27 @@ exports.dictList = async (req, res) => {
     result: bannerLen,
   });
 };
+
+
+exports.dictValue = async (req, res) => {
+  let info = await DB(
+      res,
+      "sy_dict",
+      "find",
+      "服务器出错",
+      `value='${req.query.value}'`
+  );
+  let list = await DB(
+      res,
+      "sy_dict",
+      "find",
+      "服务器出错",
+  );
+  let data = [info[0].id].map(item => list.filter(v => v.parentId == item))
+  res.json({
+    code: 200,
+    result:data[0],
+
+
+  })
+}

@@ -56,7 +56,7 @@ exports.createUser = async (req, res) => {
     } else {
         /**提示账号已注册*/
         res.json({
-            code: 200, message: "账号已注册"
+            code: 403, message: "账号已注册"
         })
     }
 }
@@ -235,6 +235,11 @@ exports.getAccountList = async (req, res) => {
             v.updateTime = rTime(timestamp(v.updateTime))
         } else {
             delete v.updateTime
+        }
+        if (v.lastLoginTime) {
+            v.lastLoginTime = rTime(timestamp(v.lastLoginTime))
+        } else {
+            delete v.lastLoginTime
         }
         roleInfo.forEach((ele) => {
             if (v.roleValue == ele.roleValue) {

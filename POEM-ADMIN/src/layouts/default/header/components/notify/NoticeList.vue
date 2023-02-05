@@ -17,9 +17,9 @@
                 "
                 :content="item.title"
               />
-              <div class="extra" v-if="item.extra">
+              <div class="extra" v-if="item.noticeStatusName">
                 <a-tag class="tag" :color="item.color">
-                  {{ item.extra }}
+                  {{ item.noticeStatusName }}
                 </a-tag>
               </div>
             </div>
@@ -32,7 +32,7 @@
 
           <template #description>
             <div>
-              <div class="description" v-if="item.description">
+              <!-- <div class="description" v-if="item.description">
                 <a-typography-paragraph
                   style="width: 100%; margin-bottom: 0 !important"
                   :ellipsis="
@@ -42,9 +42,9 @@
                   "
                   :content="item.description"
                 />
-              </div>
-              <div class="datetime">
-                {{ item.datetime }}
+              </div> -->
+              <div class="datetime" style="font-size: 5px">
+                {{ item.createTime }}
               </div>
             </div>
           </template>
@@ -180,7 +180,7 @@
 
         .datetime {
           margin-top: 4px;
-          font-size: 12px;
+          font-size: 8px !important;
           line-height: 18px;
         }
       }

@@ -48,11 +48,11 @@
       <Button type="primary" size="large" block @click="handleLogin" :loading="loading">
         {{ t('sys.login.loginButton') }}
       </Button>
-      <!-- <Button size="large" class="mt-4 enter-x" block @click="handleRegister">
-        {{ t('sys.login.registerButton') }}
-      </Button> -->
     </FormItem>
-    <ARow class="enter-x">
+    <!-- <a class="ml-4" href="https://poem.i-autumn.cn/" target="_blank"
+      >当前后台为测试后台，前往正式平台 ></a
+    > -->
+    <ARow class="enter-x" style="margin-top: 10px">
       <ACol :md="8" :xs="24">
         <Button block @click="setLoginState(LoginStateEnum.MOBILE)" disabled>
           {{ t('sys.login.mobileSignInFormTitle') }}

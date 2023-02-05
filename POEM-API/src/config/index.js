@@ -1,7 +1,7 @@
 require('dotenv').config({path: '.env'})
 
 process.env.NODE_ENV = process.env.NODE_ENV || "development";
-
+console.log(process)
 const dev = {
     host: "152.136.141.57",
     password: "sy2022&0415",
@@ -21,7 +21,7 @@ module.exports = {
         charset: "utf8mb4_general_ci",
         user: "root",
         port: "3306",
-        database: "poem_clear_pro"
+        database: process.env.DATA_BASE
     },
     api: {
         prefix: "/api",
@@ -29,8 +29,9 @@ module.exports = {
     qcloud: {
         cos: {
             AppId: '1300507222',
-            SecretId: 'AKID2tVquhDTSAbleniOnukJbcMozuCDxQcX',
-            SecretKey: 'f3A0Zstd6IHzQaU6SWKr64sPfdMq3zg6',
+            SecretId: 'AKIDoU1WtUwDGxXyFHn9JJD8tPiqnVyJT6NZ',
+            SecretKey: 'A9wUt7CB1h8QZhp3CD2rxxq63bcWHHD1',
+
         },
         tengxunCos: {
             Bucket: 'sy0415-1300507222',

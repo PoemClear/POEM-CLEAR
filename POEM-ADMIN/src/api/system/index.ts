@@ -38,6 +38,7 @@ enum Api {
   UpdateDict = '/system/updateDict',
   CreateDict = '/system/createDict',
   DictList = '/system/dictList',
+  DictValue = '/system/dictValue',
 }
 
 export const getAccountList = (params: AccountParams) =>
@@ -45,6 +46,8 @@ export const getAccountList = (params: AccountParams) =>
 
 export const getDeptList = (params?: DeptListItem) =>
   defHttp.get<DeptListGetResultModel>({ url: Api.DeptList, params });
+  export const getDictValue = (params?: DeptListItem) =>
+  defHttp.get<DeptListGetResultModel>({ url: Api.DictValue, params });
 
 export const getSelectDeptList = (params?: DeptListItem) =>
   defHttp.get<DeptListGetResultModel>({ url: Api.GetSelectDeptList, params });

@@ -42,23 +42,23 @@
         </template>
       </template>
     </BasicTable>
-    <BannerDrawer @register="registerDrawer" @success="handleSuccess" />
+    <CateDrawer @register="registerDrawer" @success="handleSuccess" />
   </div>
 </template>
 <script lang="ts">
   import { defineComponent, ref } from 'vue';
 
   import { BasicTable, useTable, TableAction } from '/@/components/Table';
-  import { getAppCateList, delAppCate } from '/@/api/appCate';
+  import { getAppCateList, delAppCate } from '/@/api/app';
   import { useDrawer } from '/@/components/Drawer';
-  import BannerDrawer from './BannerDrawer.vue';
+  import CateDrawer from './CateDrawer.vue';
   import { usePermissionStore } from '/@/store/modules/permission';
   import { usePermission } from '/@/hooks/web/usePermission';
-  import { columns, searchFormSchema } from './banner.data';
+  import { columns, searchFormSchema } from './cate.data';
   import { Image } from 'ant-design-vue';
   export default defineComponent({
     name: 'RoleManagement',
-    components: { BasicTable, BannerDrawer, TableAction, Image }, // AAlert: Alert
+    components: { BasicTable, CateDrawer, TableAction, Image }, // AAlert: Alert
     setup() {
       const checkedKeys = ref<Array<string | number>>([]);
       const [registerDrawer, { openDrawer }] = useDrawer();

@@ -18,9 +18,12 @@ router.use(require('./admin/system/user'))
 /** 字典管理*/
 router.use(require('./admin/system/dict'))
 /** 系统管理 --------------------------------------------------END*/
-
+/** 系统管理 --------------------------------------------------START*/
+/** APP管理*/
+router.use(require('./admin/app/loading'))
+/** APP管理 --------------------------------------------------END*/
 /** 轮播图列表 创建轮播图 更新轮播图 删除轮播图 轮播图详情**/
-router.use(require('./admin/banner'))
+router.use(require('./admin/app/banner'))
 
 /** 内容管理 --------------------------------------------------START*/
 /** 专题管理*/
@@ -40,7 +43,7 @@ router.use(require('./admin/content/label'))
 /** 评论管理*/
 router.use(require('./admin/comment'))
 /** 金刚区管理*/
-router.use(require('./admin/appCate'))
+router.use(require('./admin/app/appCate'))
 /** 公告管理*/
 router.use(require('./admin/notice'))
 
@@ -49,4 +52,6 @@ router.use(require('./admin/recycle-bin'))
 
 /** 个人设置*/
 router.use(require('./admin/setting'))
+/** 文章 评论 。。 统计*/
+router.use(require('./admin/data'))
 module.exports = router

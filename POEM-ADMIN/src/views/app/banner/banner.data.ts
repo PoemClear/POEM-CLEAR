@@ -2,7 +2,7 @@ import { BasicColumn } from '/@/components/Table';
 import { FormSchema } from '/@/components/Table';
 import { h } from 'vue';
 import { uploadApi } from '/@/api/sys/upload';
-import { getDictList } from '/@/api/demo/system';
+import { getDictValue } from '/@/api/system';
 import { Tag } from 'ant-design-vue';
 export const columns: BasicColumn[] = [
   {
@@ -60,9 +60,17 @@ export const columns: BasicColumn[] = [
 
 export const searchFormSchema: FormSchema[] = [
   {
-    field: 'remark',
-    label: '备注',
-    component: 'Input',
+    label: '轮播图位置',
+    field: 'type',
+    component: 'ApiSelect',
+    componentProps: {
+      api: getDictValue,
+      params: {
+        value: 'bannerPosition',
+      },
+      labelField: 'label',
+      valueField: 'value',
+    },
     colProps: { span: 6 },
   },
   {
@@ -92,24 +100,18 @@ export const formSchema: FormSchema[] = [
     },
   },
   {
-    field: 'type',
-    component: 'ApiCascader',
-    helpMessage: ['标注位置'],
     label: '轮播图位置',
+    field: 'type',
+    component: 'ApiSelect',
     componentProps: {
-      api: getDictList,
-      apiParamKey: 'parentId',
-      dataField: 'data',
+      api: getDictValue,
+      params: {
+        value: 'bannerPosition',
+      },
       labelField: 'label',
-      valueField: 'id',
-      initFetchParams: {
-        parentId: '',
-        value: 'banner',
-      },
-      isLeaf: (record) => {
-        return !(record.type < 2);
-      },
+      valueField: 'value',
     },
+    required: true,
   },
   {
     field: 'link_url',
