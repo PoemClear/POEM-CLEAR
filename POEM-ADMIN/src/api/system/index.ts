@@ -39,6 +39,7 @@ enum Api {
   CreateDict = '/system/createDict',
   DictList = '/system/dictList',
   DictValue = '/system/dictValue',
+  UpdateUserInfo='/system/updateUserInfo',
 }
 
 export const getAccountList = (params: AccountParams) =>
@@ -178,5 +179,11 @@ export const updateDict = (params?: any, mode: SuccessMessageMode = 'message') =
       successMessageMode: mode,
     },
   );
-
+  export const updateUserInfo = (params?: any, mode: SuccessMessageMode = 'message') =>
+  defHttp.post(
+    { url: Api.UpdateUserInfo, params },
+    {
+      successMessageMode: mode,
+    },
+  );
 export const getDictList = (params?: any) => defHttp.post({ url: Api.DictList, params });

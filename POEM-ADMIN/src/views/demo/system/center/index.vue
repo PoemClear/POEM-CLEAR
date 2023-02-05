@@ -61,7 +61,6 @@
   import Application from './Application.vue';
   import Project from './Project.vue';
 
-  import headerImg from '/@/assets/images/header.jpg';
   import { tags, teams, details, achieveList } from './data';
   import { useUserStore } from '/@/store/modules/user';
 
@@ -80,7 +79,7 @@
     },
     setup() {
       const userStore = useUserStore();
-      const avatar = computed(() => userStore.getUserInfo.avatar || headerImg);
+      const avatar = computed(() => userStore.getUserInfo.avatar );
       return {
         prefixCls: 'account-center',
         avatar,

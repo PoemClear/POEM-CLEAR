@@ -15,14 +15,14 @@ export const columns: BasicColumn[] = [
   {
     title: '文章标题',
     dataIndex: 'title',
-    width: 300,
-    align: 'left',
+    width: 350,
+    // align: 'left',
   },
-  {
-    title: '浏览 / 点赞 / 评论 / 收藏',
-    dataIndex: 'view_count',
-    width: 150,
-  },
+  // {
+  //   title: '浏览 / 点赞 / 评论 / 收藏',
+  //   dataIndex: 'view_count',
+  //   width: 150,
+  // },
   {
     title: '状态',
     dataIndex: 'status',

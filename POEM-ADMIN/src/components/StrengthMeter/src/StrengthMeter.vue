@@ -43,6 +43,7 @@
         if (disabled) return -1;
         const innerValue = unref(innerValueRef);
         const score = innerValue ? zxcvbn(unref(innerValueRef)).score : -1;
+        // console.log('密码强度', score);
         emit('score-change', score);
         return score;
       });

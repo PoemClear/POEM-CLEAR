@@ -3,7 +3,7 @@ const DB = require("../../../../db")
 const md5 = require("md5");
 const config = require("../../../../config");
 const jwt = require("jsonwebtoken");
-
+var https = require('https');
 /**
  * 创建用户
  * @param req
@@ -24,7 +24,7 @@ exports.createUser = async (req, res) => {
         username,
         realName,
         pwd,
-        avatar='',
+        avatar = '',
         nickname = '',
         phone,
         remark = '',
@@ -42,7 +42,7 @@ exports.createUser = async (req, res) => {
             avatar,
             account: username,
             email,
-            username, phone, realName, avatar, nickname, remark, homePath, roleValue, deptId,status,
+            username, phone, realName, avatar, nickname, remark, homePath, roleValue, deptId, status,
             password: md5(md5(phone) + config.md5Str),
             pwd: md5(md5(pwd) + config.md5Str),
             createTime: rTime(timestamp(new Date())),
@@ -82,7 +82,7 @@ exports.updateUser = async (req, res) => {
         username,
         realName,
         nickname = '',
-        avatar='',
+        avatar = '',
         phone,
         remark,
         homePath = '',
@@ -193,6 +193,9 @@ exports.userInfo = async (req, res) => {
     }
     const {id} = req.query
     const bannerInfo = await DB(res, 'sy_users', 'find', '服务器错误', `ID='${id}'`)
+    bannerInfo.forEach((ele) => {
+        ele.base64 = 'data:image/png;base64,' + ele.base64
+    })
     res.json({
         code: 200,
         data: {...bannerInfo[0]}
@@ -227,7 +230,7 @@ exports.getAccountList = async (req, res) => {
     let result = await DB(res, 'sy_users', 'find', '服务器出错', `status like '%${params.status}%' and username like '%${params.username}%' and deptId like '%${params.deptId}%'  order by id desc limit ${(params.page - 1) * params.pageSize},${params.pageSize}`);
     result.forEach((v) => {
         v.avatar = v.avatar == '' ? null : [v.avatar]
-        v.pwd ='***'
+        v.pwd = '***'
         if (v.createTime) {
             v.createTime = rTime(timestamp(v.createTime))
         }
@@ -265,6 +268,98 @@ exports.getAccountList = async (req, res) => {
                 pageSize: params.pageSize
             }
 
+        })
+    }
+}
+
+// function Imagebase64(url) {
+//     https.get(url, function (res) {
+//         let base64Img = ''
+//         var chunks = []; //用于保存网络请求不断加载传输的缓冲数据
+//         var size = 0;　　 //保存缓冲数据的总长度
+//         res.on('data', function (chunk) {
+//             chunks.push(chunk);　 //在进行网络请求时，会不断接收到数据(数据不是一次性获取到的)，
+//             size += chunk.length;　　//累加缓冲数据的长度
+//         });
+//
+//         res.on('end', function (err) {
+//             var data = Buffer.concat(chunks, size);　　//Buffer.concat将chunks数组中的缓冲数据拼接起来，返回一个新的Buffer对象赋值给data
+//             console.log(Buffer.isBuffer(data));　　　　//可通过Buffer.isBuffer()方法判断变量是否为一个Buffer对象
+//             var base64Img = data.toString('base64');　　//将Buffer对象转换为字符串并以base64编码格式显示
+//
+//             console.log(base64Img);　　 //进入终端terminal,然后进入index.js所在的目录，　　
+//     return base64Img
+//         });
+//
+//     });
+// }
+
+/***
+ * 修改信息
+ * @param req
+ * @param res
+ * @returns {Promise<*>}
+ */
+exports.updateUserInfo = async (req, res) => {
+    let payload = null;
+    try {
+        const authorizationHeader = req.get("Authorization");
+        const accessToken = authorizationHeader
+        payload = jwt.verify(accessToken, config.jwtSecret);
+    } catch (error) {
+        return res.status(401).json({
+            code: 401, message: "TOKEN 已过期"
+        });
+    }
+
+    const {
+        nickname,
+        avatar = payload.accountId.avatar,
+        remark,
+        email
+    } = req.body
+
+
+    let ret =    await DB(res, 'sy_users', 'update', '服务器错误', `id='${payload.accountId.id}'`, {
+        nickname,
+        avatar,
+        remark,
+        email
+    })
+
+    // const reslut = await DB(res, 'sy_users', 'find', '服务器错误', `id='${payload.accountId.id}'`)
+    // https.get(reslut[0].avatar, function (res) {
+    //     var chunks = []; //用于保存网络请求不断加载传输的缓冲数据
+    //     var size = 0;　　 //保存缓冲数据的总长度
+    //     res.on('data', function (chunk) {
+    //         chunks.push(chunk);　 //在进行网络请求时，会不断接收到数据(数据不是一次性获取到的)，
+    //         size += chunk.length;　　//累加缓冲数据的长度
+    //     });
+    //
+    //     res.on('end', async function (err) {
+    //         var data = Buffer.concat(chunks, size);　　//Buffer.concat将chunks数组中的缓冲数据拼接起来，返回一个新的Buffer对象赋值给data
+    //         // console.log(Buffer.isBuffer(data));　　　　//可通过Buffer.isBuffer()方法判断变量是否为一个Buffer对象
+    //          base64Img = data.toString('base64');　　//将Buffer对象转换为字符串并以base64编码格式显示
+    //         await DB(res, 'sy_users', 'update', '服务器错误', `id='${payload.accountId.id}'`, {
+    //             base64: base64Img,
+    //         })
+    //     });
+    //
+    // });
+
+
+    const rst = await DB(res, 'sy_users', 'find', '服务器错误', `id='${payload.accountId.id}'`)
+    if (ret.affectedRows == 1) {
+
+        res.json({
+            code: 200,
+            message: "更新成功",
+            result: rst[0]
+        })
+    } else {
+        res.json({
+            code: 403,
+            message: "修改失败"
         })
     }
 }

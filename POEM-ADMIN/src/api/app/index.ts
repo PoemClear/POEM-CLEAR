@@ -24,7 +24,7 @@ enum Api {
   AppCateLocation = '/app/appCateLocation',
   UpdateAppCate = '/app/updateAppCate',
   CreateAppCate = '/app/createAppCate',
-  DelAppCate = '/delAppCate',
+  DelAppCate = '/app/delAppCate',
 
   BannerList = '/app/bannerList',
   CreateBanner = '/app/createBanner',

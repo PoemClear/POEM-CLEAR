@@ -19,7 +19,7 @@
       </template>
       <template #bodyCell="{ column, record }">
         <template v-if="column.key === 'image_url'">
-          <Image :width="40" :height="40" :src="record.image_url" />
+          <Image :width="25" :height="25" :src="record.image_url" />
         </template>
         <template v-if="column.key === 'action'">
           <TableAction

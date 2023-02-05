@@ -18,24 +18,20 @@
         </div>
       </a-col>
     </a-row>
-    <Button type="primary" @click="handleSubmit" disabled> 更新基本信息 </Button>
+    <Button type="primary" @click="handleSubmit"> 更新基本信息 </Button>
   </CollapseContainer>
 </template>
 <script lang="ts">
   import { Button, Row, Col } from 'ant-design-vue';
-  import { computed, defineComponent, onMounted } from 'vue';
+  import { computed, defineComponent, onMounted, ref } from 'vue';
   import { BasicForm, useForm } from '/@/components/Form/index';
   import { CollapseContainer } from '/@/components/Container';
   import { CropperAvatar } from '/@/components/Cropper';
-
-  import { useMessage } from '/@/hooks/web/useMessage';
-
-  import headerImg from '/@/assets/images/header.jpg';
   import { getUserInfo } from '/@/api/sys/user';
   import { baseSetschemas } from './data';
   import { useUserStore } from '/@/store/modules/user';
   import { uploadApi } from '/@/api/sys/upload';
-
+  import { updateUserInfo } from '/@/api/system';
   export default defineComponent({
     components: {
       BasicForm,
@@ -46,10 +42,9 @@
       CropperAvatar,
     },
     setup() {
-      const { createMessage } = useMessage();
       const userStore = useUserStore();
-
-      const [register, { setFieldsValue }] = useForm({
+      const avatarUrl = ref('');
+      const [register, { setFieldsValue, validate }] = useForm({
         labelWidth: 120,
         schemas: baseSetschemas,
         showActionButtonGroup: false,
@@ -61,17 +56,26 @@
       });
 
       const avatar = computed(() => {
-        const { avatar } = userStore.getUserInfo;
-        console.log(avatar);
-        return avatar || headerImg;
+        const { base64, avatar } = userStore.getUserInfo;
+        return avatar || 'data:image/png;base64,' + base64;
       });
-
-      function updateAvatar({ src, data }) {
-        const userinfo = userStore.getUserInfo;
-        console.log(src, userinfo);
-        userinfo.avatar = src;
+      const userinfo = userStore.getUserInfo;
+      function updateAvatar({ source, url }) {
+        userinfo.avatar = source;
+        avatarUrl.value = url;
         userStore.setUserInfo(userinfo);
-        console.log('data', data);
+      }
+      async function handleSubmit() {
+        try {
+          const values = await validate();
+          // TODO custom api
+          let userInfo = await updateUserInfo({
+            ...values,
+            avatar: avatarUrl.value || userinfo.avatar,
+          });
+          userStore.setUserInfo(userInfo);
+        } finally {
+        }
       }
 
       return {
@@ -79,9 +83,8 @@
         register,
         uploadApi: uploadApi as any,
         updateAvatar,
-        handleSubmit: () => {
-          createMessage.success('更新成功！');
-        },
+        handleSubmit,
+        avatarUrl,
       };
     },
   });

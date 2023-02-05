@@ -1,5 +1,4 @@
 import { FormSchema } from '/@/components/Form';
-
 export const formSchema: FormSchema[] = [
   {
     field: 'passwordOld',
@@ -13,7 +12,11 @@ export const formSchema: FormSchema[] = [
     component: 'StrengthMeter',
     componentProps: {
       placeholder: '新密码',
+      scoreChange: (e: any) => {
+        console.log(e, 123);
+      },
     },
+
     rules: [
       {
         required: true,

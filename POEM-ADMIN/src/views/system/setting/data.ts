@@ -74,12 +74,12 @@ export const baseSetschemas: FormSchema[] = [
     colProps: { span: 18 },
   },
 
-  {
-    field: 'address',
-    component: 'Input',
-    label: '所在地区',
-    colProps: { span: 18 },
-  },
+  // {
+  //   field: 'address',
+  //   component: 'Input',
+  //   label: '所在地区',
+  //   colProps: { span: 18 },
+  // },
 ];
 
 // 安全设置 list

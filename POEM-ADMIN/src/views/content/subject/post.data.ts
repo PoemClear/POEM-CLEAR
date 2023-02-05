@@ -4,52 +4,6 @@ import { h } from 'vue';
 import { Tag } from 'ant-design-vue';
 import { uploadApi } from '/@/api/sys/upload';
 import { getPostSelectList } from '/@/api/content/blog';
-export interface TabItem {
-  key: string;
-  name: string;
-  component: string;
-}
-
-export const articleList = (() => {
-  const result: any[] = [];
-  for (let i = 0; i < 4; i++) {
-    result.push({
-      title: 'Vben Admin',
-      description: ['Vben', '设计语言', 'Typescript'],
-      content: '基于Vue Next, TypeScript, Ant Design实现的一套完整的企业级后台管理系统。',
-      time: '2020-11-14 11:20',
-    });
-  }
-  return result;
-})();
-
-export const achieveList: TabItem[] = [
-  {
-    key: '1',
-    name: '文章',
-    component: 'Article',
-  },
-  {
-    key: '2',
-    name: '应用',
-    component: 'Application',
-  },
-  {
-    key: '3',
-    name: '项目',
-    component: 'Project',
-  },
-];
-export const projectList = (() => {
-  const result: any[] = [];
-  for (let i = 0; i < 8; i++) {
-    result.push({
-      title: 'Vben Admin',
-      content: '基于Vue Next, TypeScript, Ant Design实现的一套完整的企业级后台管理系统。',
-    });
-  }
-  return result;
-})();
 
 export const columns: BasicColumn[] = [
   {
@@ -60,14 +14,13 @@ export const columns: BasicColumn[] = [
   {
     title: '专栏标题',
     dataIndex: 'title',
-    width: 180,
-    align: 'left',
+    width: 320,
   },
-  {
-    title: '浏览 / 点赞 / 评论 / 收藏',
-    dataIndex: 'view_count',
-    width: 150,
-  },
+  // {
+  //   title: '浏览 / 点赞 / 评论 / 收藏',
+  //   dataIndex: 'view_count',
+  //   width: 150,
+  // },
   { title: '更新 / 完结', dataIndex: 'num', width: 100 },
   {
     title: '状态',

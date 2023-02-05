@@ -8,7 +8,7 @@ export const columns: BasicColumn[] = [
   {
     title: '图片',
     dataIndex: 'image_url',
-    width: 60,
+    width: 50,
   },
   {
     title: '位置',

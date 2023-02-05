@@ -7,6 +7,7 @@ export const columns: BasicColumn[] = [
   {
     title: '公告标题',
     dataIndex: 'title',
+    width: 300,
   },
   {
     title: '类型',
@@ -66,11 +67,11 @@ export const columns: BasicColumn[] = [
     dataIndex: 'createTime',
     width: 180,
   },
-  {
-    title: '更新时间',
-    dataIndex: 'updateTime',
-    width: 180,
-  },
+  // {
+  //   title: '更新时间',
+  //   dataIndex: 'updateTime',
+  //   width: 180,
+  // },
 ];
 
 export const searchFormSchema: FormSchema[] = [

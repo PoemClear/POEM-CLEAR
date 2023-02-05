@@ -1,11 +1,25 @@
 const fs = require('fs')
 const COS = require('cos-nodejs-sdk-v5')
 const config = require("../../config")
+const jwt = require("jsonwebtoken");
+const DB = require("../../db");
 const cos = new COS(config.qcloud.cos);
 const TengXunCos = config.qcloud.tengxunCos
 // const DB = require("../../db")
 // const {message, code} = require("../../utils/message")
-exports.UploadImage = (req, res) => {
+exports.UploadImage = async(req, res) => {
+    // let payload = null;
+    // try {
+    //     const authorizationHeader = req.get("Authorization");
+    //     const accessToken = authorizationHeader
+    //     payload = jwt.verify(accessToken, config.jwtSecret);
+    // } catch (error) {
+    //     return res.status(401).json({
+    //         code: 401, message: "TOKEN 已过期"
+    //     });
+    // }
+    // const rst = await DB(res, 'sy_users', 'find', '服务器错误', `id='${payload.accountId.id}'`)
+    // if(!rst[0]) return
     // 文件路径
     let filePath = './' + req.file.path;
     // 文件类型

@@ -26,7 +26,7 @@
   export default defineComponent({
     inheritAttrs: false,
     props: {
-      height: { type: Number, default: 360 },
+      height: { type: Number, default: 500 },
       value: { type: String, default: '' },
     },
     emits: ['change', 'get', 'update:value'],
@@ -94,12 +94,15 @@
           lang: unref(getCurrentLang),
           comment: {
             enable: true,
-            // add(id: string, text: string, commentsData: ICommentsData[]) {
-            //   console.log(id, text, commentsData);
-            // },
-            // remove(ids: string[]) {
-            //   console.log(ids);
-            // },
+            add: (id: string, text: string, commentsData: ICommentsData[]) => {
+              console.log(id, text, commentsData);
+            },
+            remove: (ids: string[]) => {
+              console.log(ids);
+            },
+            adjustTop: (commentsData: ICommentsData[]) => {
+              console.log(commentsData);
+            },
           },
           counter: {
             enable: true,
@@ -115,6 +118,8 @@
             },
             hljs: {
               // 设置代码块主题
+              /**启用行号 */
+              lineNumber: true,
               style: getTheme(getDarkMode.value, 'code'),
             },
             actions: [],
@@ -147,7 +152,7 @@
           upload: {
             url: uploadUrl,
             fieldName: 'file',
-            accept: 'image/*',
+            // accept: 'image/*',
             multiple: false,
             // success(editor: HTMLPreElement, msg: string) {
             //   console.log(editor, msg);

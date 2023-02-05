@@ -71,8 +71,6 @@
 <script lang="ts">
   import { defineComponent, computed, onMounted, ref } from 'vue';
   import { useRoute } from 'vue-router';
-  import headerImg from '/@/assets/images/header.jpg';
-  // import { tags, teams, details, achieveList } from './data';
   import { useUserStore } from '/@/store/modules/user';
   import { getSubjectItem } from '/@/api/content/subject';
   import { PageWrapper } from '/@/components/Page';
@@ -97,7 +95,7 @@
       const go = useGo();
       const { setTitle } = useTabs();
       let id = ref(route.params?.id);
-      const avatar = computed(() => userStore.getUserInfo.avatar || headerImg);
+      const avatar = computed(() => userStore.getUserInfo.avatar);
       let info = ref({});
       // 此处可以得到文章ID
       async function getInfo() {

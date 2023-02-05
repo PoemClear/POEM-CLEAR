@@ -105,8 +105,6 @@ exports.login = async (req, res) => {
             return res.json({code: 403, message: "密码输入有误"});
         }
     }
-
-
     if (userInfo[0].status == 0) {
         res.json({
             success: false,
@@ -184,6 +182,7 @@ exports.userInfo = async (req, res) => {
     let deptList = await DB(res, "sy_depts", "find", "服务器错误");
     userInfo.forEach((v) => {
         v.phone = v.phone.substr(0, 3) + "****" + v.phone.substr(7)
+        // v.base64 = 'data:image/png;base64,'+v.base64
         delete v.password;
         if (v.createTime) {
             v.createTime = rTime(timestamp(v.createTime));
@@ -210,6 +209,12 @@ exports.userInfo = async (req, res) => {
         v.userId = v.id;
         v.token = req.get("Authorization");
     });
+    if(!userInfo[0]){
+        return res.status(401).json({
+            code: 401,
+            message: "TOKEN 已过期",
+        });
+    }
     res.json({
         code: 200,
         type: "success",

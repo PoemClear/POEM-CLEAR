@@ -8,7 +8,7 @@ export const columns: BasicColumn[] = [
   {
     title: '轮播图',
     dataIndex: 'image_url',
-    width: 100,
+    width: 60,
   },
   {
     title: '跳转链接',

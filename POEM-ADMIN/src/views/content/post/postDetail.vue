@@ -16,7 +16,15 @@
     </template>
     <template #footer>
       <div style="display: flex">
-        <div class="tag image"> 封面： <Image :width="60" :height="30" :src="info.cover" /> </div>
+        <div class="tag image">
+          封面：
+          <Image
+            :width="60"
+            :height="30"
+            :src="info.cover"
+            fallback="https://sy0415-1300507222.cos.ap-beijing.myqcloud.com/1675144320527.png"
+          />
+        </div>
         <div class="tag" v-if="info.cateId">
           专栏：
 
