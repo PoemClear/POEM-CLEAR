@@ -39,7 +39,8 @@ enum Api {
   CreateDict = '/system/createDict',
   DictList = '/system/dictList',
   DictValue = '/system/dictValue',
-  UpdateUserInfo='/system/updateUserInfo',
+  UpdateUserInfo = '/system/updateUserInfo',
+  FileList = '/file/fileList',
 }
 
 export const getAccountList = (params: AccountParams) =>
@@ -47,7 +48,7 @@ export const getAccountList = (params: AccountParams) =>
 
 export const getDeptList = (params?: DeptListItem) =>
   defHttp.get<DeptListGetResultModel>({ url: Api.DeptList, params });
-  export const getDictValue = (params?: DeptListItem) =>
+export const getDictValue = (params?: DeptListItem) =>
   defHttp.get<DeptListGetResultModel>({ url: Api.DictValue, params });
 
 export const getSelectDeptList = (params?: DeptListItem) =>
@@ -179,7 +180,7 @@ export const updateDict = (params?: any, mode: SuccessMessageMode = 'message') =
       successMessageMode: mode,
     },
   );
-  export const updateUserInfo = (params?: any, mode: SuccessMessageMode = 'message') =>
+export const updateUserInfo = (params?: any, mode: SuccessMessageMode = 'message') =>
   defHttp.post(
     { url: Api.UpdateUserInfo, params },
     {
@@ -187,3 +188,4 @@ export const updateDict = (params?: any, mode: SuccessMessageMode = 'message') =
     },
   );
 export const getDictList = (params?: any) => defHttp.post({ url: Api.DictList, params });
+export const getFileList = (params?: any) => defHttp.get({ url: Api.FileList, params });

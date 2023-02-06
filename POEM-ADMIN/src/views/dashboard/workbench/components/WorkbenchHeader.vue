@@ -11,8 +11,8 @@
         <span class="text-2xl">{{ data.postNum }}</span>
       </div>
       <div class="flex flex-col justify-center text-center md:mx-10 mx-4">
-        <span class="text-secondary"> 草稿箱 </span>
-        <span class="text-2xl">{{ data.draftsNum }}</span>
+        <span class="text-secondary"> 专题 </span>
+        <span class="text-2xl">{{ data.subjectListNum }}</span>
       </div>
       <div class="flex flex-col justify-center text-center md:mx-10 mx-4">
         <span class="text-secondary"> 评论 </span>
@@ -46,7 +46,7 @@
         commentNum: 0,
         attentionNum: 0,
         fansNum: 0,
-        draftsNum: 0,
+        subjectListNum: 0,
       });
       async function getDataPostList() {
         let res = await getDataPost();

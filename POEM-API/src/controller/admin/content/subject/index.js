@@ -2,6 +2,15 @@ const {rTime, timestamp} = require("../../../../utils/timeformat");
 const DB = require("../../../../db");
 const jwt = require("jsonwebtoken");
 const config = require("../../../../config");
+function refrain(arr) {
+    var tmp = [];
+    if(Array.isArray(arr)) {
+        arr.concat().sort().sort(function(a,b) {
+            if(a==b && tmp.indexOf(a) === -1) tmp.push(a);
+        });
+    }
+    return tmp;
+}
 /**
  * 添加专栏
  * @param req
@@ -197,6 +206,9 @@ exports.subjectList = async (req, res) => {
         "find",
         "服务器错误",
     );
+    let postList = await DB(res, "xcx_blog_post", "find", "服务器错误",`isRecycle=1 and userId=${payload.accountId.id}`);
+    let allPostIds = postList.map((ele)=>ele.id)
+
     if (payload.accountId.roleValue == 'systemAdmin') {
 
         let result_num = await DB(
@@ -221,7 +233,12 @@ exports.subjectList = async (req, res) => {
             }`
         );
         result.forEach((v, i) => {
-            v.postIds =v.postIds? v.postIds.split(",").map(Number):[]
+            if(v.postIds){
+                let postIds = v.postIds.split(",").map(Number)
+                v.postIds = refrain([...postIds,...allPostIds])
+            }else{
+                v.postIds = []
+            }
             v.subjectIds = v.subjectIds?v.subjectIds.split(",").map(Number):[]
             v.num = v.postIds.length;
             v.cover = [v.cover];
@@ -285,7 +302,12 @@ exports.subjectList = async (req, res) => {
         }`
     );
     result.forEach((v, i) => {
-        v.postIds =v.postIds? v.postIds.split(",").map(Number):[]
+        if(v.postIds){
+            let postIds = v.postIds.split(",").map(Number)
+            v.postIds = refrain([...postIds,...allPostIds])
+        }else{
+            v.postIds = []
+        }
         v.subjectIds =v.subjectIds? v.subjectIds.split(",").map(Number):[]
         v.num = v.postIds.length;
         v.cover = [v.cover];
@@ -408,6 +430,7 @@ exports.subjectSelectList = async (req, res) => {
  * @param res
  * @returns {Promise<*>}
  */
+
 exports.subjectItem = async (req, res) => {
     let payload = null;
     try {
@@ -421,78 +444,170 @@ exports.subjectItem = async (req, res) => {
         });
     }
     let {id} = req.query;
+    if (payload.accountId.roleValue == 'systemAdmin') {
+        let result = await DB(
+            res,
+            "xcx_blog_subject",
+            "find",
+            "服务器错误",
+            `id='${id}'`
+        );
+        if(!result[0]){
+            return res.json({
+                code:403,
+                message:'无效资源'
+            })
+        }
+        let userList = await DB(
+            res,
+            "sy_users",
+            "find",
+            "服务器错误",
+        );
+        let postList = await DB(res, "xcx_blog_post", "find", "服务器错误",`isRecycle=1`);
+        let checkedIds = result[0].postIds.split(",").map(Number);
 
-    let result = await DB(
-        res,
-        "xcx_blog_subject",
-        "find",
-        "服务器错误",
-        `id='${id}'`
-    );
-    let userList = await DB(
-        res,
-        "sy_users",
-        "find",
-        "服务器错误",
-    );
-    let postList = await DB(res, "xcx_blog_post", "find", "服务器错误",`isRecycle=1`);
-    let checkedIds = result[0].postIds.split(",").map(Number);
-    let arr = postList.filter((item) => checkedIds.includes(item.id));
-    if(arr[0]){
-        arr.forEach((v)=>{
-            v.label_title = v.label_title ? v.label_title.split(',') : [];
+        let arr = postList.filter((item) => checkedIds.includes(item.id))
+        let arrIds = arr.map((ele)=> ele.id)
+        let allArrIds =  postList.map((ele)=> ele.id)
+        let newArr = refrain([...arrIds,...allArrIds])
+        if(arr[0]){
+            arr.forEach((v)=>{
+                v.label_title = v.label_title ? v.label_title.split(',') : [];
 
-            v.cateId = v.cateId? v.cateId.split(',').map(Number):[]
-        })
-    }
-
-    arr.sort((a, b) => b.orderNo - a.orderNo)
-    result.forEach((v) => {
-        console.log(v.postIds)
-        if(v.postIds){
-            v.postIds = v.postIds.split(",").map(Number);
-            v.children = arr;
-        }else{
-            v.postIds = []
+                v.cateId = v.cateId? v.cateId.split(',').map(Number):[]
+            })
         }
 
-
-        v.num = arr.length;
-        if (v.createTime) {
-            v.createTime = rTime(timestamp(v.createTime));
-        }
-        if (v.updateTime) {
-            v.updateTime = rTime(timestamp(v.updateTime));
-        } else {
-            delete v.updateTime;
-        }
-        userList.forEach((ele) => {
-            if (v.userId == ele.id) {
-                v.author = ele.nickname
-                v.avatar = ele.avatar
-
+        arr.sort((a, b) => b.orderNo - a.orderNo)
+        result.forEach((v) => {
+            if(v.postIds){
+                v.postIds = newArr
+                v.children = arr;
+            }else{
+                v.postIds = []
             }
-        })
-    });
-    if (!result[0]) {
-        res.json({
-            code: 200,
-            message: "ok",
-            type: "success",
-            result: {
-                items: {},
-            },
+
+
+            v.num = arr.length;
+            if (v.createTime) {
+                v.createTime = rTime(timestamp(v.createTime));
+            }
+            if (v.updateTime) {
+                v.updateTime = rTime(timestamp(v.updateTime));
+            } else {
+                delete v.updateTime;
+            }
+            userList.forEach((ele) => {
+                if (v.userId == ele.id) {
+                    v.author = ele.nickname
+                    v.avatar = ele.avatar
+
+                }
+            })
         });
-    } else {
-        res.json({
-            code: 200,
-            type: "success",
-            message: "ok",
-            result: {
-                items: result[0],
-            },
+        if (!result[0]) {
+            res.json({
+                code: 200,
+                message: "ok",
+                type: "success",
+                result: {
+                    items: {},
+                },
+            });
+        } else {
+            res.json({
+                code: 200,
+                type: "success",
+                message: "ok",
+                result: {
+                    items: result[0],
+                },
+            });
+        }
+    }else{
+        let result = await DB(
+            res,
+            "xcx_blog_subject",
+            "find",
+            "服务器错误",
+            `id='${id}' and userId='${payload.accountId.id}'`
+        );
+        if(!result[0]){
+            return res.json({
+                code:403,
+                message:'无效资源'
+            })
+        }
+        let userList = await DB(
+            res,
+            "sy_users",
+            "find",
+            "服务器错误",
+        );
+        let postList = await DB(res, "xcx_blog_post", "find", "服务器错误",`isRecycle=1`);
+        let checkedIds = result[0].postIds.split(",").map(Number);
+
+        let arr = postList.filter((item) => checkedIds.includes(item.id))
+        let arrIds = arr.map((ele)=> ele.id)
+        let allArrIds =  postList.map((ele)=> ele.id)
+        let newArr = refrain([...arrIds,...allArrIds])
+        if(arr[0]){
+            arr.forEach((v)=>{
+                v.label_title = v.label_title ? v.label_title.split(',') : [];
+
+                v.cateId = v.cateId? v.cateId.split(',').map(Number):[]
+            })
+        }
+
+        arr.sort((a, b) => b.orderNo - a.orderNo)
+        result.forEach((v) => {
+            if(v.postIds){
+                v.postIds = newArr
+                v.children = arr;
+            }else{
+                v.postIds = []
+            }
+
+
+            v.num = arr.length;
+            if (v.createTime) {
+                v.createTime = rTime(timestamp(v.createTime));
+            }
+            if (v.updateTime) {
+                v.updateTime = rTime(timestamp(v.updateTime));
+            } else {
+                delete v.updateTime;
+            }
+            userList.forEach((ele) => {
+                if (v.userId == ele.id) {
+                    v.author = ele.nickname
+                    v.avatar = ele.avatar
+
+                }
+            })
         });
+        if (!result[0]) {
+            res.json({
+                code: 200,
+                message: "ok",
+                type: "success",
+                result: {
+                    items: {},
+                },
+            });
+        } else {
+            res.json({
+                code: 200,
+                type: "success",
+                message: "ok",
+                result: {
+                    items: result[0],
+                },
+            });
+        }
     }
+
 };
 
 /**

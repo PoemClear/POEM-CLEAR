@@ -21,6 +21,13 @@ exports.dataPost = async (req, res) => {
         "服务器错误",
         `userId=${payload.accountId.id} `
     );
+    const subjectList = await DB(
+        res,
+        "xcx_blog_subject",
+        "find",
+        "服务器错误",
+        `userId=${payload.accountId.id} `
+    );
     const draftsList = await DB(
         res,
         "xcx_blog_post",
@@ -34,7 +41,7 @@ exports.dataPost = async (req, res) => {
         code: 200,
         result: {
             postNum: postList.length,
-            draftsNum:draftsList.length,
+            subjectListNum:subjectList.length,
             commentNum: 0,
             attentionNum: 0,
             fansNum: 0

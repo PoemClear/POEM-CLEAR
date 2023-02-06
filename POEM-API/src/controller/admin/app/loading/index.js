@@ -96,7 +96,6 @@ exports.updateLoading = async (req, res) => {
     );
 
     if (ret.affectedRows == 1) {
-        console.log(ret.affectedRows)
         res.json({
             code: 200,
             message: "修改成功",

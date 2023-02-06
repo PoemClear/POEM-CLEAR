@@ -57,7 +57,7 @@
 
       const avatar = computed(() => {
         const { base64, avatar } = userStore.getUserInfo;
-        return avatar || 'data:image/png;base64,' + base64;
+        return 'data:image/png;base64,' + base64 || avatar;
       });
       const userinfo = userStore.getUserInfo;
       function updateAvatar({ source, url }) {

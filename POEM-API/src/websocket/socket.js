@@ -19,7 +19,7 @@ ws.createServer((socket) => {
     //         message: "TOKEN 已过期",
     //     });
     // }
-    console.log(socket)
+    // console.log(socket)
     // 定义测试数据
     // const data = ['日照香炉生紫烟，遥看瀑布挂前川。飞流直下三千尺，疑是银河落九天。', '清明时节雨纷纷，路上行人欲断魂。借问酒家何处有？牧童遥指杏花村。', '春种一粒粟，秋收万颗子。四海无闲田，农夫犹饿死。'];
     socket.on('login', ({userId,username}) => {

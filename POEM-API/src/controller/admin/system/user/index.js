@@ -272,28 +272,6 @@ exports.getAccountList = async (req, res) => {
     }
 }
 
-// function Imagebase64(url) {
-//     https.get(url, function (res) {
-//         let base64Img = ''
-//         var chunks = []; //用于保存网络请求不断加载传输的缓冲数据
-//         var size = 0;　　 //保存缓冲数据的总长度
-//         res.on('data', function (chunk) {
-//             chunks.push(chunk);　 //在进行网络请求时，会不断接收到数据(数据不是一次性获取到的)，
-//             size += chunk.length;　　//累加缓冲数据的长度
-//         });
-//
-//         res.on('end', function (err) {
-//             var data = Buffer.concat(chunks, size);　　//Buffer.concat将chunks数组中的缓冲数据拼接起来，返回一个新的Buffer对象赋值给data
-//             console.log(Buffer.isBuffer(data));　　　　//可通过Buffer.isBuffer()方法判断变量是否为一个Buffer对象
-//             var base64Img = data.toString('base64');　　//将Buffer对象转换为字符串并以base64编码格式显示
-//
-//             console.log(base64Img);　　 //进入终端terminal,然后进入index.js所在的目录，　　
-//     return base64Img
-//         });
-//
-//     });
-// }
-
 /***
  * 修改信息
  * @param req
@@ -327,25 +305,25 @@ exports.updateUserInfo = async (req, res) => {
         email
     })
 
-    // const reslut = await DB(res, 'sy_users', 'find', '服务器错误', `id='${payload.accountId.id}'`)
-    // https.get(reslut[0].avatar, function (res) {
-    //     var chunks = []; //用于保存网络请求不断加载传输的缓冲数据
-    //     var size = 0;　　 //保存缓冲数据的总长度
-    //     res.on('data', function (chunk) {
-    //         chunks.push(chunk);　 //在进行网络请求时，会不断接收到数据(数据不是一次性获取到的)，
-    //         size += chunk.length;　　//累加缓冲数据的长度
-    //     });
-    //
-    //     res.on('end', async function (err) {
-    //         var data = Buffer.concat(chunks, size);　　//Buffer.concat将chunks数组中的缓冲数据拼接起来，返回一个新的Buffer对象赋值给data
-    //         // console.log(Buffer.isBuffer(data));　　　　//可通过Buffer.isBuffer()方法判断变量是否为一个Buffer对象
-    //          base64Img = data.toString('base64');　　//将Buffer对象转换为字符串并以base64编码格式显示
-    //         await DB(res, 'sy_users', 'update', '服务器错误', `id='${payload.accountId.id}'`, {
-    //             base64: base64Img,
-    //         })
-    //     });
-    //
-    // });
+    const reslut = await DB(res, 'sy_users', 'find', '服务器错误', `id='${payload.accountId.id}'`)
+    https.get(reslut[0].avatar, function (res) {
+        var chunks = []; //用于保存网络请求不断加载传输的缓冲数据
+        var size = 0;　　 //保存缓冲数据的总长度
+        res.on('data', function (chunk) {
+            chunks.push(chunk);　 //在进行网络请求时，会不断接收到数据(数据不是一次性获取到的)，
+            size += chunk.length;　　//累加缓冲数据的长度
+        });
+
+        res.on('end', async function (err) {
+            var data = Buffer.concat(chunks, size);　　//Buffer.concat将chunks数组中的缓冲数据拼接起来，返回一个新的Buffer对象赋值给data
+            // console.log(Buffer.isBuffer(data));　　　　//可通过Buffer.isBuffer()方法判断变量是否为一个Buffer对象
+             base64Img = data.toString('base64');　　//将Buffer对象转换为字符串并以base64编码格式显示
+            await DB(res, 'sy_users', 'update', '服务器错误', `id='${payload.accountId.id}'`, {
+                base64: base64Img,
+            })
+        });
+
+    });
 
 
     const rst = await DB(res, 'sy_users', 'find', '服务器错误', `id='${payload.accountId.id}'`)

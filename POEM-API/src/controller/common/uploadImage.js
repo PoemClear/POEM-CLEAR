@@ -5,21 +5,20 @@ const jwt = require("jsonwebtoken");
 const DB = require("../../db");
 const cos = new COS(config.qcloud.cos);
 const TengXunCos = config.qcloud.tengxunCos
-// const DB = require("../../db")
-// const {message, code} = require("../../utils/message")
+const {rTime, timestamp,fileSuffixTypeUtil} = require("../../utils/timeformat")
 exports.UploadImage = async(req, res) => {
-    // let payload = null;
-    // try {
-    //     const authorizationHeader = req.get("Authorization");
-    //     const accessToken = authorizationHeader
-    //     payload = jwt.verify(accessToken, config.jwtSecret);
-    // } catch (error) {
-    //     return res.status(401).json({
-    //         code: 401, message: "TOKEN 已过期"
-    //     });
-    // }
-    // const rst = await DB(res, 'sy_users', 'find', '服务器错误', `id='${payload.accountId.id}'`)
-    // if(!rst[0]) return
+    let payload = null;
+    try {
+        const authorizationHeader = req.get("Authorization");
+        const accessToken = authorizationHeader
+        payload = jwt.verify(accessToken, config.jwtSecret);
+    } catch (error) {
+        return res.status(401).json({
+            code: 401, message: "TOKEN 已过期"
+        });
+    }
+    const rst = await DB(res, 'sy_users', 'find', '服务器错误', `id='${payload.accountId.id}'`)
+    if(!rst[0]) return
     // 文件路径
     let filePath = './' + req.file.path;
     // 文件类型
@@ -52,7 +51,7 @@ exports.UploadImage = async(req, res) => {
                     console.log('进度：' + percent + '%; 速度：' + speed + 'Mb/s;');
                 },
             }
-            cos.sliceUploadFile(params, function (err, data) {
+            cos.sliceUploadFile(params, async function (err, data) {
                 if (err) {
                     fs.unlinkSync(localFile);
                     res.json({code: 400, message: '上传失败'});
@@ -60,9 +59,13 @@ exports.UploadImage = async(req, res) => {
                     fs.unlinkSync(localFile);
                     console.log(data)
                     let url = 'https://sy0415-1300507222.cos.ap-beijing.myqcloud.com/' + data.Key;
-                    // await DB(res, 'sy_image_material', 'insert', message[0], {
-                    //     image_url:imageSrc
-                    // })
+
+                    await DB(res, 'sy_files', 'insert', '服务器错误', {
+                      url,
+                        type:fileSuffixTypeUtil(url.substring(url.lastIndexOf('.') + 1)),
+                        userId:payload.accountId.id,
+                        createTime:rTime(timestamp(new Date())),
+                    })
                     let succMap = {}
 
                     succMap[ data.Key] = url

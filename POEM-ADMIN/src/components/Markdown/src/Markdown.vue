@@ -20,6 +20,7 @@
   import { useRootSetting } from '/@/hooks/setting/useRootSetting';
   import { onMountedOrActivated } from '/@/hooks/core/onMountedOrActivated';
   import { getTheme } from './getTheme';
+  import { getToken } from '/@/utils/auth';
   type Lang = 'zh_CN' | 'en_US' | 'ja_JP' | 'ko_KR' | undefined;
   import { useGlobSetting } from '/@/hooks/setting';
   const { uploadUrl = '/upload' } = useGlobSetting();
@@ -40,7 +41,7 @@
       const { getLocale } = useLocale();
       const { getDarkMode } = useRootSetting();
       const valueRef = ref(props.value || '');
-
+      console.log(getDarkMode);
       watch(
         [() => getDarkMode.value, () => initedRef.value],
         ([val, inited]) => {
@@ -91,26 +92,34 @@
         const insEditor = new Vditor(wrapEl, {
           // 设置外观主题
           theme: getTheme(getDarkMode.value) as any,
+          // 语言
           lang: unref(getCurrentLang),
-          comment: {
-            enable: true,
-            add: (id: string, text: string, commentsData: ICommentsData[]) => {
-              console.log(id, text, commentsData);
-            },
-            remove: (ids: string[]) => {
-              console.log(ids);
-            },
-            adjustTop: (commentsData: ICommentsData[]) => {
-              console.log(commentsData);
-            },
-          },
+          // 评论
+          // comment: {
+          //   enable: true,
+          //   add: (id: string, text: string, commentsData: ICommentsData[]) => {
+          //     console.log(id, text, commentsData);
+          //   },
+          //   remove: (ids: string[]) => {
+          //     console.log(ids);
+          //   },
+          //   adjustTop: (commentsData: ICommentsData[]) => {
+          //     console.log(commentsData);
+          //   },
+          // },
+          // 显示字数
           counter: {
             enable: true,
           },
-          mode: 'sv',
+          // 模式
+          mode: 'ir',
+          // 输入区域为空时的提示。默认值
+          placeholder: '请输入内容',
+          // 全屏尺寸
           fullscreen: {
             index: 520,
           },
+          // 预览
           preview: {
             theme: {
               // 设置内容主题
@@ -154,6 +163,11 @@
             fieldName: 'file',
             // accept: 'image/*',
             multiple: false,
+            token: 'Authorization',
+            headers: {
+              'Authorization': getToken(),
+            },
+            // ,
             // success(editor: HTMLPreElement, msg: string) {
             //   console.log(editor, msg);
             // },

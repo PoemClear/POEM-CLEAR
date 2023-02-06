@@ -1,7 +1,6 @@
 require('dotenv').config({path: '.env'})
 
 process.env.NODE_ENV = process.env.NODE_ENV || "development";
-console.log(process)
 const dev = {
     host: "152.136.141.57",
     password: "sy2022&0415",

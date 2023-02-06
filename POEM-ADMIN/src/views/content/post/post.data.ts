@@ -144,7 +144,7 @@ const isTinymce = (type: string) => type === '2';
 export const formSchema: FormSchema[] = [
   {
     field: 'type',
-    label: '编辑器类型',
+    label: '编辑器',
     component: 'RadioButtonGroup',
     defaultValue: '1',
     componentProps: {

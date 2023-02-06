@@ -1,4 +1,4 @@
-const {rTime, timestamp, listToTree, getFormatmessageTime} = require("../../../utils/timeformat")
+const {rTime, timestamp, listToTree} = require("../../../utils/timeformat")
 const DB = require("../../../db")
 const jwt = require("jsonwebtoken");
 const config = require("../../../config");

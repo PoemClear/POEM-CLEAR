@@ -1,6 +1,6 @@
 <template>
-  <PageWrapper :title="`专栏： ${info.title}`" contentBackground @back="goBack" />
-  <div :class="prefixCls">
+  <PageWrapper :title="`专栏： ${info.title || '没有专题了'}`" contentBackground @back="goBack" />
+  <div :class="prefixCls" v-if="info.title">
     <a-row :class="`${prefixCls}-top`">
       <a-col :span="24" :class="`${prefixCls}-col`">
         <a-row>
@@ -32,39 +32,38 @@
         </a-row>
       </a-col>
     </a-row>
-    <div :class="`${prefixCls}-bottom`">
-      <List :class="prefixClsProject">
-        <a-row :gutter="16">
-          <template v-for="item in info.children" :key="item.title">
-            <a-col :span="6">
-              <ListItem @click="handlePostDetail(item.id)">
-                <Card :hoverable="true" :class="`${prefixCls}__card`">
-                  <Image
-                    :height="130"
-                    :src="item.cover"
-                    fallback="https://sy0415-1300507222.cos.ap-beijing.myqcloud.com/1675144320527.png"
-                  />
-                  <div :class="`${prefixCls}__card-title`">
-                    {{ item.title }}
-                  </div>
-                  <div class="tag" style="margin: 4px 0">
-                    <template v-for="tag in item.label_title" :key="tag">
-                      <Tag color="orange" class="mb-2"> {{ tag }} </Tag>
-                    </template>
-                  </div>
-                  <div :class="`${prefixCls}__card-content`">
-                    <span>浏览{{ item.view_count }}</span>
-                    <span>点赞{{ item.like_count }}</span>
-                    <span>收藏{{ item.collect_count }}</span>
-                    <span>评论{{ item.comment_count }}</span>
-                  </div>
-                </Card>
-              </ListItem>
-            </a-col>
-          </template>
-        </a-row>
-      </List>
+    <div class="md:flex" :class="`${prefixCls}-bottom`">
+      <template v-for="(item, index) in info.children" :key="item.title">
+        <Card
+          size="small"
+          :loading="loading"
+          class="md:w-1/4 w-full !md:mt-0 item"
+          :class="{ '!md:mr-4': index + 1 < 4, '!mt-4': index > 0 }"
+          @click="handlePostDetail(item)"
+        >
+          <Image
+            :height="130"
+            :src="item.cover"
+            fallback="https://sy0415-1300507222.cos.ap-beijing.myqcloud.com/1675144320527.png"
+          />
+          <div :class="`${prefixCls}__card-title`">
+            {{ item.title }}
+          </div>
+          <div class="tag" style="margin: 4px 0">
+            <template v-for="tag in item.label_title" :key="tag">
+              <Tag color="orange" class="mb-2"> {{ tag }} </Tag>
+            </template>
+          </div>
+          <div :class="`${prefixCls}__card-content`">
+            <span>浏览{{ item.view_count }}</span>
+            <span>点赞{{ item.like_count }}</span>
+            <span>收藏{{ item.collect_count }}</span>
+            <span>评论{{ item.comment_count }}</span>
+          </div>
+        </Card>
+      </template>
     </div>
+    <viewDarwer @register="registerView" />
   </div>
 </template>
 
@@ -72,11 +71,13 @@
   import { defineComponent, computed, onMounted, ref } from 'vue';
   import { useRoute } from 'vue-router';
   import { useUserStore } from '/@/store/modules/user';
+  import { useDrawer } from '/@/components/Drawer';
   import { getSubjectItem } from '/@/api/content/subject';
   import { PageWrapper } from '/@/components/Page';
   import { useGo } from '/@/hooks/web/usePage';
   import { useTabs } from '/@/hooks/web/useTabs';
   import { List, Card, Row, Col, Image, Avatar, Tag } from 'ant-design-vue';
+  import viewDarwer from '../viewDarwer.vue';
   export default defineComponent({
     components: {
       List,
@@ -88,11 +89,14 @@
       Avatar,
       PageWrapper,
       Tag,
+      viewDarwer,
     },
     setup() {
       const userStore = useUserStore();
       const route = useRoute();
+      const loading = ref(true);
       const go = useGo();
+      const [registerView, { openDrawer: openDrawerView }] = useDrawer();
       const { setTitle } = useTabs();
       let id = ref(route.params?.id);
       const avatar = computed(() => userStore.getUserInfo.avatar);
@@ -102,14 +106,19 @@
         let data = await getSubjectItem(id.value);
         console.log(data, 123);
         info.value = data.items;
+        loading.value = false;
         setTitle(`专栏：${data.items.title}`);
       }
       function goBack() {
         // 本例的效果时点击返回始终跳转到账号列表页，实际应用时可返回上一页
         go('/content/subject');
       }
-      function handlePostDetail(id: number) {
-        go('/content/post/post_detail/' + id);
+      function handlePostDetail(record) {
+        openDrawerView(true, {
+          record,
+          isUpdate: true,
+        });
+        // go('/content/post/post_detail/' + id);
       }
       onMounted(async () => {
         await getInfo();
@@ -118,9 +127,7 @@
         prefixCls: 'account-center',
         prefixClsProject: 'account-center-project',
         avatar,
-        // tags,
-        // teams,
-        // details,
+        registerView,
         handlePostDetail,
         id,
         getInfo,
@@ -167,27 +174,9 @@
     }
   }
 
-  .account-center-project {
-    &__card {
-      width: 100%;
-
-      .ant-card-body {
-        padding: 0 0 24px;
-      }
-
-      &-title {
-        margin: 5px 10px;
-        font-size: 24px;
-        font-weight: 500;
-        color: rgb(0 0 0 / 85%);
-      }
-
-      &-content {
-        margin: 5px 10px;
-        // width: 100%;
-        // display: flex;
-        // justify-content: space-between;
-      }
+  .account-center-bottom {
+    .item {
+      cursor: pointer;
     }
 
     span {

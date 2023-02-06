@@ -57,8 +57,8 @@
         </template>
       </template>
     </BasicTable>
-    <!-- <Modal2 @register="register2" @goto="handleCreate" /> -->
     <PostDrawer @register="registerDrawer" @success="handleSuccess" />
+    <viewDarwer @register="registerView" />
   </div>
 </template>
 <script lang="ts">
@@ -67,25 +67,17 @@
   import { BasicTable, useTable, TableAction } from '/@/components/Table';
   import { getPostList, upDatePostRecycle, updateCheckPost } from '/@/api/content/blog';
   import { useDrawer } from '/@/components/Drawer';
-  import { usePermissionStore } from '/@/store/modules/permission';
-  import { usePermission } from '/@/hooks/web/usePermission';
   import { columns, searchFormSchema } from './post.data';
-  import { RoleEnum } from '/@/enums/roleEnum';
-  import { useModal } from '/@/components/Modal';
   import { Image } from 'ant-design-vue';
-  import { useGo } from '/@/hooks/web/usePage';
   import PostDrawer from './PostDrawer.vue';
-
+  import viewDarwer from '../viewDarwer.vue';
   import { useUserStore } from '/@/store/modules/user';
   export default defineComponent({
     name: 'RoleManagement',
-    components: { BasicTable, TableAction, Image, PostDrawer },
+    components: { BasicTable, TableAction, Image, PostDrawer, viewDarwer },
     setup() {
-      const go = useGo();
       const [registerDrawer, { openDrawer }] = useDrawer();
-      const { hasPermission } = usePermission();
-      const [register2, { openModal: openModal2 }] = useModal();
-      const permissionStore = usePermissionStore();
+      const [registerView, { openDrawer: openDrawerView }] = useDrawer();
 
       const userStore = useUserStore();
       const getUserInfo = computed(() => {
@@ -153,24 +145,24 @@
       }
 
       function handleView(record: Recordable) {
-        go('/content/post/post_detail/' + record.id);
+        openDrawerView(true, {
+          record,
+          isUpdate: true,
+        });
+        // go('/content/post/post_detail/' + record.id);
       }
 
       return {
         registerTable,
         registerDrawer,
+        registerView,
         handleCreate,
         handleEdit,
         handleDelete,
         handleSuccess,
-        hasPermission,
-        permissionStore,
         handleView,
-        openModal2,
-        register2,
         handleCheckSuccess,
         handleCheckFail,
-        RoleEnum,
         getUserInfo,
       };
     },

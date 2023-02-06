@@ -74,7 +74,6 @@ function sendMsg() {
 // 渲染消息message
 function renderMsg(message) {
   let userid = window.sessionStorage.getItem("userId");
-  console.log(userid, message);
   const { id, name, room, msg, time } = message;
   if (userid === id) {
     // 我自己

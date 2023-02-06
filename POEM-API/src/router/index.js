@@ -54,4 +54,6 @@ router.use(require('./admin/recycle-bin'))
 router.use(require('./admin/setting'))
 /** 文章 评论 。。 统计*/
 router.use(require('./admin/data'))
+/** 文件管理*/
+router.use(require('./admin/file'))
 module.exports = router

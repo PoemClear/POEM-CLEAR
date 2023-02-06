@@ -180,9 +180,10 @@ exports.updatePost = async (req, res) => {
         updateTime: rTime(timestamp(new Date())),
     })
     if (ret.affectedRows == 1) {
-        res.json({
+       let result =  await DB(res, 'xcx_blog_post', 'find', '服务器错误', `userId=${payload.accountId.id} and id=${id}`)
+            res.json({
             code: 200,
-            message: "修改成功"
+            message: result[0].checkStatus!=2? '发布成功 正在审核中':"修改成功"
         })
     } else {
         res.json({
