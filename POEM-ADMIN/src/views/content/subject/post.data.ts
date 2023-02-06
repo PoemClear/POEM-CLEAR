@@ -58,20 +58,20 @@ export const columns: BasicColumn[] = [
       return h(Tag, { color: color }, () => text);
     },
   },
-  // {
-  //   title: '审核状态',
-  //   dataIndex: 'checkStatus',
-  //   width: 80,
-  //   customRender: ({ record }) => {
-  //     const status = record.checkStatus;
-  //     const toDoEnable = ~~status === 0;
-  //     const FailEnable = ~~status === 1;
-  //     const SuccessEnable = ~~status === 2;
-  //     const color = toDoEnable ? 'orange' : SuccessEnable ? 'green' : 'red';
-  //     const text = toDoEnable ? '审核中' : FailEnable ? '未通过' : '审核通过';
-  //     return h(Tag, { color: color }, () => text);
-  //   },
-  // },
+  {
+    title: '审核状态',
+    dataIndex: 'checkStatus',
+    width: 80,
+    customRender: ({ record }) => {
+      const status = record.checkStatus;
+      const toDoEnable = ~~status === 0;
+      const FailEnable = ~~status === 1;
+      const SuccessEnable = ~~status === 2;
+      const color = toDoEnable ? 'orange' : SuccessEnable ? 'green' : 'red';
+      const text = toDoEnable ? '审核中' : FailEnable ? '未通过' : '审核通过';
+      return h(Tag, { color: color }, () => text);
+    },
+  },
   {
     title: '作者',
     dataIndex: 'author',
