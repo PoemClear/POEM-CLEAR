@@ -17,25 +17,24 @@ exports.UploadImage = async(req, res) => {
             code: 401, message: "TOKEN 已过期"
         });
     }
- 
     const originalname = req.file.originalname
     const rst = await DB(res, 'sy_users', 'find', '服务器错误', `id='${payload.accountId.id}'`)
     if(!rst[0]) return
     // 文件路径
     let filePath = './' + req.file.path;
     // 文件类型
-    let temp = req.file.originalname.split('.');
-    let fileType = temp[temp.length - 1];
-    let lastName = '.' + fileType;
-    // 构建图片名
-    let fileName = Date.now() + lastName;
+    // let temp = req.file.originalname.split('.');
+    // let fileType = temp[temp.length - 1];
+    // let lastName = '.' + fileType;
+    // // 构建图片名
+    // let fileName = Date.now() + lastName;
     // 图片重命名
-    fs.rename(filePath, fileName, (err) => {
+    fs.rename(filePath, originalname, (err) => {
         if (err) {
             res.json({code: 500, message: '文件写入失败'});
         } else {
-            let localFile = './' + fileName;
-            let key = fileName;
+            let localFile = './' + originalname;
+            let key = originalname;
 
             // 腾讯云 文件上传
             let params = {

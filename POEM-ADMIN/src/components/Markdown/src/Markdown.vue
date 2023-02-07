@@ -154,6 +154,9 @@
           blur: () => {
             //unref(vditorRef)?.setValue(props.value);
           },
+          getHTML: (val) => {
+            console.log(val);
+          },
           ...bindValue,
           cache: {
             enable: false,
@@ -165,7 +168,7 @@
             multiple: false,
             token: 'authorization',
             headers: {
-              'authorization': getToken(),
+              authorization: getToken(),
             },
             // ,
             // success(editor: HTMLPreElement, msg: string) {

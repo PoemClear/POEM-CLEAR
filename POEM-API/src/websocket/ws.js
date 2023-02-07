@@ -16,7 +16,7 @@ server.on('close', () => {
 server.on('connection', (ws, req) => {
     const ip = req.connection.remoteAddress;
     const port = req.connection.remotePort;
-     console.log(ws)
+     // console.log(ws)
     const clientName = ip + port;
     // console.log('%s is connect', clientName);
     //6.2向客户端发送消息

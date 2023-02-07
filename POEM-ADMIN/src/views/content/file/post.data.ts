@@ -5,13 +5,13 @@ import { Tag } from 'ant-design-vue';
 export const columns: BasicColumn[] = [
   {
     title: '文件',
-    dataIndex: 'url',
-    width: 120,
+    dataIndex: 'originalname',
   },
 
   {
     title: '类型',
     dataIndex: 'type',
+    width: 120,
     customRender: ({ record }) => {
       const color = 'blue';
       const text = record.type;
