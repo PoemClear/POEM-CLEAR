@@ -22,13 +22,6 @@ exports.UploadImage = async(req, res) => {
     if(!rst[0]) return
     // 文件路径
     let filePath = './' + req.file.path;
-    // 文件类型
-    // let temp = req.file.originalname.split('.');
-    // let fileType = temp[temp.length - 1];
-    // let lastName = '.' + fileType;
-    // // 构建图片名
-    // let fileName = Date.now() + lastName;
-    // 图片重命名
     fs.rename(filePath, originalname, (err) => {
         if (err) {
             res.json({code: 500, message: '文件写入失败'});
@@ -42,7 +35,7 @@ exports.UploadImage = async(req, res) => {
                 Region: TengXunCos.Region,                         /* 必须 */
                 Key: key,                                           /* 必须 */
                 FilePath: localFile,                                /* 必须 */
-                SliceSize: (1024 * 1024) / 2,
+                SliceSize:  1000 * 1024 * 1024,
                 onHashProgress: function (progressData) {
                     console.log("校验中", JSON.stringify(progressData));
                 },

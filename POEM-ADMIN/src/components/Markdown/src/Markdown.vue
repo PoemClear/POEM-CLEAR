@@ -163,6 +163,7 @@
           },
           upload: {
             url: uploadUrl,
+            max: 1024 * 1024 * 1000,
             fieldName: 'file',
             // accept: 'image/*',
             multiple: false,
