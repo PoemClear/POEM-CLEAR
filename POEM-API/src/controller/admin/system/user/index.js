@@ -192,7 +192,7 @@ exports.userInfo = async (req, res) => {
         });
     }
     const {id} = req.query
-    const bannerInfo = await DB(res, 'sy_users', 'find', '服务器错误', `ID='${id}'`)
+    const bannerInfo = await DB(res, 'sy_users', 'find', '服务器错误', `id='${id}'`)
     bannerInfo.forEach((ele) => {
         ele.base64 = 'data:image/png;base64,' + ele.base64
     })

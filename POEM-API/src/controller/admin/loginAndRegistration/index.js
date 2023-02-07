@@ -3,15 +3,14 @@ const config = require("../../../config");
 const {
     rTime,
     timestamp,
-    listMockToTree,
 } = require("../../../utils/timeformat");
 const DB = require("../../../db");
 const jwt = require("jsonwebtoken");
 const ip = require('ip')
 // ip.address()
 const uuid = require("node-uuid");
-/** 过期时间 单位：毫秒 默认 1分钟过期，方便演示 */
-let expiresIn = 86400;
+/** 过期时间 单位：毫秒 */
+let expiresIn = process.env.EXPIRES_IN;
 /***
  * 注册|申请
  * @param req
@@ -113,6 +112,9 @@ exports.login = async (req, res) => {
         });
         return;
     }
+    userInfo.forEach((ele)=>{
+        delete ele.base64
+    })
     const token = jwt.sign(
         {
             accountId: userInfo[0],

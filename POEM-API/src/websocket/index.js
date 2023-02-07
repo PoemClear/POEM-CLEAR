@@ -1,22 +1,19 @@
-const {Server} = require("socket.io");
-const PORT = process.env.SERVER_PORT || 4500;
-const ip = require('ip')
-// var server = app.listen(PORT)
 
-const io = new Server();
-io.on("connection", (socket) => {
-    console.log(`socket ${socket.id} connected`);
-    // send an event to the client
-    // socket.emit("foo", "bar");
-    // socket.on("foobar", () => {
-    //     // an event was received from the client
-    // });
-    // // upon disconnection
-    // socket.on("disconnect", (reason) => {
-    //     console.log(`socket ${socket.id} disconnected due to ${reason}`);
-    // });
+const { createServer } = require("http");
+const { Server } = require("socket.io");
+
+const httpServer = createServer(require("express")());
+
+const io = new Server(httpServer, {
+    cors: {                 //解决跨域问题
+        origin: "*",
+        methods: ["GET", "POST"]
+    }
 });
-// 监听端口
-io.listen(PORT, '0.0.0.0', () => {
-    console.info(`Socket.io 启动成功，运行端口：${PORT} http://${ip.address()}:${PORT}`);
+io.on("connection", (socket) => {
+    console.log(socket)
+});
+
+httpServer.listen(process.env.SocketPORT, () => {
+    console.log(`${process.env.SocketPORT}`)
 });

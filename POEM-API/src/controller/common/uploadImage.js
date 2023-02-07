@@ -17,6 +17,8 @@ exports.UploadImage = async(req, res) => {
             code: 401, message: "TOKEN 已过期"
         });
     }
+ 
+    const originalname = req.file.originalname
     const rst = await DB(res, 'sy_users', 'find', '服务器错误', `id='${payload.accountId.id}'`)
     if(!rst[0]) return
     // 文件路径
@@ -57,13 +59,13 @@ exports.UploadImage = async(req, res) => {
                     res.json({code: 400, message: '上传失败'});
                 } else {
                     fs.unlinkSync(localFile);
-                    console.log(data)
+                    // console.log(data)
                     let url = 'https://sy0415-1300507222.cos.ap-beijing.myqcloud.com/' + data.Key;
-
                     await DB(res, 'sy_files', 'insert', '服务器错误', {
                       url,
                         type:fileSuffixTypeUtil(url.substring(url.lastIndexOf('.') + 1)),
                         userId:payload.accountId.id,
+                        originalname:originalname,
                         createTime:rTime(timestamp(new Date())),
                     })
                     let succMap = {}
@@ -79,12 +81,6 @@ exports.UploadImage = async(req, res) => {
                         }
 
                     })
-                    // res.json({
-                    //     code: 200,
-                    //     type: 'success',
-                    //     result: imageUrl
-                    //
-                    // })
                 }
             });
         }

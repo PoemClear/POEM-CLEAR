@@ -163,9 +163,9 @@
             fieldName: 'file',
             // accept: 'image/*',
             multiple: false,
-            token: 'Authorization',
+            token: 'authorization',
             headers: {
-              'Authorization': getToken(),
+              'authorization': getToken(),
             },
             // ,
             // success(editor: HTMLPreElement, msg: string) {

@@ -8,16 +8,16 @@
         </div>
         <hr class="my-4" />
 
-        <div class="flex">
+        <!-- <div class="flex">
           <a-input v-model:value="server" disabled>
             <template #addonBefore> 服务地址 </template>
           </a-input>
           <a-button :type="getIsOpen ? 'danger' : 'primary'" @click="toggle">
             {{ getIsOpen ? '关闭连接' : '开启连接' }}
           </a-button>
-        </div>
-        <p class="text-lg font-medium mt-4">设置</p>
-        <hr class="my-4" />
+        </div> -->
+        <!-- <p class="text-lg font-medium mt-4">设置</p>
+        <hr class="my-4" /> -->
 
         <InputTextArea
           placeholder="需要发送到服务器的内容"
@@ -74,10 +74,9 @@
       });
 
       const { status, data, send, close, open } = useWebSocket(state.server, {
-        autoReconnect: false,
+        autoReconnect: true,
         heartbeat: true,
       });
-
       watchEffect(() => {
         if (data.value) {
           try {
@@ -101,6 +100,7 @@
       });
 
       function handlerSend() {
+        console.log(state.sendValue);
         send(state.sendValue);
         state.sendValue = '';
       }

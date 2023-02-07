@@ -125,7 +125,7 @@
   type apiFunParams = { file: Blob; name: string; filename: string };
 
   const props = {
-    circled: { type: Boolean, default: true },
+    circled: { type: Boolean, default: false },
     uploadApi: {
       type: Function as PropType<(params: apiFunParams) => Promise<any>>,
     },
